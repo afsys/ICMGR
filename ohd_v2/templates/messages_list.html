@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>{trans str="Omni Help Desk"}</title>
+	<link href="../styles.css" rel="stylesheet" type="text/css">
+	<link href="../new.css" rel="stylesheet" type="text/css">
+</head>
+
+<body align=center bgcolor="whitesmoke" topmargin=0 leftmargin=0>
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="width: 900px; margin: auto; margin-top: 15px;">
+		<tr><th><div id="requestStatus" style="float: right;"></div>{$ticket.caption}</th></tr>
+		<tr>
+			<td style="vertical-align: top;">
+				<!-- TICKET HEADER -->            
+				<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px;">
+					<tr style="background-color: #90AADD;">
+						<td style="width: 80px;">{trans str="Ticket ID"}</td>
+						<td>{trans str="Submit Date"}</td>
+						<td>{trans str="Last Update"}</td>
+						<td style="width: 174px;">{trans str="Close Date"}</td>
+					</tr>
+					<tr style="background-color: #DDD;">
+						<td>
+							{if $smarty.const.F_MANUAL_TICKET_NUM}
+								{$ticket.ticket_num}
+							{else}
+								{if $ticket.ticket_num}{$ticket.ticket_num|string_format:"%06d"}{else}{$ticket.ticket_id|string_format:"%06d"}{/if}</td>
+							{/if}
+						</td>
+						<td>{$ticket.created_at|date_format_usr:'short'}</td>
+						<td>{$ticket.modified_at|date_format_usr:'short'}</td>
+						<td>{if $ticket.closed_at}{$ticket.closed_at|date_format_usr:'short'}{else}{trans str="(Still open)"}{/if}</td>
+					</tr>
+				</table>
+				{*
+				<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+					<tr style="background-color: #90AADD;">
+						<td>{trans str="Ticket Owner"}</td>
+						<td>{trans str="Department"}</td>
+						<td>{trans str="Action"}</td>
+						<td>{trans str="Priority"}</td>
+						<td>{trans str="Status"}</td>
+					</tr>
+					<tr style="background-color: #DDD;">
+						<td>{$ticket.ticket_assigned_to_name}</td>
+						<td style="width: 185px;">{$ticket.group_caption}</td>
+						<td style="width: 150px;">{$ticket.type}</td>
+						<td style="width: 150px;">{$ticket.priority}</td>
+						<td style="width: 150px;">{$ticket.status}</td>
+					</tr>
+				</table>
+				*}
+				<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+					<tr style="text-align: left;">
+						<td style="background-color: #90AADD; width: 125px; ">{trans str="Customer Name"}</td>
+						<td style="background-color: #DDD;">{$ticket.customer_name|strip_tags}</td>
+					</tr>
+					<tr style="text-align: left;">
+						<td style="background-color: #90AADD;">{trans str="Customer Phone"}</td>
+						<td style="background-color: #DDD;">{$ticket.customer_phone}</a>
+						</td>
+					</tr>					
+					<tr style="text-align: left;">
+						<td style="background-color: #90AADD;">{trans str="Customer E-Mail"}</td>
+						<td style="background-color: #DDD;">{$ticket.customer_email}</td>
+					</tr>
+					<tr style="text-align: left;">
+						<td style="background-color: #90AADD; vertical-align: top;">{trans str="Problem Desc"}</td>
+						<td style="background-color: #DDD;">
+							{if $ticket.description_is_html}
+								{$ticket.description}
+							{else}
+								{$ticket.description|strip_tags|nl2br}
+							{/if}
+						</td>
+					</tr>
+				</table>
+				<!-- TICKET HEADER -->                        
+			</td>
+		</tr>
+		
+		
+
+		<!-- POST NEW TEMPLATE -->
+		{capture name=new_message_form}
+		<form action="" method="post" enctype="multipart/form-data">
+		<input type=hidden name=action value="send_message">
+		
+		<tr>
+			<td style="border-top: 1px solid silver;">
+				<input type="hidden" name="MAX_FILE_SIZE" value="500000">
+				<div style="background-color: #F0F0F0; margin: 2px; padding: 4px;">
+					<div style="padding: 3px; font-weight: bold;">
+					{trans str="Post new message"}:
+						{if $error}
+						<br>
+						<font color=red>{$error}</font>
+						{/if}
+					</div>
+
+					{trans str="Message"}:<br />
+					<textarea name="message" rows="7" cols="63" style="width: 98%;"></textarea>
+					{if $allow_attachments}<input name="attachment" type="file" size="64" style="width: 98%;" />{/if}
+					<div style="text-align: center;"><input type="submit" value="{trans str="Post Message"}" style="width: 120px;"  /></div>
+
+				<div>
+			</td>
+		</tr>
+		</form>
+		{/capture}
+		
+		<!-- POST NEW MESSAGE -->
+		{$smarty.capture.new_message_form}
+		<!-- /POST NEW MESSAGE -->
+
+
+		<tr style="text-align: left;">
+			<td style="border-top: 1px solid silver;">
+				<div style="float: none; padding: 5px; font-weight: bold;">{trans str="Messages"}:</div>
+			</td>
+		</tr>
+		
+		{foreach item=message from=$messages}
+		<tr style="text-align: left;">
+			<td style="border-top: 1px solid #0D4C78; border-bottom: 1px solid #0D4C78; {$message.header_style}">
+				<div style="float: right; padding-right: 5px;">
+					<a class="msg" href="#top">{trans str="Top"}</a>
+				</div>
+				<a name="{$message.message_id}" href="#{$message.message_id}"> {trans str="Posted at"} {$message.message_datetime_formated} {trans str="by"} {if $message.message_owner_name}{$message.message_owner_name}{else}{$message.message_creator_user_name}{/if}</a>
+			</td>
+		</tr>
+		<tr style="text-align: left;">
+			<td style="padding-left: 5px;padding-top:10px;padding-bottom:10px;">
+				<span id="tick_msg_{$message.message_id}">{$message.message_text}</span>
+				{if $message.message_atachment_name}
+				<div style="text-align: right;">
+					<a href="../index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}&ticket_atachment={$message.message_id}&ticket_num={$ticket.ticket_num}&customer_email={$ticket.customer_email}" style=" color: #006699; font-weight: bold;">{$message.message_atachment_name}</a>
+				</div>
+				{/if}
+			</td>
+		</tr>
+		{/foreach}
+
+	</table>
+
+</body>
+</html>

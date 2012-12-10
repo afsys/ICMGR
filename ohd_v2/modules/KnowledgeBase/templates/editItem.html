@@ -1,0 +1,86 @@
+<script language="Javascript1.2">
+function CheckInput()
+{ldelim}
+	var inp = document.getElementById('item_caption');
+	if (inp.value == '')
+	{ldelim}
+		alert({trans str="'Please, enter item caption.'"});
+		inp.focus();
+		return false;
+	{rdelim}
+	return true;
+{rdelim}
+
+</script>
+
+<div style="float: none;">
+	<div class="page_caption">{trans str="Knowledge Base"}</div>
+</div>
+
+<table class="page" cellpadding="5px" cellspacing="0">
+	<tr>
+		<th>{trans str=$page_caption}</th>
+	</tr>
+	<tr>
+		<td>
+		
+		<div class="path" style="padding: 2px;">{$cats_path}</div> 
+		{if $msg}
+		<div style="color: red;">{$msg}</div>
+		{/if}
+		
+		<div style="font-size: 10pt">{trans str="Note: Required fields are denoted by"} <span style="color: maroon;">*</span></div>
+
+		<form method="post" id="item_form">
+		<input type="hidden" name="root_page" value="{$root_page}" />
+		
+		<table cellspacing="5" border="0px" width="100%">
+			<tr>
+				<td valign="top" align="right" width="130px">
+					{trans str="Category"}<span style="color: maroon;">*</span>:
+				</td>
+				<td>
+				   <select name="cat_id" style="width: 270px;">
+					   {html_options options=$cat_options selected=$cat_id}
+				   </select>            
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" align="right">
+					{trans str="Caption"}<span style="color: maroon;">*</span>:
+				</td>
+				<td>
+					<input type="text" id="item_caption" name="item_caption" style="width: 270px;" value="{$item_caption}" />
+				 </td>
+			</tr>
+			<tr>
+				<td valign="top" align="right">
+					{trans str="Expiration Date"}:
+				</td>
+				<td>
+					<input id="expiration_date" name="expiration_date" type="text" value="{$expiration_date}" />
+					<img width="15px" height="15px" title="Select date" alt="Select date" src="images/calendar.gif" 
+						style="cursor: pointer; position: relative; top: 2px;" 
+						onclick="displayCalendar(document.getElementById('expiration_date') , 'yyyy-mm-dd', this)" />
+				 </td>
+			</tr>
+			<tr>
+				<td valign="top" align="right">
+					{trans str="Notes"}:
+				</td>
+				<td>{$item_notes}</td>
+			</tr>        
+			<tr>
+				<td></td>
+				<td align="right">
+					<input type="submit" name="submit_item" value="{trans str=$submit_button_caption}" onclick="return CheckInput();">
+				</td>
+			</tr>
+		</table>
+		</form>
+
+		
+		</td>
+	</tr>
+</table>
+

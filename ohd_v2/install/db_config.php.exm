@@ -1,0 +1,23 @@
+<?php
+
+require_once 'ohd_config.php';
+
+define('DB_HOST', '%DB_HOST%');
+define('DB_USER', '%DB_USER%');
+define('DB_PASS', '%DB_PASS%');
+define('DB_NAME', '%DB_NAME%');
+define('DB_PREF', '%DB_PREF%');
+	
+$dbConfig = array (
+	'host'   => DB_HOST,
+	'user'   => DB_USER,
+	'pass'   => DB_PASS,
+	'db'     => DB_NAME,
+	'type'   => 'mysql',
+	'prefix' => DB_PREF
+);
+
+define('PEAR_DSN',       $dbConfig['type'].'://'.$dbConfig['user'].':'.$dbConfig['pass'].'@'.$dbConfig['host'].'/'.$dbConfig['db']);
+define('OSS_DB_PREFIX',  $dbConfig['prefix']);
+
+?>

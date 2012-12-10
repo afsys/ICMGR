@@ -1,0 +1,67 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Ticket Statistics"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2px" border="0px">
+	<tr>
+		<th>{trans str="Agents Breakdown"}</th>
+	</tr>
+	<tr>
+		<td>
+			<table width="100%">
+				{if $view_type == 'LastWeek'}
+				<thead style="background-color: #CCC; text-align: center;">
+					<tr>
+						<td rowspan="2">{trans str="User Name"}</td>
+						<td colspan="7">{trans str="Messages (Notes)"} {trans str="per Last Week"}  (<a href="index.php?module=Tickets&action=TicketsStatisticAgents">Common</a>)</td>
+					</tr>
+					<tr>
+						{foreach item=item from=$last_week_days}
+						<td>{$item|date_format:"%b %d"}</td>
+						{/foreach}
+					</tr>
+				</thead>
+				<tbody style="background: #DFDFDF; text-align: center;">
+					{foreach item=agent key=agent_name from=$agents}
+					<tr>
+						<td>{$agent_name}</td>
+						{foreach item=item from=$last_week_days}
+						<td>
+							{if $agent.$item.message || $agent.$item.note}
+								{$agent.$item.message|default:0} ({$agent.$item.note|default:0})
+							{else}
+								-
+							{/if}
+						</td>
+						{/foreach}
+					</tr>
+					{/foreach}
+				</tbody>
+				{elseif $view_type == 'WeekMonth'}
+				<thead style="background-color: #CCC; text-align: center;">
+					<tr>
+						<td rowspan="2">{trans str="User Name"}</td>
+						<td colspan="2">{trans str="Messages (Notes)"}</td>
+					</tr>
+					<tr>
+						<td>{trans str="Last Week"} (<a href="index.php?module=Tickets&action=TicketsStatisticAgents&type=LastWeek">Detailed</a>)</td>
+						<td>{trans str="Last Month"}</td>
+					</tr>
+				</thead>
+				<tbody style="background: #DFDFDF; text-align: center;">
+					{foreach item=item key=agent from=$agents}
+					<tr>
+						<td>{$agent}</td>
+						<td>{$item.last_week.message|default:0} ({$item.last_week.note|default:0})</td>
+						<td>{$item.last_month.message|default:0} ({$item.last_month.note|default:0})</td>
+					</tr>
+					{/foreach}
+				</tbody>
+				{/if}
+				
+
+			</table>
+			
+		</td>
+	</tr>
+</table>    

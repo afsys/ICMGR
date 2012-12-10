@@ -1,0 +1,118 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Ticket Statistics"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2px" border="0px">
+	<tr>
+		<th>&nbsp;</th>
+	</tr>
+
+	<tr>
+	
+		<td>
+			<table width="100%">
+				<!-- COMMON STATISTIC -->
+				<tr style="background-color: #CCC;">
+					<td colspan="3" style="text-align: center; padding: 5px;">
+						{trans str="Common Statistics"}
+					</td>
+				</tr>
+				
+				<tr>
+					<td style="background-color: #DDD;">{trans str="Tickets Opened Today"}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$common_opened_today}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('special', 'opened_today')"  />
+					</td>
+				</tr>
+				<tr>
+					<td style="background-color: #DDD;">{trans str="Todays Closed Tickets"}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$common_closed_today}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('special', 'closed_today')"  />
+					</td>
+				</tr>
+				<tr>
+					<td style="background-color: #DDD;">{trans str="Unassigned Tickets"}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$common_unassigned}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('special', 'unassigned')" />
+					</td>
+				</tr>
+				
+				
+				<tr>
+					<td style="background-color: #DDD;">{trans str="Avg. Open Ticket Time"}:</td>
+					<td style="background-color: #90AADD; width: 150px; text-align: center;">{$avg_open_time}</td>
+				</tr>
+
+				<tr>
+					<td style="background-color: #DDD;">{trans str="Total Open Tickets"}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$common_opened}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('special', 'opened')"  />
+					</td>
+				</tr>
+				<tr>
+					<td style="background-color: #DDD;">{trans str="Total Tickets"}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$common_total}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('special', 'common')" >
+					</td>
+				</tr>
+
+				<!-- /COMMON STATISTIC -->
+			
+				<!-- BREAKDOWN BY STATUS -->
+				<tr style="background-color: #CCC;">
+					<td colspan="3" style="text-align: center; padding: 5px;">
+						{trans str="Breakdown By Status"}
+					</td>
+				</tr>
+				{foreach item=ticket from=$tickets_by_status}
+				<tr >
+					<td style="background-color: #DDD;">{$ticket.status}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$ticket.count}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('status', '{$ticket.status}')" />
+					</td>
+				</tr>
+				{/foreach}
+				<!-- /BREAKDOWN BY STATUS -->
+				
+				<!-- BREAKDOWN BY PRIORITY -->
+				<tr style="background-color: #CCC;">
+					<td colspan="3" style="text-align: center; padding: 5px;">
+						{trans str="Breakdown By Priority"}
+					</td>
+				</tr>
+				{foreach item=ticket from=$tickets_by_priority}
+				<tr>
+					<td style="background-color: #DDD;">{$ticket.priority}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$ticket.count}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('priority', '{$ticket.priority}')" />
+					</td>
+				</tr>
+				{/foreach}
+				<!-- /BREAKDOWN BY PRIORITY -->
+				
+				<!-- TRASH FOLDER -->
+				<tr style="background-color: #CCC;">
+					<td colspan="3" style="text-align: center; padding: 5px;">
+						{trans str="Trash Folder"}
+					</td>
+				</tr>
+				<tr>
+					<td style="background-color: #DDD;">{trans str="Tickets In Trash Folder"}:</td>
+					<td style="background-color: #90AADD; width: 150px;">
+						<div style="width: 55px; text-align: right; float: left; padding-right: 5px;">{$common_in_trash}</div>
+						<input type="button" value="{trans str="View"}" onclick="SetFilter('special', 'in_trash')"  />
+					</td>
+				</tr>
+				<!-- /TRASH FOLDER -->
+			</table>
+			
+		</td>
+	</tr>
+</table>    

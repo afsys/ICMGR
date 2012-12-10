@@ -1,0 +1,67 @@
+{if $smarty.const.F_TODO}
+<script type="text/javascript">
+{literal}
+function SwitchTodo() {
+	var tbl = $('todo_table'); 
+	tbl.style.display = tbl.style.display == '' ? 'none' : '';
+}
+{/literal}
+</script>
+
+<tr>
+	<td style="border-top: 1px solid silver; padding: 3px;">
+	
+		<div style="background: #F3F3E4;">
+		
+			<div style="background: #EEEED7; padding: 2px 2px 2px 5px; margin-bottom: 0px; font-size: 12px;">
+				<a class="rich_ed_lnk" href="javascript:SwitchTodo()">{trans str="Switch Panel"}</a>
+				<a class="rich_ed_lnk" href="index.php?module=Tickets&action=TodoItemEdit&ticket_id={$ticket.ticket_id}">{trans str="Add ToDo Item"}</a>
+				{trans str="Ticket ToDo Items List."}
+				
+			</div>
+
+			<table id="todo_table" class="subpage1" width="100%" border="0px" 
+				style="{if ($user_options.tickets_edit.todo_style == 'closed') || ($user_options.tickets_edit.todo_style == 'closed_if_empty' && count($todo_items) == 0)}display: none;{/if} margin: 0 0 0 3px;">
+				<tr>
+					<th style="text-align: center;">{trans str="Priority"}</th>
+					<th style="text-align: center;">{trans str="Caption"}</th>
+					<th style="text-align: center;">{trans str="Created"}</th>
+					<th style="text-align: center;">{trans str="Modified"}</th>
+					<th style="text-align: center;">{trans str="Time To Make"}</th>
+					<th style="text-align: center;">{trans str="Status"}</th>
+					<th  style="text-align: center;" width="100px">{trans str="Progress"}</th>
+					<th width="40px">&nbsp;</th>
+				</tr>
+				
+				{foreach name=ticketTodoList item=item from=$todo_items}
+				<tr {if $item.closed_at}style="color: #B9C7C8;"{/if}>
+					<td style="text-align: center;">{$item.priority}</td>
+					<td>{$item.caption}</td>
+					<td style="text-align: center;">{$item.created_at|date_format_usr:'short'}</td>
+					<td style="text-align: center;">{$item.updated_at|date_format_usr:'short'}</td>
+					<td>{$item.time_to_make}</td>
+					<td style="text-align: center;">{$item.status}</td>
+					<td style="text-align: center;">
+						{if $item.progress}
+						<div style="border: 1px solid black; margin: 3px 5px; font-size: 8px; line-height: 8px;">
+							<div style="width: {$item.progress}%; background-color: #007EFD; text-align: center;"><br /></div>
+						</div>
+						{else}
+						<div style="font-size: 10px">{trans str="(not started yet)"}</div>
+						{/if}
+					</td>
+					<td align="center">
+						<a href="?module=Tickets&action=TodoItemEdit&tdi_id={$item.tdi_id}">E</a> |
+						<a href="?module=ToDo&action=TodoDelete&tdi_id={$item.tdi_id}" onclick="return confirm('Are you shure?')">D</a>
+					</td>
+				</tr>
+				{/foreach}
+
+				
+			</table>
+			
+		</div>
+	</td>
+</tr>
+
+{/if}

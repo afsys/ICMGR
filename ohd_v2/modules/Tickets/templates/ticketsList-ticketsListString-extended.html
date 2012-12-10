@@ -1,0 +1,81 @@
+{capture name=ticket_preview_script}{if $ticket.preview && $user_options.defaults.tickets_popups != 'none'}{popup text=$ticket.preview}{/if}{/capture}
+
+<tr class="exs{if $smarty.foreach.ticketListForeach.last} last{/if}" 
+	onclick="location.href='index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}'"
+	onmouseover="this.style.backgroundColor='#ECF1FF'" 
+	onmouseout="this.style.backgroundColor='#FEFEFF'"  
+	>
+	
+	{assign var=htmljscaption value=$ticket.caption|escape:"html_js"}
+	
+	<td onclick="cancelBuble(event)"><input type="checkbox" name="sel_ids[{$ticket.ticket_id}]" {if $ticket.is_in_trash_folder}value="t"{/if} /></td>
+	
+	<td>
+		{if $ticket.flags}
+		<img src="images/sign_exc_red.gif" height="16px" width="16px" alt="{$ticket.flags|trim|escape:'html'}" title="{$ticket.flags|trim|escape:'html'}" />
+		{/if}
+	
+		{*
+		{if $ticket.last_message_posted_by_admin}
+			{if $ticket.customer_last_open_days === null}
+			<img src="images/sign_exc_red.gif" height="16px" width="16px" alt="{trans str="Unread by user!"}" title="{trans str="Unread by user!"}" />
+			{elseif $ticket.customer_last_open_days > 1}
+			<img src="images/sign_exc_red.gif" height="16px" width="16px" alt="Unread by user for {$ticket.customer_last_open_days} days!" title="Unread by user for {$ticket.customer_last_open_days} days!" />
+			{/if}
+		{/if} *}
+		
+		{if $ticket.is_in_trash_folder}
+			<img src="images/t_deleted.png" height="16px" width="16px" alt="{trans str='In trash folder'}" title="{trans str='In trash folder'}" />
+		{/if}
+		
+		{if $ticket.escalation_interval != 0}
+			{math assign=escalation_days equation="floor(x / 86400)" x=$ticket.escalation_interval}
+			{math assign=escalation_hours equation="floor((x % 86400) / 3600)" x=$ticket.escalation_interval}
+			{capture name=escalation_interval_formated}{if $escalation_days}{$escalation_days} days {/if}{if $escalation_hours}{$escalation_hours} hr {/if}{math equation="floor((x % 3600) / 60)" x=$ticket.escalation_interval} mins{/capture}
+			<img src="images/sign_exc_ylw.gif" height="16px" width="16px" alt="{trans str="Escalated ticket"} ({$smarty.capture.escalation_interval_formated})" title="{trans str="Escalated ticket"} ({$smarty.capture.escalation_interval_formated})" />
+		{/if}
+		
+		<br />
+	</td>
+	
+	<td class="brd" style="text-align: center; width: 52px;" {$smarty.capture.ticket_preview_script}>
+		<h2>
+			{if $smarty.const.F_MANUAL_TICKET_NUM}
+				{$ticket.ticket_num}
+			{else}
+				{if $ticket.ticket_num}{$ticket.ticket_num}{else}{$ticket.ticket_id|string_format:"%06d"}{/if}
+			{/if}
+		</h2>
+		<nobr class="msg_cnt{if !$ticket.messages_new} null{/if}">{$ticket.messages_total} (<span>{$ticket.messages_new|default:"0"}</span>)</nobr>
+	</td>
+
+	<td class="brd" style="text-align: center;" {$smarty.capture.ticket_preview_script}>
+		<nobr>{$ticket.modified_at|date_format_usr:'short'}</nobr>
+		{if $ticket.last_update_by}<div>{$ticket.last_update_by|truncate:20:"...":true}</div>{/if}
+	</td>
+	
+	{if $smarty.const.F_DUEDATE_FLD}
+	<td class="brd" style="text-align: center;" {$smarty.capture.ticket_preview_script}>
+		{if $ticket.due_date}<nobr>{$ticket.due_date|date_format_usr:'short'}</nobr>{else}&nbsp;{/if}
+	</td>
+	{/if}
+	
+	{* <td class="brd msg_cnt" style="padding-right: 4px;" {$smarty.capture.ticket_preview_script}>
+		<div>{$ticket.messages_total}</div>
+		<em>{$ticket.messages_new|default:"0"}</em>&nbsp;
+	</td> *}
+	
+	<td class="brd" {$smarty.capture.ticket_preview_script}>
+		<h4>{$ticket.caption|strip_tags|truncate:50}</h4>
+		{$ticket.customer_name|strip_tags|truncate:50}
+	</td>
+	
+	<td class="brd"  style="text-align: center;">
+		{$ticket.ticket_product_caption} <br />
+		{$ticket.type}
+	</td>
+	
+	<td class="brd" style="text-align: center;"><div class="priority_{$ticket.priority|md5}">{$ticket.priority}</div></td>
+	<td class="brd" style="text-align: center;"><div class="status_{$ticket.status|md5}">{$ticket.status}</div></td>
+	<td class="brd" nowrap>{if ($ticket.ticket_assigned_to_name)}{$ticket.ticket_assigned_to_name|htmlspecialchars}{else}{trans str="(unassigned)"}{/if}</td>
+</tr>

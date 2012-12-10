@@ -1,0 +1,12 @@
+<table border="1px">
+	{foreach item=item key=key from=$active_users}
+	<tr>
+		<td>
+			User: <a href="index.php?module=LiveChat&action=JoinToChat&user_id={$item.user_id}">{$item.user_nickname}</a> <br />
+			Question: {$item.question} <br />
+			Online: {$item.question} <br />
+			IP: {$item.question}
+		</td>
+	</tr>
+	{/foreach}
+</table>

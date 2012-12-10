@@ -1,0 +1,322 @@
+<script>
+{literal}
+function setLocalTimeZone()
+{
+	var d = new Date();
+	var timezone = -Math.floor(d.getTimezoneOffset()/60);
+	var tdd = document.getElementById("time_zone");
+	for (var i = 0; i < tdd.options.length; i++) 
+	{
+		if (tdd.options[i].value == timezone) {
+			tdd.selectedIndex = i;
+			break;
+		}
+	}
+}
+
+{/literal}
+</script>
+<div style="float: none;">
+	<div class="page_caption">{trans str="User Preferences"}</div>
+</div>
+
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="UserPreferencesEdit">
+	<input type="hidden" name="module" value="Manage">
+	
+	<!-- COMMON -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Common options"}</th></tr>
+
+		<tr>
+			<td width="170px;">{trans str="User Interface Language"}:</td>
+			<td>
+				<select name="prefs[defaults][language]">
+					{foreach item=lang from=$lang_list}
+					<option value="{$lang.code}" {if $lang.code == $defaults.language}selected="selected"{/if}>{$lang.caption}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		
+		<tr>
+			<td width="170px;">{trans str="Tickets List Style"}:</td>
+			<td>
+				<select name="prefs[defaults][tickets_list_style]">
+					<option value="default"  {if $defaults.tickets_list_style == 'default'}selected="selected"{/if}>{trans str="Default"}</option>
+					<option value="extended" {if $defaults.tickets_list_style == 'extended'}selected="selected"{/if}>{trans str="Extended"}</option>
+				</select>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>{trans str="User time zone"}:</td>
+			<td><select name="prefs[defaults][time_zone]" id="time_zone">{html_options options=$time_zones selected=$defaults.time_zone}</select>&nbsp;<input type=button onClick="setLocalTimeZone();" value="{trans str="Detect"}"></td>
+			</td>
+			<td>{trans str="Offset from gmt, in hours"}. ({trans str="click on button to auto-detect timezone"})</td>
+		</tr>
+
+		<tr>
+			<td>{trans str="Short date-time format"}:</td>
+			<td colspan="2">
+				<input name="prefs[defaults][time_format_short]" id="time_format_short" type="text" value="{$defaults.time_format_short}" style="width: 220px;" />
+				&nbsp; {trans str="Predefined values"}:
+				<select onchange="document.getElementById('time_format_short').value = this.value;">
+					<option value="">({trans str="predefined date formats"})</option>
+					<option value="%d %b %Y">27 Apr 2006</option>
+					<option value="%d.%m.%Y %H:%M">27.04.2006 16:43</option>
+				</select>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>{trans str="Long date-time format"}:</td>
+			<td colspan="2">
+				<input name="prefs[defaults][time_format]" id="time_format" type="text" value="{$defaults.time_format}" style="width: 220px;" />
+				&nbsp; {trans str="Predefined values"}:
+				<select onchange="document.getElementById('time_format').value = this.value;">
+					<option value="">({trans str="predefined date formats"})</option>
+					<option value="%A %d %b %Y @ %H:%M by %s">Tuesday 14 Mar 2006 @ 19:44 by Username</option>
+					<option value="%A, %Y.%m.%d @ %H:%M by %s">Tuesday, 2006.03.14 @ 19:52 by Username</option>
+					<option value="%Y.%m.%d at %H:%M by %s">2006.03.14 at 19:54 by Username</option>
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<td width="150px;">{trans str="Product Name"}:</td>
+			<td>
+				<select name="prefs[defaults][ticket_product_id]">
+					{foreach name=products item=product from=$products_list}
+					<option value="{$product.ticket_product_id}" {if $product.ticket_product_id == $defaults.ticket_product_id}selected="selected"{/if}>{$product.ticket_product_caption}{if $product.ticket_product_desc} - {$product.ticket_product_desc}{/if}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td>{trans str="Product selected by default when adding new tickets"}.</td>
+		</tr>
+
+		<tr>
+			<td>{trans str="Session live-time"}:</td>
+			<td><input name="prefs[defaults][session_livetime]" value="{$defaults.session_livetime}" /></td>
+			<td>{trans str="Set interval in minutes for session live time"} (0 - {trans str="default server value"}).</td>
+		</tr>
+	</table>
+	<!-- /DEFAULT VALUES -->   
+	
+	<!-- LIVECHAT -->
+	{if $smarty.const.F_LIVECHAT}
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="LiveChat"}</th></tr>
+
+		<tr>
+			<td width="170px;">{trans str="Enable livechat"}:</td>
+			<td>
+				<input name="prefs[defaults][enable_livechat]" type="hidden" value="0" />
+				<input name="prefs[defaults][enable_livechat]" type="checkbox" value="1" {if $defaults.enable_livechat == 1}checked="checked"{/if}> {trans str="enable	"}
+			</td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		<tr>
+			<td width="170px;">{trans str="Ringtone rings count"}:</td>
+			<td>
+				<input name="prefs[lc][req_rings_count]" type="input" value="{$user_options.lc.req_rings_count}" />
+			</td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+	</table>
+	{/if}
+	<!-- /LIVECHAT -->
+
+	<!-- TICKETS LIST PAGE -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Tickets List Page"}</th></tr>
+		<tr>
+			<td>{trans str="Page Auto-refresh"}:</td>
+			<td><input name="prefs[defaults][page_autorefresh]" value="{$defaults.page_autorefresh}" /></td>
+			<td>{trans str="Set interval in seconds for ticket list auto-refreshing"} (0 - {trans str="off"}).</td>
+		</tr>
+		<tr>
+			<td>{trans str="Tickets popups"}:</td>
+			<td>
+				<select name="prefs[defaults][tickets_popups]">
+					<option value="none" {if 'none' == $defaults.tickets_popups}selected="selected"{/if}>{trans str="None"}</option>
+					<option value="ticket_desc" {if 'ticket_desc' == $defaults.tickets_popups}selected="selected"{/if}>{trans str="Ticket Description"}</option>
+				</select>
+			</td>
+			<td>{trans str="Determine the order of how messages are listed within tickets"}.</td>
+		</tr>
+		<tr>
+			<td>{trans str="Tickets Per Page"}:</td>
+			<td><input name="prefs[defaults][tickets_per_page]" value="{$defaults.tickets_per_page}" /></td>
+			<td>{trans str="Total number of tickets visible per tickets list page"}.</td>
+		</tr>
+		
+		<!-- tr>
+			<td>{trans str="Check Piping On Refresh"}:</td>
+			<td>
+				<input type="hidden" name="prefs[defaults][page_autorefresh_check_piping]" value="0" />
+				<input type="checkbox" name="prefs[defaults][page_autorefresh_check_piping]" value="1" 
+					{if $defaults.page_autorefresh_check_piping}checked="checked"{/if} />
+			</td>
+			<td>{trans str="Check messages with e-mail piping on autorefresh page"}.</td>
+		</tr -->
+	</table>
+	<!-- TICKETS LIST PAGE -->
+	
+	<!-- TICKETS EDIT PAGE -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Tickets Edit Page"}</th></tr>
+		<tr>
+			<td>{trans str="Messages Per Page"}:</td>
+			<td><input name="prefs[defaults][messages_per_page]" value="{$defaults.messages_per_page}" /></td>
+			<td>{trans str="Total number of messages visible per ticket page"}.</td>
+		</tr>
+		<tr>
+			<td>{trans str="Message Order"}:</td>
+			<td>
+				<select name="prefs[defaults][messages_order]">
+					<option value="desc" {if 'desc' == $defaults.messages_order}selected="selected"{/if}>{trans str="Descending"}</option>
+					<option value="asc"  {if 'asc' == $defaults.messages_order}selected="selected"{/if}>{trans str="Ascending"}</option>
+				</select>
+			</td>
+			<td>{trans str="Determine the order of how messages are listed within tickets"}.</td>
+		</tr>
+		<tr>
+			<td>{trans str="Quick Tickets Navigation"}:</td>
+			<td>
+				<select name="prefs[tickets_edit][quick_navigation_type]">
+					<option value="none"       {if 'none'      == $user_options.tickets_edit.quick_navigation_type}selected="selected"{/if}>{trans str="None"}</option>
+					<option value="prev_next"  {if 'prev_next' == $user_options.tickets_edit.quick_navigation_type}selected="selected"{/if}>{trans str="Previous/Next Navigation"}</option>
+				</select>
+			</td>
+			<td>{trans str="Set type of quick tickets navigation"}.</td>
+		</tr>
+		{if $smarty.const.F_TODO}
+		<tr>
+			<td>{trans str="ToDo Panel Style"}:</td>
+			<td>
+				<select name="prefs[tickets_edit][todo_style]">
+					<option value="closed"            {if 'closed'            == $user_options.tickets_edit.todo_style}selected="selected"{/if}>{trans str="Closed"}</option>
+					<option value="closed_if_empty"   {if 'closed_if_empty'   == $user_options.tickets_edit.todo_style}selected="selected"{/if}>{trans str="Closed if empty"}</option>
+					<option value="expanded"          {if 'expanded'          == $user_options.tickets_edit.todo_style}selected="selected"{/if}>{trans str="Expanded"}</option>
+				</select>
+			</td>
+			<td>{trans str="Set type of quick tickets navigation"}.</td>
+		</tr>
+		{/if}
+		
+		<tr>
+			<td>{trans str="Editors type"}:</td>
+			<td>
+				<select name="prefs[tickets_edit][editors_type]">
+					<option value="simple"    {if 'simple'  == $user_options.tickets_edit.editors_type}selected="selected"{/if}>{trans str="Simple memo"}</option>
+					<option value="rich"      {if 'rich'    == $user_options.tickets_edit.editors_type}selected="selected"{/if}>{trans str="Rich editor"}</option>
+				</select>
+			</td>
+			<td>{trans str="Set default type of editors for posting new messages and notes"}.</td>
+		</tr>
+
+	</table>
+	<!-- TICKETS EDIT PAGE -->
+
+
+	<!-- NOTIFICATIONS E-MAILS -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Notifications E-Mails"}</th></tr>
+		<tr>
+			<td>{trans str="Ticket Ownership"}:</td>
+			<td>
+				<nobr>
+				<input name="prefs[notification_emails][defect_assigment]" type="hidden" value="0" />
+				<input name="prefs[notification_emails][defect_assigment]" type="checkbox" value="1" {if $notification_emails.defect_assigment == 1}checked="checked"{/if}> 
+				{trans str="send"}
+				</nobr>
+			</td>
+			<td>{trans str="Alert agents when tickets are assigned to them"}.</td>
+		</tr>
+		<tr>
+			<td>{trans str="Ticket Changed"}:</td>
+			<td>
+				<input name="prefs[notification_emails][defect_changed]" type="hidden" value="0" />
+				<input name="prefs[notification_emails][defect_changed]" type="checkbox" value="1" {if $notification_emails.defect_changed == 1}checked="checked"{/if}> 
+				{trans str="send"}
+			</td>
+			<td>{trans str="Alert agents when  ticket status, type, or priority are updated"}.</td>
+		</tr>        
+		<tr>
+			<td>{trans str="New Message Posted"}:</td>
+			<td>
+				<input name="prefs[notification_emails][defect_added]" type="hidden" value="0" />
+				<input name="prefs[notification_emails][defect_added]" type="checkbox" value="1" {if $notification_emails.defect_added == 1}checked="checked"{/if}> 
+				{trans str="send"}
+			</td>
+			<td>{trans str="Alert agents when a ticket assigned to them is updated"}.</td>
+		</tr>        
+		<tr>
+			<td>{trans str="Ticket Closed"}:</td>
+			<td>
+				<input name="prefs[notification_emails][defect_closed]" type="hidden" value="0" />
+				<input name="prefs[notification_emails][defect_closed]" type="checkbox" value="1" {if $notification_emails.defect_closed == 1}checked="checked"{/if}> 
+				{trans str="send"}
+			</td>
+			<td>{trans str="Alert agent when their ticket is closed"}. ({trans str="Used if only administrators are closing tickets"}).</td>
+		</tr>           
+	</table>
+	<!-- /NOTIFICATIONS E-MAILS -->
+	
+	<!-- USER VARIABLES -->
+	<script>
+	{literal}
+		function AddNewUvString() {
+			var uv_tables = $('uv_tables');
+			var tmp_row = document.getElementById('uv_template'); 
+			var new_row = tmp_row.cloneNode(true);
+			new_row.style.display = new_row.id = '';
+			uv_tables.tBodies[0].appendChild(new_row);
+		}
+		
+		function deleteUserVarString(itm)
+		{
+			itm.parentNode.parentNode.parentNode.removeChild(itm.parentNode.parentNode);
+		}
+	{/literal}
+	</script>
+	
+	<table id="uv_tables" class="page" cellpadding="5px" cellspacing="0">
+		<thead>
+			<tr>
+				<th style="width: 150px;">{trans str="User Variables"}</th>
+				<th>&nbsp;</th>
+				<th style="width: 114px;">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach key=key item=item from=$user_options.user_variables}
+			<tr>
+				<td valign="top"><input name="ex_prefs[user_variables_names][]" type="text" style="width: 145px;" value="{$key}" /></td>
+				<td><textarea name="ex_prefs[user_variables_values][]" style="width: 615px;" rows="3">{$item}</textarea></td>
+				<td valign="top"><input type="button" value="{trans str="Delete"}" style="width: 110px;" onclick="deleteUserVarString(this)" /></td>
+			</tr>
+			{/foreach}
+			<tr id="uv_template" style="display: none;">
+				<td valign="top"><input name="ex_prefs[user_variables_names][]" type="text" style="width: 145px;" /></td>
+				<td><textarea name="ex_prefs[user_variables_values][]" style="width: 615px;" rows="3"></textarea></td>
+				<td valign="top"><input type="button" value="{trans str="Delete"}" style="width: 110px;" onclick="deleteUserVarString(this)" /></td>
+			</tr>           
+		</tbody>
+		<tfoot>
+			<tr>
+				<td></td>
+				<td></td>
+				<td><input type="button" value="{trans str="Add New"}" style="width: 110px;" onclick="AddNewUvString()" /></td>
+			</tr>           
+		</tfoot>
+	</table>
+	<!-- /USER VARIABLES -->
+
+	<div style="text-align: center; padding-top: 10px;">
+		<input type="submit" name="save_prefs" value="{trans str="Save preferences"}">
+	</div>
+
+</form>

@@ -1,0 +1,32 @@
+<div style="float: none;">
+	<div style="float: right;">
+		<input type="button" value="{trans str="Add New Template"}" onclick="location.href='index.php?module=CannedEmails&action=EditEmail'" /> 
+	</div>
+	<div class="page_caption">{trans str="Canned E-mails"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th style="text-align: center; width: 70px;">{trans str="Group"}</th>
+		<th>{trans str="Caption"}</th>
+		<th style="text-align: center; width: 50px;">&nbsp;</th>
+	</tr>
+	
+	{if count($canned_emails)}
+		{foreach name="emailsLoop" item=c_email from=$canned_emails} 
+		<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}"> 
+			<!-- <TD>{$ticket.customer_name|truncate:15:"..."|strip_tags}</TD> -->
+			<td style="text-align: center;">{$c_email.cat_caption}</td>
+			<td>{$c_email.email_caption}</td>
+			<td style="text-align: center;"> 
+				<a href="index.php?module=CannedEmails&action=EditEmail&id={$c_email.email_id}"><img src="images/edit.gif" border="0" style="vertical-align: middle" /></a> 
+				<a href="index.php?module=CannedEmails&action=ShowList&id={$c_email.email_id}&delete=1" 
+					onclick="return confirm('Are you sure you want to delete this email?')"><img src="images/delete.gif" border="0" style="vertical-align: middle" /></a>
+			</td>
+		</tr>
+		{/foreach}
+	{else}
+		<tr><td colspan="2">{trans str="There is no canned e-mails"}...</td></tr>
+	{/if}
+</table>
+

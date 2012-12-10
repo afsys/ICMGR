@@ -1,0 +1,51 @@
+<input type="button" value="{trans str="Custom Filter"}" onclick="document.getElementById('filter_table').style.display = document.getElementById('filter_table').style.display == '' ? 'none' : '';" />&nbsp;
+
+<!-- CUSTOM FILTERS -->
+{if !empty($sys_options.quick_filters)}
+{*
+	<script type="text/javascript">
+		{literal}
+		var filters = [];
+		function ApplyFilter($filter_id) {
+			var frm = document.getElementById('quick_filter_options');
+			var obj = filters[$filter_id];
+			for (var k in obj) {
+				var inp = document.createElement('INPUT');
+				inp.type = 'hidden';
+				inp.name = 'filter[common][' + k + ']';
+				inp.value = obj[k];
+				frm.appendChild(inp);
+			}
+			frm.submit();
+		}
+		{/literal}
+	
+		{foreach item=item key=key from=$sys_options.quick_filters}
+			var itm = {ldelim}
+				{foreach name=criterias item=cr_item key=cr_key from=$item.criteria}
+				'{$cr_key}': '{$cr_item}'
+				{if !$smarty.foreach.criterias.last},{/if}
+				{/foreach}
+			{rdelim};
+			filters.push(itm);
+			
+		{/foreach}
+	</script>
+	
+	&nbsp;
+	{assign var=index value=0}
+	{foreach item=item key=key from=$sys_options.quick_filters}
+		<input type="button" value="{$key}" onclick="ApplyFilter({$index})" />
+		{math assign=index equation="src + 1" src=$index}
+	{/foreach} *}
+	
+	&nbsp;
+	{foreach item=item key=key from=$sys_options.quick_filters}
+		<input type="button" value="{$key}" onclick="SetFilter('special', 'quick_filter', '{$key}')" />
+	{/foreach}
+	
+	<form id="quick_filter_options" method="post" style="display: none;">
+		<input type="hidden" name="set_filter" value="Set Filter" />
+	</form>
+{/if}
+<!-- /CUSTOM FILTERS -->

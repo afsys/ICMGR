@@ -1,0 +1,72 @@
+{if $user_options.tickets_edit.quick_navigation_type == 'prev_next'}
+
+{assign var=border_color    value="#DDDDDD"}
+{assign var=border_color_on value="silver"}
+{assign var=item_width value="420px"}
+
+<table width="100%" border="0px" cellspacing="0px" cellpadding="0px"
+	{if $position == "top"} style="padding-bottom: 0px; position: relative; top: -5px;" {/if}
+	{if $position == "bottom"} style="padding-top: 9px;" {/if}
+	>
+	
+	<!-- <tr>
+		<td width="50%">Previous Ticket:</td>
+		<td width="50%">Next Ticket:</td>
+	</tr> -->
+	<tr class="exs np">
+		{if !empty($ticket_prev)}
+		<td style="border: 1px solid {$border_color}; width: {$item_width};"
+			onmouseover="this.style.backgroundColor='#ECF1FF'; this.style.border='1px solid {$border_color_on}'" 
+			onmouseout="this.style.backgroundColor='#FEFEFF'; this.style.border='1px solid {$border_color}'">
+			<table width="100%" border="0px" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket_prev.ticket_id}'"
+				>
+				<tr>
+					<td class="brd" style="text-align: center; width: 52px;">
+						<h2>{if $ticket_prev.ticket_num}{$ticket_prev.ticket_num|string_format:"%06d"}{else}{$ticket_prev.ticket_id|string_format:"%06d"}{/if}</h2>
+						<nobr class="msg_cnt{if !$ticket_prev.messages_new} null{/if}">{$ticket_prev.messages_total} (<span>{$ticket_prev.messages_new|default:"0"}</span>)</nobr>
+					</td>
+					<td class="brd">
+						<h4>{$ticket_prev.caption|strip_tags|truncate:50}</h4>
+						{$ticket_prev.customer_name|strip_tags|truncate:50}
+					</td>
+				</tr>
+			</table>
+		</td>
+		{else}
+		<td style="color: #999999; padding-left: 10px; cursor: default; border: 1px solid {$border_color}; width: {$item_width};">
+			{trans str="Current ticket first in ticket list."}
+		</td>
+		{/if}
+		
+		<td style="background: #F7F7F7 url(images/bg2.gif) 0px 1px; width: 7px;">
+			
+		</td>
+		
+		{if !empty($ticket_next)}
+		<td style="border: 1px solid {$border_color}; width: {$item_width};"
+			onmouseover="this.style.backgroundColor='#ECF1FF'; this.style.border='1px solid {$border_color_on}'" 
+			onmouseout="this.style.backgroundColor='#FEFEFF'; this.style.border='1px solid {$border_color}'">
+			<table width="100%" border="0px" onclick="location.href = 'index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket_next.ticket_id}'">
+				<tr>
+					<td class="brd" style="text-align: center; width: 52px;">
+						<h2>{if $ticket_next.ticket_num}{$ticket_next.ticket_num|string_format:"%06d"}{else}{$ticket_next.ticket_id|string_format:"%06d"}{/if}</h2>
+						<nobr class="msg_cnt{if !$ticket_next.messages_new} null{/if}">{$ticket_next.messages_total} (<span>{$ticket_next.messages_new|default:"0"}</span>)</nobr>
+					</td>
+					<td class="brd">
+						<h4>{$ticket_next.caption|strip_tags|truncate:50}</h4>
+						{$ticket_next.customer_name|strip_tags|truncate:50}
+					</td>
+				</tr>
+			</table>
+		</td>
+		{else}
+		<td style="color: #999999; padding-left: 10px; cursor: default; border: 1px solid {$border_color}; width: {$item_width};">
+			{trans str="Current ticket last in ticket list."}
+			
+		</td>
+		{/if}
+		
+	</tr>
+</table>
+{/if}

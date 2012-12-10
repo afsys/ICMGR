@@ -1,0 +1,92 @@
+<link href="index.php?module=System&action=GetJs&file=ticketList.css" rel="stylesheet" type="text/css"> 
+
+<div style="float: none;">
+	<div class="page_caption">{trans str="Tickets List"}</div>
+</div>
+
+{if $page_autorefresh}
+	<div style="padding-top: 2px; ">{trans str="Autorefresh"}: {$page_autorefresh}</div>
+{/if}
+
+{if !$is_customer}
+
+{if $message} 
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<div style="padding-top: 3px;">
+	<div style="float: right;">
+		<!-- <a class="page" style="position: relative; top: 5;" href="index.php?module=Tickets&action=TicketsAdd">Add New Ticket</a> -->
+<!-- 		<input type="button" value="Add New Ticket" onclick="location.href='index.php?module=Tickets&action=TicketsAdd'" />  -->
+		<form id="quick_pr_filter" name="filter_options" method="POST" style="display: inline;">
+			{trans str="Product Queues"}: 
+			<select name="ticket_product_id" style="width: 100px;" onchange="document.getElementById('quick_pr_filter').submit();">
+				<option value="-1">({trans str="all"})</option>
+				{foreach item=item key=key from=$products_list}
+				<option value="{$item.ticket_product_id}" {if $smarty.request.ticket_product_id == $item.ticket_product_id}selected{/if}>{$item.ticket_product_caption}</option>
+				{/foreach}
+			</select>
+			<input type=hidden name="filter[special]" value="opened">
+			
+			
+			<!-- <input type="button" value="Select" onclick="document.getElementById('quick_pr_filter').submit();" /> -->
+		</form>
+	</div>
+
+	
+	{if $smarty.const.F_CVSEXPORT}
+	<input type="button" value="CSV Export" onclick="location.href='index.php?module=Tickets&action=TicketsCvsExport'" />
+	&nbsp;
+	{/if}
+	{include file="ticketsList-filtersList.html"}
+</div>
+{/if}
+
+{include file="ticketsList-filterForm.html"}
+
+<form action="index.php?{$URI}" method="post">
+	{include file="ticketsList-ticketsList.html"}
+
+	<table class="page" cellspacing="0" cellpadding="2px" border="0px" style="line-height: 22px; margin: 0px; position: relative; top: -1px;">
+		<tr>
+			<td style="background-color: #E5E5E5; padding-top: 3px;">
+				<div style="float: right; font-size: x-small;">({trans str="Total"}: {$tickets_count})</div>
+				<div class="paging" style="float: right;">{$pages}</div>
+				
+				{if !$is_customer}
+				<!-- SET GROUP TICKETS OPTIONS -->
+				<select id="opt_sel_action" name="opt_sel_action" style="width: 100px;">
+					<option value=""> {trans str="Ticket Action"} </option>
+					<!-- option value="trash_it">{trans str="Move To Trash"}</option -->
+					{if ($user_rights & SR_TICKETS_DEL) == SR_TICKETS_DEL}
+					<option value="delete">{trans str="Delete Tickets"}</option>
+					{/if}
+				</select>
+				-
+				<select id="opt_sel_priority" name="opt_sel_priority" style="width: 100px;">
+					<option value=""> {trans str="Set priority"} </option>
+					{foreach item=item key=key from=$ticket_priorities}
+					<option value="{$key}">{$key}</option>
+					{/foreach}
+				</select>
+				-
+				<select id="opt_sel_status" name="opt_sel_status" style="width: 100px;">
+					<option value=""> {trans str="Set status"} </option>
+					{foreach item=item key=key from=$ticket_statuses}
+					<option value="{$key}">{$key}</option>
+					{/foreach}
+				</select>
+				-
+				<select id="opt_assigned_to" name="opt_assigned_to" style="width: 125px;">
+					<option value=""> {trans str="Reassign To"} </option>
+					{foreach item=item key=key from=$users}
+					<option value="{$item.user_id}">{$item.user_name} {$item.user_lastname}</option>
+					{/foreach}
+				</select>
+				<input name="group_tickets_options" type="submit" value="{trans str="Apply"}" style="width: 70px; position: relative; top: -1px;" />
+				{/if}
+				<!-- /SET GROUP TICKETS OPTIONS -->
+			</td>
+		</tr>
+	</table>
+</form>

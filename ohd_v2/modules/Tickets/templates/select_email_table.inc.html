@@ -1,0 +1,51 @@
+<!-- SELECT EMAIL TABLE -->
+<form id="email_form" action="?action=save_note" method="POST">                
+<table id="table_select_email" class="edit" cellpadding="2" cellspacing="2" style="display: none; z-index: 100;">
+	<tr style="background-color: #D1DCE7; font-weight: bold; line-height: 16px;">
+		<td id="table_select_email_hdr" colspan="2" style="width: 700px;">{trans str="Select Email For User"}: </td>
+	</tr>
+	<tr style="background-color: #D7E1E1; line-height: 16px;">
+		<td colspan="2" style="width: 700px;">
+			{trans str="Emails Groups"}: 
+			<select id="ce_category" style="background-color: #E8E8E8; width: 200px" initial="{$ticket.ticket_assigned_to_id}" onchange="ShowEmailsList(this)" {if $ticket.closed_at}disabled="disabled"{/if}>
+				{foreach item=item key=key from=$ce_categories}
+				<option value="{$item.cat_id}" {if $item.user_id == $ticket.ticket_assigned_to_id}selected="selected"{/if}>{$item.cat_caption}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td style="height: 400px; padding: 0px;">
+			<div id="canned_emails_list" style="overflow-y: auto; height: 400px;">
+			</div>
+		</td>
+	</tr>
+	<tr class="c2">
+		<td colspan="2" align="center" valign="center">
+			<input type="button" value="{trans str="Cancel"}" style="width: 100px;" onclick="HideWnd('table_select_email')" />
+		</td>
+	</tr>
+</table>
+</form>                
+<!-- /SELECT EMAIL TABLE -->
+	
+<!-- SEND EMAIL TABLE -->
+<form id="send_email_form" action="/users_logs/send_emails.php" method="POST">                
+<table id="table_send_email" class="edit" cellpadding="2" cellspacing="2" 
+	style="display: none; z-index: 100;">
+	<tr style="background-color: #D1DCE7; font-weight: bold; line-height: 16px;">
+		<td id="table_select_email_hdr" style="width: 700px;">{trans str="Emails Preview"}: </td>
+	</tr>
+	<tr style="background-color: #D1DCE7; font-weight: bold; line-height: 16px;">
+		<td id="table_select_email_hdr2" style="width: 700px;">{trans str="Emails Preview"}: </td>
+	</tr>
+			
+	<tr class="c2">
+		<td align="center" valign="center">
+			<input type="button" value="{trans str="Cancel"}" style="width: 100px;" onclick="HideWnd('table_send_email')"  />
+			<input type="button" value="{trans str="Send Emails"}"  style="width: 100px;" onclick="RealSendEmail(); return false;" />
+		</td>
+	</tr>
+</table>
+</form>                
+<!-- /SEND EMAIL TABLE -->            

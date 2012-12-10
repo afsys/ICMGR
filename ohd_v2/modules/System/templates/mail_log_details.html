@@ -1,0 +1,25 @@
+<html>
+<head>
+	<title>Mail log - details</title>
+</head>
+<body bgcolor="white">
+
+	{if $details_type == 'backtrace'}
+		<div style="background: #D2D2D2; color: black; padding: 2px; ">
+			<b>Backtrace:</b>
+			{foreach item=itm from=$info.backtrace}
+				<div style="background: #F3F3F3; color: black; padding: 2px;">{$itm.file} ({$itm.line})</div>
+			{/foreach}
+		</div> 
+		<br />
+	{else}
+		<h3>Mail session log:</h3>
+		<pre>
+			{$info.mail_send_result}<br />
+			{$info.mail_debug_msg|escape}
+		</pre>
+	{/if}
+	
+	<center><input type=button name=button value="Close Window" onClick="javascript:window.close();"></center>
+</body>
+</html>

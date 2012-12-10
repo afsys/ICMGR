@@ -1,0 +1,45 @@
+<div style="float: none;">
+	<div style="float: right;">
+		<input type="button" value="{trans str="Add new filter"}" onclick="location.href='index.php?module=EmailPiping&action=Filter&will=add'" /> 
+	</div> 
+	<div class="page_caption">{trans str="Email Piping"}: {trans str="List Filters"}</div>
+</div>
+
+
+<table class="page" cellspacing="0" cellpadding="2" border="0px">
+	<tr> 
+		<th style="text-align: center; width: 50px;">{trans str="Order"}</th>
+		{* <th style="text-align: center; width: 100px;">{trans str="Product"}</th> *}
+		<th>{trans str="From"}</th>
+		<th>{trans str="To"}</th>
+		<th>{trans str="Subject"}</th>
+		<th>{trans str="Contains the Words"}</th>
+		<th>{trans str="Does Not Contain the Words"}</th>
+		<th>&nbsp;</th>
+	</tr>
+	
+	{foreach item=filter from=$filters} 
+	<tr bgcolor="{cycle values="#FFFFFF,#CCCCCC"}"  align="center"> 
+		<td >{$filter.filter_order}</td>
+		{*  <td>{$filter.ticket_product_caption|default:"-"|htmlspecialchars}</td> *}
+		<td>{$filter.addr_from|default:"-"|htmlspecialchars}</td>
+		<td>{$filter.addr_to|default:"-"|htmlspecialchars}</td>
+		<td>{$filter.subject|default:"-"|htmlspecialchars}</td>
+		<td>{$filter.words|default:"-"|htmlspecialchars}</td>
+		<td>{$filter.no_words|default:"-"|htmlspecialchars}</td>
+		<td align="right"> 
+			<a href="index.php?module=EmailPiping&action=Filter&id={$filter.id}&will=edit" ><img src="images/edit.gif" border="0"></a> 
+			<a href="index.php?module=EmailPiping&action=Filter&id={$filter.id}&will=del" onclick="return confirm('{trans str="Are you sure you want to delete this filter?"}');" ><img src="images/delete.gif" border="0"></a></td>
+	</tr>
+	{foreachelse} 
+	<tr bgcolor="#FFFFFF" align="center"> 
+		<td colspan="7">{trans str="No filters found"}</td>
+	</tr>
+	{/foreach} 
+	
+</table>
+
+<div style="padding-top: 10px; font-size: 120%;">
+	<strong>{trans str="Note:"}</strong> 
+	{trans str="To avoid loss of email during piping operations, add an empty filter, but leave the FILTERING OPTION fields blank."}
+</div>

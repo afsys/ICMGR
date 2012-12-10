@@ -1,0 +1,38 @@
+<!-- EX OPTIONS -->
+
+{if $smarty.const.F_TODO || 1}
+<tr id="ex_options_tr" style="display: none;">
+	<td style="border-top: 1px solid silver; padding: 3px;">
+	
+		<div style="background: #F3F3E4;">
+		
+			<div style="background: #EEEED7; padding: 2px 2px 2px 5px; margin-bottom: 0px; font-size: 12px;">
+				{trans str="Ticket Ex Options"}
+			</div>
+
+			<table class="subpage1" width="100%" border="0px" style="margin: 0 0 0 3px;">
+				<tr>
+					<th>{trans str="Option"}</th>
+					<th>{trans str="Value"}</th>
+				</tr>
+	
+				<tr>
+					<td>{trans str="Exclude from common list"}</td>
+					<td>
+						<input name="ticket_ex_options[ex_opt_exclude_from_common_list]" type="hidden" value="0" />
+						<input name="ticket_ex_options[ex_opt_exclude_from_common_list]" type="checkbox" value="1" {if $ticket.ex_opt_exclude_from_common_list}checked="checked"{/if} />
+					</td>
+				</tr>
+				<tr>
+					<td><input type="button" value="{trans str="Submit"}" onclick="Post('save_ex_options')" /></td>
+				</tr>
+				
+			</table>
+			
+		</div>
+	</td>
+</tr>
+
+{/if}
+
+<!-- /EX OPTIONS -->

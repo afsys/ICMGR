@@ -1,0 +1,55 @@
+{capture name=new_message_form}
+<tr>
+	<td style="border-top: 1px solid silver;">
+		<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+		<div style="background-color: #F0F0F0; margin: 2px; padding: 4px;">
+			<!-- <div style="padding: 3px; font-weight: bold;">Post new message:</div> -->
+			<table border="0px" cellpadding="0" cellspacing="0" style="width: 100%;">
+				<tr>
+					<td style="width: 50%;">
+						<div><a id="new_message_re" href="javascript:ApplyRichEditor('new_message')" class="rich_ed_lnk">{trans str="Rich Editor"}</a> {trans str="Post New Message"}:</div>
+						<textarea id="new_message" name="new_message" rows="7" style="width: 99%;"></textarea>
+						{if !$is_customer}
+						<select style="width: 190px;" onchange="SetKBInclude(this)">
+							{foreach item=item key=key from=$kb_items}
+								{if $item.type == 'dir'}
+								<option value="{$key}" style="font-weight: bold;">{$item.caption}</option>
+								{else}
+								<option value="{$key}">{$item.caption|truncate:75:"":true}</option>
+								{/if}
+							{/foreach}
+						</select>
+						{/if}
+						{if $allow_attachments}<input name="file_atachment" type="file" {if $is_customer}size="65"{else}size="25"{/if} {if $is_customer}style="width: 100%;"{else}style="width: 45%;"{/if} />{/if}
+						<div style="text-align: center;"><input type="button" value="{trans str="Post Message"}" style="width: 120px;" onclick="Post('message')" /></div>
+					</td>
+					<td style="width: 50%;">
+						{if !$is_customer}
+						<div><a id="new_note_re" href="javascript:ApplyRichEditor('new_note')" class="rich_ed_lnk">{trans str="Rich Editor"}</a> {trans str="Tech Notes"} ({trans str="not seen by the customer"}):</div>
+						<textarea id="new_note" name="new_note" rows="7" style="width: 99%;"></textarea>
+						{if $allow_attachments}<input name="file_atachment_" type="file" size="64" style="width: 98%;" />{else}<br /><br />{/if}
+						<div style="text-align: center;"><input type="button" value="{trans str="Post Note"}" style="width: 120px;" onclick="Post('note')" /></div>
+						{/if}
+					</td>
+				</tr>
+				<!--
+				<tr>
+					<td colspan="2">
+						File Attachment:<br />
+						<textarea rows="10" cols="63" style="width: 100%;"></textarea>
+					</td>
+				</tr>
+				-->
+			</table>
+		<div>
+	</td>
+</tr>
+
+{if $user_options.tickets_edit.editors_type == 'rich'}
+<script language="JavaScript1.2">
+	ApplyRichEditor('new_message');
+	ApplyRichEditor('new_note');
+</script>
+{/if}
+
+{/capture}

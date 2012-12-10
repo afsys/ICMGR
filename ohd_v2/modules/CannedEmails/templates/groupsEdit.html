@@ -1,0 +1,32 @@
+<div style="float: none;">
+	<div class="page_caption">{if $cat}{trans str="Edit Group"}{else}{trans str="Add New Group"}{/if}</div>
+</div>
+
+{if $message} 
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<form action="index.php" method="POST">
+	<input type="hidden" name="module"   value="CannedEmails">
+	<input type="hidden" name="action"   value="GroupsEdit">
+	<input type="hidden" name="cat_id" value="{$cat.cat_id}">
+
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Common Properties"}</th></tr>
+		<tr>
+			<td align="right" valign="top" style="width: 80px;">{trans str="Name:"}</td>
+			<td valign="top"><input type="text" name="cat_caption" size="15" maxlength="40" value="{$cat.cat_caption}"></td>
+			<td><font color="red">{$errors.cat_caption}</font></td>
+		</tr>
+		<tr>
+			<td align="right">{trans str="Comment:"}</td>
+			<td valign="top"><input type="text" name="cat_desc" size="30" maxlength="100" value="{$cat.cat_desc}"></td>
+			<td><font color="red">{$errors.cat_desc}</font></td>
+		</tr>
+		
+	</table>
+
+	<div style="text-align: center; padding-top: 12px;">
+		<input type="submit" name="edit_group" value="{if $cat}{trans str="Update Group"}{else}{trans str="Add Group"}{/if}">
+	</div>
+</form>

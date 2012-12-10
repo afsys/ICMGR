@@ -1,0 +1,131 @@
+<style>
+{literal}
+	/* .top_div { width: 790px;  } */
+
+	a.main_item {
+		display: block; text-decoration: none; font-weight: bold;
+		height: 50px; 
+		overflow: visible;
+		margin: 10px; padding: 3px; padding-left: 10px;
+	}
+	a.main_item:link,  a.main_item:visited { 
+		color: black; 
+		border: 1px solid #A2B9DF; 
+		background: #EFF2FA;
+		
+	}
+	a.main_item:hover, a.main_item:active  { 
+		color: #CABB00; text-decoration: none; 
+		border: 1px solid #A2B9DF; 
+		background: #E9EDF8;
+	}
+	a.main_item p { color: black; font-weight: normal; font-size: smaller; }
+	 
+	group1 { float: left; }
+	
+{/literal}
+</style>
+
+<table border="0px" width="100%;" cellspacing="0px">
+	<tr>
+		<td rowspan="2" style="border: 1px solid #DADADA; " valign="top">
+			<div style="margin: 10px 10px 0; padding: 2px 7px;;  border: 1px solid #93D7B7; background: #DDF7F3; font-weight: bold; ">
+				Latest Announcements
+			</div>
+			<div style="margin: 0 10px 10px; padding: 7px; border: 1px solid #93D7B7; border-top: none; background: #F5FCFC; height: 360px; font-size: x-small; color: #606060;">
+			
+				{if count($anns) > 0}
+					{foreach item=ann from=$anns}
+					<div style="font-weight: bold; padding-bottom: 3px;">{$ann.ann_date|date_format:"%d %b %Y"} {$ann.ann_caption}</div>
+					<div>{$ann.ann_short}</div>
+					<div style="text-align: right;"><a href="index.php?module=UserArea&action=Index&ann_id={$ann.ann_id}">Full...</a></div>
+					<hr size="1" noshade />
+					{/foreach}
+				{else}
+					<div style="text-align: center;">Official Support Forum</div>
+
+					<hr noshade="noshade" size="1" />
+
+					<p style="padding-top: 5px;">
+					We are proud to easily offer support for all of our software from this single access point!</p>
+
+					<p style="padding-top: 10px;">
+					No need to remember email addresses or multiple urls!</p>
+
+					<p style="padding-top: 10px;">
+					When you need a quick fix, go into the knowledge base and find answers to the most common issues.</p>
+
+					<p style="padding-top: 10px;">
+					When you need additional help that isn't covered in the knowledge base, simply submit a ticket and you 
+					will be quickly taken care of!</p>
+
+					<p style="padding-top: 10px;">
+					Better still!... Take note of your ticket number and url that is provided after your ticket is submitted,
+					and we will always handle all of your support needs directly from that single unique url so that you do not 
+					need to depend on email delivery at all! Simply pop in to your unique url after submitting a ticket, and as 
+					soon as your tech assistant answers, it will be displayed on your unique page!</p>
+				
+				{/if}
+			</div>
+		</td>
+		{if isset($ann_full)}
+		<td valign="top" width="633px"  style="border-top: 1px solid #DADADA;height: 150px; border-right: 1px solid #DADADA;">
+			<div style="margin: 10px;">
+				<div style="font-weight: bold; padding: 0; margin-bottom: 10px;">{$ann_full.ann_date|date_format:"%d %b %Y"} - {$ann_full.ann_caption}</div>
+				{$ann_full.ann_full|nl2br}
+			</div>
+		</td>
+		{else}
+		<td width="600px;" style="border-top: 1px solid #DADADA; border-right: 1px solid #DADADA;">
+			<a class="main_item" href="index.php?module=Tickets&action=TicketsAdd">
+				New Ticket
+				<p style="padding-top: 4px;">For quick attention and response from a tech, submit your support query here.</p>
+				<!-- p style="padding-top: 4px;">Submit a new support ticket for a quick reply from one of our representatives.</p -->
+			</a>
+			<a class="main_item" href="index.php?module=KnowledgeBase&action=Categories">
+				Knowledge Base
+				<p style="padding-top: 4px;">Quickly access a host of articles relating to your issue!</p>
+				<!-- p style="padding-top: 4px;">Quickly find articles related your issue using our online knowlege base.</p -->
+			</a>
+			<a class="main_item" href="index.php?module=UserArea&action=LookupTicket">
+				My Tickets
+				<p style="padding-top: 4px;">Lose your ticket number?  Easily view, modify and monitor the status of your open ticket here.</p>
+				<!-- p style="padding-top: 4px;">Lost your ticket number? Easily view, modify, or check the status of your existing ticket.</p -->
+			</a>
+			
+			<a class="main_item" href="index.php?module=UserArea&action=LookupTicket" style="height: 130px;">
+				FAILURE ALERT
+				<p style="padding-top: 4px;">
+				Some users are not able to receive email from our system because their ISP has blocked it. In these cases you will not receive notification that your help request has been responded to......</p>
+				<p style="padding-top: 10px;">
+				Here is a copy of the Ticket URL that you just submitted... Copy/Save this url and if you do not receive email from us, simply visit this url from time to time and when your support technician responds, you will see it on this page.</p>
+				<p style="padding-top: 10px;">
+				Keep this page permanently because all future help requests will automatically be stored/displayed here.</p>
+			</a> 
+			<!-- 
+			<a class="main_item" href="#">
+				Search Ticket
+				<p>Submit a support ticket for a prompt reply from a support representative.</p>
+			</a>
+
+			<a class="main_item" href="javascript:void(window.open('http://www.omnihelpdesk.com/tutorial1.htm','tutorial','menubar=no,toolbar=no, width = 700,scrollbars = 1'));">
+				Tutorial/Manual
+				<p style="padding-top: 4px;">Our graphic-oriented Tutorial/Manual will glide you through every phase of our system.</p>
+			</a> -->
+		</td>
+		{/if}
+	</tr>
+	<tr style="height: 40px;">
+		<td colspan="2" style="border-bottom: 1px solid #DADADA; border-top: 1px solid #DADADA; border-right: 1px solid #DADADA;">
+			<div style="margin: 10px; padding: 7px; border: 1px solid #A2B9DF; background: #EFF2FA;">
+				<form action="" method="get">
+					<input type="hidden" name="module" value="KnowledgeBase" />
+					<input type="hidden" name="action" value="Search" />
+					
+					Search in Knowledge Base: <input type="text" name="text" style="width: 285px;"/>
+					<input type="submit" value="Search..." />
+				</form>
+			</div>
+		</td>
+	</tr>
+</table>

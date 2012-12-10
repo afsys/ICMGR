@@ -1,0 +1,37 @@
+<div style="float: none;">
+	<div style="float: right;">
+		<input type="button" value="{trans str="Add New Account"}" onclick="location.href='index.php?module=Manage&action=PipingAccAdd'" /> 
+	</div>
+	<div class="page_caption">{trans str="Piping Accounts List"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th width="200px;">{trans str="Caption"}</th>
+		<th>{trans str="Login"}</th>
+		<th>{trans str="Host"}</th>
+		<th width="60px;">&nbsp</th>
+	</tr>
+	
+	{if count($accs) > 0}
+	{foreach item=acc from=$accs}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$acc.acc_caption}</td>
+		<td>{$acc.acc_login}</td>
+		<td>{$acc.acc_host}</td>
+		<td align="right">
+			<a href="index.php?module=Manage&action=PipingAccAdd&acc_id={$acc.acc_id}" 
+				><img src="images/edit.gif" border="0" width="21px" height="21px" /></a>
+				
+			<a href="index.php?module=Manage&action=PipingAccList&delete=1&acc_id={$acc.acc_id}" 
+				onclick="return confirm('{trans str="Are you sure you want to delete account"} {$acc.acc_caption}?');" 
+				><img src="images/delete.gif" border="0" width="21px" height="21px" /></a>
+		</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="no any accounts"}</td>
+	</tr>    
+	{/if}
+</table>    

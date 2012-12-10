@@ -1,0 +1,28 @@
+<Table cellpadding=5>
+ <tr class=main_part>
+  <td align=left class=msg>
+  <?php 
+   global $error;
+   if (!$error) {?>
+<div align=left class=notify><img src="../images/squares.gif" border=0 alt=""> &nbsp;<u>Installation</u> -> Step 3</div>
+<br>
+<div align=left class=title>Omni Help Desk Install Wizard</div>
+<br>
+<div style="text-align: justify;">
+You have successfully setup your database!<br>
+<br>
+<center><input type="submit" class=button value="Get license key" onClick="location.href='get_key.php';" class=submit></center>
+<!--
+You should now be able to login to the OSS Administration Page and setup all other features from there.<br>
+<br>
+<b>Default username and password is 'admin' (without quotes). &nbsp;Click to <a href=../index.php>Login</a><br></b>
+-->
+</div>
+  </td>
+ </tr>
+ <tr>
+  <td align=center class=notify>
+<? }else {echo "<font color=red>".$error."</font><br><br><center><a href='index.php?step=3'>Try again</a></center>"; }?>
+  </td>
+ </tr>
+</table>

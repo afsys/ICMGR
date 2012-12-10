@@ -1,0 +1,32 @@
+{if count($items_list) > 0}    
+<table cellspacing="0" border="0px">
+	<tr>
+		<td style="font-size: 15px; font-weight: bold; color: #007EFD; padding-bottom: 5px;" 
+			colspan="{$rows_count}">
+			{$items_caption}
+		</td>
+	</tr>
+	{foreach name="itemsLoop" item=item from=$items_list} 
+	<tr>
+		<td align="left" class="kb_caption" style="padding: 3px 0 0px 10px;">
+			<a href="?item_id={$item.id}">
+				{$item.caption}
+			</a>
+		</td>
+	</tr>        
+
+	<tr>
+		<td style="padding-left: 15px; padding-bottom: 12px;">
+			<div class="kb_notes">{$item.notes|truncate:115:"...":true}</div>
+			<div class="kb_addinfo" style="padding-top: 5px;">
+				{$item.created_at}
+				&nbsp;&nbsp;&nbsp;&nbsp;Notes: {$item.notes_count}
+				&nbsp;&nbsp;&nbsp;&nbsp;Views: {$item.viewed_count}
+				&nbsp;&nbsp;&nbsp;&nbsp;Rating: {$item.notes_raiting|string_format:"%.1f"}
+			</div>
+		</td>
+	</tr>              
+
+	{/foreach}            
+</table>
+{/if}

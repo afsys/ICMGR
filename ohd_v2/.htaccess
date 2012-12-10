@@ -1,0 +1,4 @@
+PHP_VALUE session.save_path ./_tmp/sess
+PHP_VALUE session.gc_maxlifetime 18000
+
+PHP_VALUE upload_tmp_dir ./_tmp/tmpupload

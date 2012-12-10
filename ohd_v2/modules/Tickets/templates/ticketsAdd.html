@@ -1,0 +1,414 @@
+{if $ticket}
+	<!-- CAPTION -->
+	<div style="float: none;">
+		<div class="page_caption">{trans str="Edit Ticket"}</div>
+	</div>
+{else}
+	<div style="float: none;">
+		<div class="page_caption">{trans str="Add New Ticket"}</div>
+	</div>
+	<!-- /CAPTION -->   
+{/if}
+
+{if $message} 
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<!-- SELECT PRODUCT FORM -->
+{if !$ticket}
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="TicketsAdd">
+	<input type="hidden" name="module" value="Tickets">
+
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="3">{trans str="Select product"}</th></tr>
+		<tr>
+			<td style="width: 105px;">{trans str="Product name"}:</td>
+			<td style="width: 190px;">
+				<select name="ticket_product_id">
+					{foreach name=products item=product from=$products_list}
+					<option value="{$product.ticket_product_id}" {if $product.ticket_product_id == $ticket_product_id}selected="selected"{/if}>{$product.ticket_product_caption}{if $product.ticket_product_desc} - {$product.ticket_product_desc}{/if}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td>
+				<input type="submit" name="select_product_form" value="{trans str="Select product"}" />               
+			</td>
+		</tr>
+	</table>
+</form>
+{/if}
+<!-- /SELECT PRODUCT FORM -->
+
+{if isset($ticket_product_id)}
+
+	<!-- EDIT PRODUCT FORM ITEMS -->
+	<script language="JavaScript1.2">
+		var items_types = [
+			{foreach item=sel_items from=$items_types}
+			{ldelim} 'type' : '{$sel_items.type}',    'caption': '{$sel_items.caption}' {rdelim},
+			{/foreach}
+		];
+
+		{literal}
+
+		function SaveTicketForm()
+		{
+			/* 'ticket_caption', */
+			var required_inputs = [ 
+				{/literal}
+				{if $smarty.const.F_MANUAL_TICKET_NUM && !$ticket.ticket_id}'ticket_num',{/if}
+				{literal}
+				'ticket_customer_name', 'ticket_customer_email'
+			];
+			for (var i = 0; i < required_inputs.length; i++) {
+				var obj = document.getElementsByName(required_inputs[i]);
+				if (!obj || obj.length != 1) {
+					alert(trans.COULD_NOT_FIND_FIELD + required_inputs[i]);
+					continue;
+				}
+				
+				obj = obj[0];
+				if (obj.value == '') {
+					alert(trans.PLEASE_ENTER +  required_inputs[i]);
+					obj.focus();
+					return;
+				}
+			}
+			
+			if (checkRequialFields()) document.getElementById('tickets_fields_form').submit();
+		}
+		
+
+		function checkRequialFields()
+		{
+			var i = 1;
+			while (true) {
+				if (i >= 20) break;
+				
+				var obj = document.getElementsByName("form_field[" + i + "]");
+				//if (!obj || obj.length != 1) break;
+				if (!obj || obj.length != 1) {
+					i++;
+					continue;
+				}
+				
+				if (obj[0].getAttribute('is_optional') == 0) {
+					switch (obj[0].type) {
+						case 'checkbox':
+							if (!obj[0].checked) {
+								alert(trans.PLEASE_CHECK_ITEM);
+								obj[0].focus();
+								return false;
+							}
+							break;
+							
+						default:
+							if (obj[0].value == '') {
+								alert(trans.PLEASE_FILL_ITEM);
+								obj[0].focus();
+								return false;
+							}
+							break;
+					}
+				}
+				i++;
+			}
+			
+			return true;
+		}
+		
+	{/literal}
+	</script>    
+
+
+	<form id="tickets_fields_form" action="index.php" method="post"  enctype="multipart/form-data">
+		<input type="hidden" name="action" value="TicketsAdd">
+		<input type="hidden" name="module" value="Tickets">
+		<input type="hidden" name="ticket_id" value="{$ticket.ticket_id}">
+		<input type="hidden" name="ticket_product_id" value="{$ticket_product_id}" />
+		<input type="hidden" name="is_form_items_submit" value="1" />
+
+		<input type="hidden" name="ticket_priority" value="{$sys_options.tickets.priority_for_new}" />
+		<input type="hidden" name="ticket_type"     value="" />
+
+		<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="margin-top: 10px;">
+			<tr><th colspan="3">{$cur_product.ticket_product_caption} {trans str="Ticket Form"}</th></tr>
+			<tr>
+				<td style="vertical-align: top; width: 585px;">
+					<div style="font-size: 10pt; padding: 5px 10px 10px;">
+						{if $is_customer}
+						{trans str="Please complete the Service Ticket Request form Below."} <br />
+						{trans str="You will receive an email with your Service Ticket number."} <br />
+						{trans str="Use your Service Ticket number to obtain updates on your service request."} <br />
+						{/if}
+					
+						{trans str="Note: Required fields are denoted by"} <span style="color: maroon;">*</span>
+					</div>
+					<!-- TICKET FORM -->
+					<table id="items_table" border="0px">
+
+						{if $smarty.const.F_MANUAL_TICKET_NUM}
+						<tr style="vertical-align: top;">
+							<td>{trans str="Ticket Number"}:<span style="color: maroon;">*</span></td>
+							<td>
+								<input id="ticket_num" name="ticket_num" type="text" value="{$ticket.ticket_num}">
+							</td>
+						</tr>
+						{/if}
+
+						<tr>
+							<td>{if $is_customer}{trans str="Your"}{else}{trans str="Client"}{/if} {trans str="Name"}:<span style="color: maroon;">*</span></td>
+							<td>
+								<input name="ticket_customer_name" style="width: 420px;" 
+									{if $is_customer && empty($ticket.customer_name)}value="{$user_data.user_name}"{else}value="{$ticket.customer_name|strip_tags}"{/if} />
+							</td>
+						</tr>
+						<tr>
+							<td>{if $is_customer}{trans str="Your"}{else}{trans str="Client"}{/if} {trans str="Phone"}:<span style="color: maroon;">*</span></td>
+							<td>
+								<input name="ticket_customer_phone" value="{$ticket.customer_phone|strip_tags}" style="width: 420px;" 
+									{if $is_customer && empty($ticket.ticket_customer_phone)}value="{$user_data.user_phone}"{else}value="{$ticket.ticket_customer_phone|strip_tags}"{/if} />
+							</td>
+						</tr>
+						<tr>
+							<td valign="top">{if $is_customer}{trans str="Your"}{else}{trans str="Client"}{/if} {trans str="E-Mail"}:<span style="color: maroon;">*</span></td>
+							<td>
+								<input name="ticket_customer_email" style="width: 420px;" 
+									{if $is_customer && empty($ticket.customer_email)}value="{$user_data.user_email}"{else}value="{$ticket.customer_email|strip_tags}"{/if} />
+								<div style="font-size: 9px;"><strong>{trans str="Note"}:</strong> {trans str="Here should be entered only one primary E-mail."}</div>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top">{trans str="Additional E-Mails"}:<span style="color: maroon;"></span></td>
+							<td>
+								<input name="ticket_customer_add_emails" value="{$ticket.customer_add_emails}" style="width: 420px;" />
+								<div style="font-size: 9px;"><strong>{trans str="Note"}:</strong> {trans str="To email multiple individuals, delimit with coma or semicolon."}</div>
+							</td>
+						</tr>
+
+						{if $smarty.const.F_EXPIREDAT_FLD}
+						<tr style="vertical-align: top;">
+							<td>{trans str="Expired At"}:</td>
+							<td>
+								<input id="expired_at" name="expired_at" type="text" value="{$ticket.expired_at}" />
+								<img width="15px" height="15px" title="Select date" alt="Select date" src="images/calendar.gif" 
+									style="cursor: pointer; position: relative; top: 2px;" 
+									onclick="displayCalendar(document.getElementById('expired_at') , 'yyyy-mm-dd', this)" />
+							</td>
+						</tr>
+						{/if}
+
+						
+						{if $smarty.const.F_DUEDATE_FLD}
+						<tr style="vertical-align: top;">
+							<td>{trans str="Due Date"}:</td>
+							<td>
+								<input id="due_date" name="due_date" type="text" value="{$ticket.due_date}" readonly>
+								<!-- <input type="button" value="Cal" onclick="displayCalendar(document.getElementById('due_date') , 'yyyy/mm/dd', this)"> -->
+								<img width="15px" height="15px" title="Select date" alt="Select date" src="images/calendar.gif" 
+									style="cursor: pointer; position: relative; top: 2px;" 
+									onclick="displayCalendar(document.getElementById('due_date') , 'yyyy-mm-dd', this)" />
+							</td>
+						</tr>
+						{/if}
+
+						<tr>
+							<td width="140px">{trans str="Ticket Subject"}<span style="color: maroon; display: none;">*</span>:</td>
+							<td><input name="ticket_caption" value="{$ticket.caption|strip_tags}" style="width: 420px;" /></td>
+						</tr>
+
+						<tr style="vertical-align: top;">
+							<td>{trans str="Ticket Description"}:</td>
+							<td>
+								{if $ticket.description_is_html}
+									{$description_area}
+								{else}
+									<div><a id="ticket_description_re" href="javascript:ApplyRichEditor('ticket_description')" class="rich_ed_lnk">{trans str="Rich Editor"}</a></div>
+									<textarea name="ticket_description" cols="52" rows="15" 
+										style="width: 420px;">{$ticket.description|strip_tags}</textarea>
+								{/if}
+							</td>
+						</tr>
+
+						{if $sys_options.attachments.allow}
+						<tr style="vertical-align: top;">
+							<td>{trans str="Add Attachment"}:</td>
+							<td><input name="file_atachment" type="file" size="65" style="width: 420px;" /></td>
+						</tr>
+						{/if}
+
+						{foreach item=form_item from=$form_items}
+							{if !$is_customer || $form_item.show_in_userside}
+							<tr>
+								<td style="vertical-align: top;">
+									{$form_item.ticket_field_caption}:
+									{if $form_item.ticket_field_is_optional}<span style="color: maroon;">*</span>{/if}
+								</td>
+								<td style="text-align: left;">
+									<!-- {$form_item.ticket_field_type} -->
+									{if $form_item.ticket_field_type == 'input'}
+									<input type="text" name="form_field[{$form_item.ticket_field_id}]" value="{$form_item.ticket_field_value}" style="width: 420px;" is_optional="{if $form_item.ticket_field_is_optional}0{else}1{/if}" />
+									{elseif $form_item.ticket_field_type == 'textarea'}
+									<textarea name="form_field[{$form_item.ticket_field_id}]" cols="52" rows="5" style="width: 420px;" is_optional="{if $form_item.ticket_field_is_optional}0{else}1{/if}">{$form_item.ticket_field_value}</textarea>
+									{elseif $form_item.ticket_field_type == 'check'}
+									<input type="checkbox" name="form_field[{$form_item.ticket_field_id}]" value="1" {if $form_item.ticket_field_value}checked="checked"{/if} is_optional="{if $form_item.ticket_field_is_optional}0{else}1{/if}" />
+									{elseif $form_item.ticket_field_type == 'select'}
+									<select name="form_field[{$form_item.ticket_field_id}]" style="min-width: 150px;" is_optional="{if $form_item.ticket_field_is_optional}0{else}1{/if}">
+										{foreach item=subitem from=$form_item.ticket_field_options}
+										<option value="{$subitem}" {if $form_item.ticket_field_value == $subitem}selected="selected"{/if}>{$subitem}</option>
+										{/foreach}
+									</select>
+									{elseif $form_item.ticket_field_type == 'multiselect'}
+									<select name="form_field[{$form_item.ticket_field_id}]" multiple="multiple" style="min-width: 150px;"
+										is_optional="{if $form_item.ticket_field_is_optional}0{else}1{/if}"
+										size="{if count($form_item.ticket_field_options) > 5}5{else}{assign var='ccc' value=count($form_item.ticket_field_options)}{$ccc}{/if}">
+										{foreach item=subitem from=$form_item.ticket_field_options}
+										<option value="{$subitem}" {if $form_item.ticket_field_value == $subitem}selected="selected"{/if}>{$subitem}</option>
+										{/foreach}
+									</select>
+									{else}
+									{$form_item.ticket_field_type}
+									{/if}
+								</td>
+							</tr>
+							{/if}
+						{/foreach}
+					</table>
+					<!-- /TICKET FORM -->
+				</td>
+				
+				<td style="width: 5px; padding-top: 5px; padding-bottom: 5px;">
+					<div style="border-left: 1px solid silver; height: 100%; "><br /></div>
+					
+				</td>
+				
+				<!-- TICKET OPTIONS -->
+				<td style="vertical-align: top;">
+					<table border="0px">
+						<tr>
+							<td>{trans str="Department"}:</td>
+							<td>
+								<select name="group_id" style="width: 140px;">
+									<option value="">({trans str="none"})</option>
+									{foreach item=item key=key from=$groups}
+									<option value="{$item.group_id}" {if $ticket.group_id == $item.group_id}selected="selected"{/if}>{$item.group_caption}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+					
+						{if ($user_rights & SR_TL_REASIGN) == SR_TL_REASIGN}
+						<tr>
+							<td>{trans str="Ticket Owner"}:</td>
+							<td>
+								<select name="assigned_to" style="width: 140px;">
+									<option value="0">({trans str="not assigned"})</option>
+									{foreach item=item key=key from=$users}
+									<option value="{$item.user_id}" {if $item.user_id == $ticket.ticket_assigned_to_id}selected="selected"{/if}>{$item.user_name}{if !empty($item.user_lastname)} {$item.user_lastname}{/if}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						{else}
+						<input type="hidden" name="assigned_to" value="{$cur_product.default_tech}" />
+						{/if}
+					
+						<tr {if $is_customer}style="display: none;"{/if}>
+							<td>{trans str="Ticket Status"}:</td>
+							<td>
+								
+								<select name="ticket_status" style="width: 140px;"	>
+									{foreach item=item key=key from=$ticket_statuses}
+										{if empty($ticket)}
+											<option {if $sys_options.tickets.status_for_new == $key}style="font-weight: bold; color: green;" selected="selected"{elseif $sys_options.tickets.status_for_closed == $key}style="font-weight: bold;"{/if}>{$key}</option>
+										{else}
+											<option {if $ticket.status == $key}selected="selected"{/if} {if $sys_options.tickets.status_for_new == $key}style="font-weight: bold; color: green;"{elseif $sys_options.tickets.status_for_closed == $key}style="font-weight: bold;"{/if}>{$key}</option>
+										{/if}
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						{if !$is_customer}
+						<tr>
+							<td>{trans str="Ticket Priority"}:</td>
+							<td>
+								<select name="ticket_priority" style="width: 140px;">
+									{foreach item=item key=key from=$ticket_priorities}
+									<option {if $ticket.priority == $key}selected="selected"{/if}>{$key}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{trans str="Ticket Action"}:</td>
+							<td>
+								<select name="ticket_type" style="width: 140px;">
+									{foreach item=item key=key from=$ticket_types}
+									<option {if $ticket.type == $key}selected="selected"{/if}>{$key}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						{/if}
+						{if $ticket_product_ver_enabled}
+						<tr>
+							<td>{trans str="Product Version"}:</td>
+							<td>
+								<select name="ticket_product_ver" style="width: 140px;">
+									{foreach item=item key=key from=$ticket_product_ver_list}
+									<option {if $ticket.ticket_product_ver == $item}selected="selected"{/if}>{$item}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						{/if}
+						<tr>
+							<td colspan="2" style="border-bottom: 1px solid silver; font-size: 10px;">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="padding-top: 10px;">
+								<input type="checkbox" name="ticket_email_customer" {if $ticket.ticket_email_customer}checked="checked"{/if} value="1" />
+								{if !$is_customer}
+									{trans str="Notify client by email when ticket is updated"}
+								{else}
+									{trans str="Notify me by email if new message will be posted"}
+								{/if}
+								
+							</td>
+						</tr>
+					</table>
+				</td>
+				<!-- /TICKET OPTIONS -->
+
+			</tr>
+			<tr>
+				<td colspan="4" style="text-align: center; padding-top: 4px; padding-bottom: 12px;">
+					<input type="button" name="save_ticket_form_items" value="{if $ticket.ticket_id}{trans str="Save"}{else}{trans str="Add New"}{/if} {trans str="Ticket"}" 
+						onclick="SaveTicketForm()" style="width: 100px;" />
+				</td>
+			</tr>
+		</table>
+		
+		<!-- TICKET OPTIONS --
+		<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="margin-top: 10px;">
+			<tr><th colspan="3">{$cur_product.ticket_product_caption}'s Ticket Form</th></tr>
+			<tr>
+				<td style="vertical-align: top;">111</td>
+			</tr>
+		</table>
+		!-- /TICKET OPTIONS -->
+		
+	</form>
+
+	<script language="JavaScript1.2">
+		var form_items = {$form_item_index};
+		
+		{if $user_options.tickets_edit.editors_type == 'rich'}
+			ApplyRichEditor('ticket_description');
+		{/if}
+	</script>  
+	<!-- /EDIT PRODUCT FORM ITEMS -->
+
+{/if}
+

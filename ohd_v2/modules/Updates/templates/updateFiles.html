@@ -1,0 +1,79 @@
+{$js_code}
+{literal}
+<script language="JavaScript" type="text/javascript">
+
+function updateFiles(cur_step)
+{
+	var res = xajax_updateFiles(cur_step);
+}
+</script>
+{/literal}
+
+<div style="float: none;">
+	<div class="page_caption">{trans str="OHD-System Update Service"}</div>
+</div>
+
+<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+	<tr><th colspan="3">{trans str="Files Update"}</th></tr>
+	
+	
+	<tr>
+		<td style="width: 140px;">{trans str="Update Server URL"}:</td>
+		<td colspan="2">{$smarty.const.UPDATE_SERVER_URL} </td>
+	</tr>
+	<tr>
+		<td id="currentVersion">{trans str="Current Version"}:</td>
+		<td colspan="2">{$smarty.const.OHD_VERSION} </td>
+	</tr>
+	<tr>
+		<td>{trans str="Available Version"}:</td>
+		<td id="latestVersion" width="80px;">(unknown)</td>
+		<td>
+			<input type="button" value="Check" onclick="xajax_getLatesVersion();" style="width: 80px; "/>
+			<input type="button" value="Update" onclick="updateFiles('start');" style="width: 80px; " id="update_btn" />
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">{trans str="Update Log"}:</td>
+		<td id="update_log" colspan="2"></td>
+	</tr>
+</table>
+
+<form action="index.php?module=Updates&action=UpdateFiles" method="post">
+
+<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+	<tr><th>{trans str="DB Update"}</th></tr>
+	<tr>
+		<td>
+			<table class="subpage" border="0px">
+				<tr>
+					<th style="width: 100px; text-align: center;" >Update Id</th>
+					<th>Description</th>
+					<th style="width: 100px; text-align: center;">Status</th>
+				</tr>
+				
+				{foreach item=item key=key from=$updates}
+				<tr>
+					<td style="text-align: center;">
+						{if $item.status == 'not applied' || $item.status == 'error'}
+							<input name="updates4run[]" type="hidden" checked="checked" value="{$item.rev_num}-{$item.type|upper}" />
+						{/if}
+						{$item.rev_num|string_format:"%05d"}-{$item.type|upper}
+					</td>
+					<td>{$item.desc|default:"&nbsp;"}</td>
+					<td style="text-align: center;">{$item.status_html}</td>
+				</tr>
+				{/foreach}
+				
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align: center; padding: 3px; ">
+			<input type="submit" value="Run Update" />
+		</td>
+	</tr>
+	
+</table>
+
+</form>

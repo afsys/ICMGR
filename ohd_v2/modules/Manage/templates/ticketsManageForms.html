@@ -1,0 +1,463 @@
+{if !isset($ticket_product_id)}
+	<!-- CAPTION -->
+	<div style="float: none;">
+		<div class="page_caption">{trans str="Manage Ticket Forms"}</div>
+	</div>
+{else}
+	<div style="float: none;">
+		<div class="page_caption">{trans str="Manage Ticket Forms"}</div>
+	</div>
+	<!-- /CAPTION -->	
+{/if}
+
+<!-- SELECT PRODUCT FORM -->
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="TicketsManageForms">
+	<input type="hidden" name="module" value="Manage">
+
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="3">{trans str="Select Product"}</th></tr>
+		{if count($products_list) > 0}
+		<tr>
+			<td style="width: 105px;">{trans str="Product Name"}:</td>
+			<td style="width: 190px;">
+				<select name="ticket_product_id">
+					{foreach name=products item=product from=$products_list}
+					<option value="{$product.ticket_product_id}" {if $ticket_product_id == $product.ticket_product_id}selected="selected"{/if}>{$product.ticket_product_caption}{if $product.ticket_product_desc} - {$product.ticket_product_desc}{/if}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td>
+				<input type="submit" name="select_product_form" value="{trans str="Select product"}" />
+			</td>
+		</tr>
+		{else}
+		<tr>
+			<td colspan="3" style="padding: 10px;">
+				{trans str="There is no any products yet.... Please, manage Product before"}: <a class="page" href="index.php?module=Manage&action=ProductsAdd">{trans str="Add New Product"}</a>
+			</td>
+		</tr>
+		{/if}
+	</table>
+</form>
+<!-- /SELECT PRODUCT FORM -->
+
+{if isset($ticket_product_id)}
+
+	<!-- EDIT PRODUCT FORM ITEMS -->
+	<script language="JavaScript1.2">
+		var items_types = [
+			{foreach name=items_types_for item=sel_items from=$items_types}
+				{ldelim} 'type' : '{$sel_items.type}', 'caption': '{$sel_items.caption}', 'multiple': '{$sel_items.multiple}' {rdelim}{if !$smarty.foreach.items_types_for.last},{/if}
+			{/foreach}
+		];
+
+		{literal}
+		var deletedItems = [];
+		function AddField() {
+			form_items++; // make new line id
+			var new_capt = document.getElementById('new_caption');
+			if (new_capt.value == '') {
+				alert(trans.ENTER_INPUT_CAPTION);
+				new_capt.focus();
+				return;
+			}
+			var new_type  = document.getElementById('new_type');
+			var new_isopt = document.getElementById('new_isopt');
+			var new_new_show_in_userside = document.getElementById('new_show_in_userside');
+			
+			
+			var items_table = document.getElementById('items_table');
+			var tr = items_table.insertRow(items_table.rows.length);
+			tr.id = 'item_tr_' + form_items;
+			
+			// caption cell
+			var td_capt = tr.insertCell(tr.cells.length);
+			td_capt.style.width = '150px'
+			var inp_capt = document.createElement('INPUT');
+			inp_capt.type = 'text';
+			inp_capt.id = inp_capt.name = 'item[' + form_items + '][capt]';
+			inp_capt.value = new_capt.value;
+			td_capt.appendChild(inp_capt);
+			
+			switch (new_type.value) {
+				case 'select': 
+				case 'multiselect':
+					var inp_capt = document.createElement('TEXTAREA');
+					inp_capt.rows = 5;
+					inp_capt.cols = 18;
+					break;
+					
+				default:
+					break;
+			}
+			
+			// type (action) cell
+			var type_td  = tr.insertCell(tr.cells.length);
+			type_td.style.width = '85px'
+			var type_sel = document.createElement('SELECT');
+			type_sel.id = type_sel.name = 'item[' + form_items + '][type]';
+
+			for (var i = 0; i < items_types.length; i++) {
+				var opt = document.createElement('OPTION');
+				opt.value = items_types[i].type;
+				opt.appendChild(document.createTextNode(items_types[i].caption));
+				type_sel.appendChild(opt);
+			}
+			type_sel.selectedIndex = new_type.selectedIndex;
+			type_td.appendChild(type_sel);
+			
+			// isopt cell
+			var isopt_td  = tr.insertCell(tr.cells.length);
+			isopt_td.style.width = '25px'
+			var isopt_chk = document.createElement('INPUT');
+			isopt_chk.id = isopt_chk.name = 'item[' + form_items + '][isopt]';
+			isopt_chk.type = 'checkbox';
+			isopt_chk.value = '1';
+			isopt_chk.checked = new_isopt.checked;
+			isopt_td.appendChild(isopt_chk);
+			
+			// show_in_userside cell
+			var show_in_userside_td  = tr.insertCell(tr.cells.length);
+			show_in_userside_td.style.width = '25px'
+			var show_in_userside_chk = document.createElement('INPUT');
+			show_in_userside_chk.id = show_in_userside_chk.name = 'item[' + form_items + '][show_in_userside]';
+			show_in_userside_chk.type = 'checkbox';
+			show_in_userside_chk.value = '1';
+			show_in_userside_chk.checked = new_show_in_userside.checked;
+			show_in_userside_td.appendChild(show_in_userside_chk);
+			
+			
+			// ACTIONS CELL
+			var act_td  = tr.insertCell(tr.cells.length);
+			// move down
+			var act_a_down = document.createElement('A');
+			act_a_down.appendChild(document.createTextNode('Down'));
+			act_a_down.href = 'javascript:void(0)';
+			act_a_down.onclick = new Function("moveDown(this)");
+			act_td.appendChild(act_a_down);
+			act_td.appendChild(document.createTextNode(' | '));
+			// move down
+			var act_a_up = document.createElement('A');
+			act_a_up.appendChild(document.createTextNode('Up'));
+			act_a_up.href = 'javascript:void(0)';
+			act_a_up.onclick = new Function("moveUp(this)");
+			act_td.appendChild(act_a_up);
+			act_td.appendChild(document.createTextNode(' | '));
+			// delete
+			var act_a_down = document.createElement('A');
+			act_a_down.appendChild(document.createTextNode('Delete '));
+			act_a_down.href = 'javascript:void(0);';
+			act_a_down.onclick = new Function("DeleteRow(" + form_items + ")");
+			act_td.appendChild(act_a_down);
+		}
+		
+		function AddSubItem(row_id) {
+			var tr = document.getElementById('item_tr_' + row_id);
+			var td = tr.cells[0];
+			var div = document.createElement('DIV');
+			div.style.paddingLeft = '10px';
+			// caption
+			var inp = document.createElement('INPUT');
+			inp.name="item[" + row_id + "][subitems][]"
+			inp.type = 'text';
+			inp.style.width = '110px';
+			div.appendChild(inp);
+			// delete img
+			var img = document.createElement('IMG');
+			img.src = 'images/button_del.png';
+			img.style.width  = '11px';
+			img.style.height = '13px';
+			img.alt = "Delete Subitem";
+			img.onclick = function () { DelParent(img) };
+			img.style.borderLeft = '#fff 3px solid';
+			img.style.cursor = 'pointer';
+			div.appendChild(img);
+			td.appendChild(div);
+		}
+		
+		function AddBtnSubItem(row_id) {
+			var tr = document.getElementById('item_tr_' + row_id);
+			var td = tr.cells[3];
+			var spn = document.createElement('SPAN');
+			spn.id = 'item[' + row_id + '][add_subitem]';
+			spn.appendChild(document.createTextNode(' | '));
+			var a = document.createElement('A');
+			a.appendChild(document.createTextNode('Add Subitem'));
+			a.href = 'javascript:void(0);';
+			a.onclick = new Function("AddSubItem(" + row_id + ")");
+			spn.appendChild(a);
+			td.appendChild(spn);
+			return a;
+		}
+		
+		function checkFieldType(row_id) {
+			var sel = document.getElementById('item[' + row_id + '][type]');
+			var prev = (sel.getAttribute('prevType') == 'select') || (sel.getAttribute('prevType') == 'multiselect')
+			var curr = (sel.value == 'select') || (sel.value == 'multiselect')
+			
+			// change type
+			if (curr != prev) {
+				// multiple
+				if (curr) {
+					AddBtnSubItem(row_id);
+					AddSubItem(row_id);
+				}
+				// single
+				else {
+					var itms = document.getElementsByName('item[' + row_id + '][subitems][]');
+					for (var i = itms.length-1; i >= 0; i--) itms[i].parentNode.parentNode.removeChild(itms[i].parentNode)
+					var spn = document.getElementById('item[' + row_id + '][add_subitem]');
+					spn.parentNode.removeChild(spn);
+				}
+			}
+			
+			sel.setAttribute('prevType', sel.value)
+		}
+		
+		function DeleteRow(row_id) {
+			var tr = document.getElementById('item_tr_' + row_id);
+			tr.parentNode.removeChild(tr)
+			deletedItems.push(row_id);
+		}
+		
+		function DelParent(item) {
+			//if (window.confirm('Are you sure?')) 
+				item.parentNode.parentNode.removeChild(item.parentNode);
+		}
+		
+		// switch with the row above
+		function moveUp(something) {
+			//something.parentNode.parentNode.parentNode.parentNode -  input.td.tr.tbody.table
+			if (something.parentNode.parentNode.previousSibling) {  
+				var b = something.parentNode.parentNode;
+				b.parentNode.insertBefore(b,b.previousSibling);
+			}
+		}
+
+		//switch with the row below
+		function moveDown(something) {
+			if (something.parentNode.parentNode.nextSibling) {  
+				var b = something.parentNode.parentNode;
+				b.parentNode.insertBefore(b,b.nextSibling.nextSibling);
+			}
+		}
+		
+		// Moz treats whitespace as nodes (text nodes) while IE do not. So the siblings will differ.
+		// this script cleans them up! 
+		// thanks here: http://www.codingforums.com/showthread.php?t=7028
+		var notWhitespace = /\S/;
+		function cleanWhitespace(node) {
+			for (var x = 0; x < node.childNodes.length; x++) {
+				var childNode = node.childNodes[x]
+				if ((childNode.nodeType == 3)&&(!notWhitespace.test(childNode.nodeValue))) {
+					// that is, if it's a whitespace text node
+					node.removeChild(node.childNodes[x])
+					x--
+				}
+				if (childNode.nodeType == 1) {
+					// elements can have text child nodes of their own
+					cleanWhitespace(childNode)
+				}
+			}
+		}
+		
+		window.onload = function()
+		{
+			cleanWhitespace(document.getElementById('items_table'));
+			//cleanWhitespace(document);
+		}
+		
+		function SaveTicketForm()
+		{
+			document.getElementById('deleted_fileds_ids').value = deletedItems;
+			document.getElementById('tickets_fields_form').submit();
+		}
+		
+	{/literal}
+	</script>    
+
+
+	<form id="tickets_fields_form" action="index.php" method="post">
+		<input type="hidden" name="action" value="TicketsManageForms" />
+		<input type="hidden" name="module" value="Manage" />
+		<input type="hidden" name="ticket_product_id" value="{$ticket_product_id}" />
+		<input type="hidden" name="deleted_fileds_ids" id="deleted_fileds_ids" value="" />
+		<input type="hidden" name="is_form_items_submit" value="1" />
+		
+		<!-- COMMON PROPERTIES -->
+		<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="margin-top: 10px;">
+			<tr><th colspan="3">{$cur_product.ticket_product_caption} {trans str="Ticket Common Properties"}</th></tr>
+			<tr>
+				<td style="vertical-align: top;">
+					<table>
+						<tr>
+							<td style="vertical-align: top;">{trans str="Group Description"}:</td>
+							<td>
+								<textarea id="ticket_product_desc" name="ticket_product_desc" style="width: 350px;" rows="5">{$cur_product.ticket_product_desc}</textarea></td>
+							</td>
+						</tr>
+						<tr>
+							<td>{trans str="Redirect URL After Submit"}:</td>
+							<td><input id="ticket_product_redirect_url" name="ticket_product_redirect_url" type="text" style="width: 350px;" value="{$cur_product.ticket_product_redirect_url}" /></td>
+						</tr>
+						<tr>
+							<td>{trans str="Default Tech Assignment"}:</td>
+							<td>
+								<select name="default_tech" style="width: 140px;">
+									<option value="0">({trans str="not assigned"})</option>
+									{foreach item=item key=key from=$users}
+									<option value="{$item.user_id}" {if $item.user_id == $cur_product.default_tech}selected="selected"{/if}>{$item.user_name}{if !empty($item.user_lastname)} {$item.user_lastname}{/if}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						
+<!--
+						<tr>
+							<td>Send Answers To Customers:</td>
+							<td><input id="ticket_product_email_customer" name="ticket_product_email_customer" type="checkbox" value="1" {if $cur_product.ticket_product_email_customer}checked="checked"{/if}/></td>
+						</tr>
+-->
+					</table>
+				</td>
+			</tr>
+		</table>
+		<!-- /COMMON PROPERTIES -->
+
+		<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="margin-top: 10px;">
+			<tr><th colspan="3">{$cur_product.ticket_product_caption} {trans str="Ticket Form"}</th></tr>
+			<tr>
+				<td style="vertical-align: top;">
+					<!-- TICKET FORM -->
+					<strong>{trans str="Current form"}:</strong>
+					<table id="items_table" width="100%" border="0px">
+					    {foreach item=form_item from=$form_items}
+						<tr id="item_tr_{$form_item.ticket_field_id}" valign="top">
+							<td width="140px">
+								<input type="hidden" name="item[{$form_item.ticket_field_id}][ticket_field_id]" value="{$form_item.ticket_field_id}" />
+								<input id="item[{$form_item.ticket_field_id}][capt]" name="item[{$form_item.ticket_field_id}][capt]" 
+									value="{$form_item.ticket_field_caption}" type="text" />
+
+								{if $form_item.ticket_field_type == 'select' || $form_item.ticket_field_type == 'multiselect'}
+									{foreach item=subitem from=$form_item.ticket_field_options}
+									<div style="padding-left: 10px;">
+										<input name="item[{$form_item.ticket_field_id}][subitems][]" type="text" value="{$subitem}" style="width: 110px;" />
+										<img src="images/button_del.png" width="11px" height="13px" style="cursor: pointer; border-left: #fff 3px solid;" alt="{trans str="Delete Subitem"}" onclick="DelParent(this)" />
+									</div>
+									{/foreach}
+									<div style="padding-left: 10px;">
+										<input name="item[{$form_item.ticket_field_id}][subitems][]" type="text" value="" style="width: 110px;" />
+										<img src="images/button_del.png" width="11px" height="13px" style="cursor: pointer; border-left: #fff 3px solid;" alt="{trans str="Delete Subitem"}" onclick="DelParent(this)" />
+									</div>
+								{/if}
+
+							</td>
+							<td width="85px" >
+								<select id="item[{$form_item.ticket_field_id}][type]" name="item[{$form_item.ticket_field_id}][type]" onchange="checkFieldType({$form_item.ticket_field_id})" prevType="{$form_item.ticket_field_type}">
+									{foreach item=sel_items from=$items_types}
+									<option value="{$sel_items.type}" {if $sel_items.type == $form_item.ticket_field_type}selected="selected"{/if} >{$sel_items.caption}</option>
+									{/foreach}
+								</select>
+							</td>
+							<td  width="22px">
+								<input id="item[{$form_item.ticket_field_id}][isopt]" name="item[{$form_item.ticket_field_id}][isopt]" 
+									title="Is optionnal field"
+									value="1" type="checkbox" {if !$form_item.ticket_field_is_optional}checked="checked"{/if}/>
+							</td>
+							<td  width="22px">
+								<input id="item[{$form_item.ticket_field_id}][show_in_userside]" name="item[{$form_item.ticket_field_id}][show_in_userside]" 
+									title="Show field at userside"
+									value="1" type="checkbox" {if $form_item.show_in_userside}checked="checked"{/if}/>
+							</td>
+							<td>
+								<a href="javascript:void(0);" onclick="moveDown(this);">{trans str="Down"}</a> |
+								<a href="javascript:void(0);" onclick="moveUp(this);">{trans str="Up"}</a> |
+								<a href="javascript:void(0);" onclick="DeleteRow({$form_item.ticket_field_id})">{trans str="Delete"}</a> 
+								{if $form_item.ticket_field_type == 'select' || $form_item.ticket_field_type == 'multiselect'}
+								<span id="item[{$form_item.ticket_field_id}][add_subitem]"> |
+									<a href="javascript:void(0);" onclick="AddSubItem({$form_item.ticket_field_id})">{trans str="Add Subitem"}</a> 
+								</span>
+								{/if}
+							</td>
+						</tr>
+					    {/foreach}
+					    
+					    <!-- <tr>
+					    	<td colspan="4" style="text-align: center;">
+					    		<input type="button" name="save_ticket_form_items" value="Save form view" onclick="SaveTicketForm()" />
+					    	</td>
+					    </tr> -->
+					</table>
+					<!-- /TICKET FORM -->
+				</td>
+				<td style="vertical-align: top; width: 290px; border-left: 1px solid black;">
+					<!-- ADD NEW ITEMS -->
+					<strong>{trans str="Add new field"}:</strong>
+					<table>
+						<tr>
+							<td>{trans str="Field caption"}:</td>
+							<td><input  id="new_caption" type="text" style="width: 170px;" /></td>
+						</tr>
+						<tr>
+							<td>{trans str="Field type"}:</td>
+							<td>
+								<select id="new_type" style="width: 170px;">
+									{foreach item=sel_items from=$items_types}
+									<option value="{$sel_items.type}">{$sel_items.caption}</option>
+									{/foreach}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{trans str="Optional field"}:</td>
+							<td><input id="new_isopt" type="checkbox" value="1" /></td>
+						</tr>
+						<tr>
+							<td>{trans str="Show in userside"}:</td>
+							<td><input id="new_show_in_userside" type="checkbox" value="1" /></td>
+						</tr>
+						<tr>
+							<td colspan="2" style="text-align: center">
+								<input type="button" value="{trans str="Add field"}" onclick="AddField()" />
+							</td>
+						</tr>
+						
+					</table>
+					<!-- /ADD NEW ITEMS -->        
+				</td>
+			</tr>
+		<table>
+
+		<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="margin-top: 10px;">
+			<tr><th colspan="3">{$cur_product.ticket_product_caption} {trans str="Item Ticket Form"}</th></tr>
+			<tr>
+				<td style="padding-left: 15px;">
+<pre>
+
+&lt;?// <strong>DON'T PUT ANYTHING ABOVE THIS LINE!</strong>
+    include("{$smarty.const.BASE_DIR}config.php");
+    include("{$smarty.const.BASE_DIR}lib/Classes/userTicket.class.php");
+    $ticket = new userTicket({$ticket_product_id});
+    $ticket->process_request($ticket_form, $restore_form);
+?&gt;
+&lt!-- 
+    <strong>Put this line anywhere to display ticket form.</strong>
+    You can edit form template in file '{$smarty.const.BASE_DIR}templates/ticket_form.html'.
+--&gt;
+&lt;?=$ticket_form;?&gt;
+&lt;?=$restore_form;?&gt;</pre>
+				</td>
+			</tr>
+		</table>
+		
+		<div style="text-align: center; padding-top: 12px;"><input type="button" name="save_ticket_form_items" value="{trans str="Save view"}" onclick="SaveTicketForm()" /></div>
+	</form>
+
+	<script language="JavaScript1.2">
+		var form_items = {$form_item_index};
+	</script>  
+	<!-- /EDIT PRODUCT FORM ITEMS -->
+
+{/if}
+

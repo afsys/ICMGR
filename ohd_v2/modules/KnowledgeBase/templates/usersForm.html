@@ -1,0 +1,54 @@
+<!-- CAPTION -->
+<div style="float: none;">
+	<div class="page_caption">{trans str="Users Form Code"}</div>
+</div>
+<!-- /CAPTION -->	
+
+
+
+
+	<form id="tickets_fields_form" action="index.php" method="post">
+		<input type="hidden" name="action" value="TicketsManageForms" />
+		<input type="hidden" name="module" value="Manage" />
+		<input type="hidden" name="ticket_product_id" value="{$ticket_product_id}" />
+		<input type="hidden" name="deleted_fileds_ids" id="deleted_fileds_ids" value="" />
+		<input type="hidden" name="is_form_items_submit" value="1" />
+
+		<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="margin-top: 10px;">
+			<tr><th colspan="3">{trans str="KB User Form"}</th></tr>
+			<tr>
+				<td style="padding-left: 15px;">
+
+<pre style="color: #333333;">
+
+&lt;?  <span style="color: #9BB002;">// <strong>DON'T PUT ANYTHING ABOVE THIS LINE!</strong></span>
+    include("{$smarty.const.BASE_DIR}config.php");
+    include("{$smarty.const.BASE_DIR}lib/Classes/userKb.class.php");
+    $ukb = new UserKB('http://<span style="color: red;" title="Should be valid host name value">site_host</span>/<span style="color: red;" title="Should be valid host path to ohd">path_to_ohd</span>');
+    $ukb->process_request($kb_form);
+?&gt;
+
+<span style="color: #9BB002;">&lt!-- 
+    <strong>Insert this line into the html header of your pages if you want to leave the current OHD sytle.</strong> 
+    Be sure to set the correct prefix for CSS urls.
+    Note: If you want make your own CSS style use kb.css in OHD folder as an example.    
+--&gt;</span>
+&lt;link href="http://<span style="color: red;" title="Should be valid host name value">site_host</span>/<span style="color: red;" title="Should be valid host path to ohd">path_to_ohd</span>/css/kb.css" rel="stylesheet" type="text/css" /&gt;
+
+
+<span style="color: #9BB002;">&lt!-- 
+    <strong>Insert this line anywhere within your webpages to display the Knowledgebase.</strong>    <!-- You can edit form template in file '{$smarty.const.BASE_DIR}templates/ticket_form.html'. -->
+--&gt;</span>
+&lt;?= $kb_form ?&gt;</pre>
+				</td>
+			</tr>
+		</table>
+<!--		
+		<div style="text-align: center; padding-top: 12px;"><input type="button" name="save_ticket_form_items" value="Save view" onclick="SaveTicketForm()" /></div>
+-->		
+	</form>
+
+	<!-- /EDIT PRODUCT FORM ITEMS -->
+
+
+

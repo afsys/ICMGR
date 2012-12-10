@@ -1,0 +1,125 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Filter Preferences"}</div>
+</div>
+
+{if $message} 
+	<div style="color: red;">{$message}</div>
+{/if}  
+
+<form method="post">
+
+	<!-- TICKET STATUSES -->
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="4">{trans str="Filtering Options"}</th></tr>
+		<tr> 
+			<td align="right">{trans str="Order"}:</td>
+			<td> 
+				<input type="text" name="filter[filter_order]" size="5" value="{$filter.filter_order}">
+			</td>
+		</tr>
+
+		<tr> 
+			<td align="right">{trans str="From"}:</td>
+			<td> 
+				<input type="text" name="filter[addr_from]" size="35" value="{$filter.addr_from}">
+			</td>
+			<td align="right">{trans str="Contains the Words"}:</td>
+			<td> 
+				<input type="text" name="filter[words]" size="35" value="{$filter.words}">
+			</td>
+		</tr>
+		<tr> 
+			<td align="right">{trans str="To"}: </td>
+			<td> 
+				<input type="text" name="filter[addr_to]" size="35" value="{$filter.addr_to}">
+			</td>
+			<td align="right">{trans str="Does Not Contain the Words"}:</td>
+			<td> 
+				<input type="text" name="filter[no_words]" size="35" value="{$filter.no_words}">
+			</td>
+		</tr>
+		<tr> 
+			<td align="right">{trans str="Subject"}: </td>
+			<td> 
+				<input type="text" name="filter[subject]" size="35" value="{$filter.subject}">
+			</td>
+		</tr>
+		<tr> 
+			<td align="right">{trans str="Add E-Mail as"}: </td>
+			<td> 
+				<select name="filter[add_email_as]">
+					<option value="message_if_can" {if $filter.add_email_as == 'message'}selected="selected"{/if}>New Message If Possibly</option>
+					<option value="ticket"  {if $filter.add_email_as == 'ticket'}selected="selected"{/if}>New Ticket</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+	<!-- /TICKET STATUSES -->
+	
+	<!-- TICKET DEFAULT VALUES -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="2">{trans str="Ticket Default Values"}</th></tr>
+		<tr> 
+			<td style="text-align: right; width: 150px;">{trans str="Ticket Department"}:</td>
+			<td> 
+				<select name="filter[ticket_group_id]" style="width: 200px;">
+					<option value="0">({trans str="not assigned"})</option>
+					{foreach item=group from=$groups}
+					<option value="{$group.group_id}" {if $filter.ticket_group_id == $group.group_id}selected="selected"{/if}>{$group.group_caption}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+
+		<tr> 
+			<td style="text-align: right;">{trans str="Ticket Product"}:</td>
+			<td> 
+				<select name="filter[ticket_product_id]" style="width: 200px;">
+					{foreach item=product from=$products}
+					<option value="{$product.ticket_product_id}" {if $filter.ticket_product_id == $product.ticket_product_id}selected="selected"{/if}>{$product.ticket_product_caption}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right;">{trans str="Assigned To"}:</td>
+			<td>
+				<select name="filter[assigned_to]" style="width: 200px;">
+					<option value="0">({trans str="not assigned"})</option>
+					{foreach item=item key=key from=$users}
+					<option value="{$item.user_id}" {if $item.user_id == $filter.assigned_to}selected="selected"{/if}>{$item.user_name}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right;">{trans str="Ticket Status"}:</td>
+			<td>
+				<select name="filter[status]" style="width: 200px;">
+					{foreach item=item key=key from=$ticket_statuses}
+					<option {if $filter.status == $key}selected="selected"{/if}>{$key}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right;">{trans str="Ticket Priority"}:</td>
+			<td>
+				<select name="filter[priority]" style="width: 200px;">
+					{foreach item=item key=key from=$ticket_priorities}
+					<option {if $filter.priority == $key}selected="selected"{/if}>{$key}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+
+	</table>
+	<!-- /TICKET DEFAULT VALUES -->
+
+	<div style="text-align: center; padding-top: 10px;">
+		<input type="submit" value="{trans str="Submit Filter"}">
+		<input type="hidden" name="go" value="1">
+		<input type="hidden" name="filter[id]" value="{$filter.id}">
+	</div>
+
+</form>

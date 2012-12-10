@@ -1,0 +1,23 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="User Footprints"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th width="200px;">{trans str="Name"}</th>
+		<th>{trans str="Comment"}</th>
+	</tr>
+	
+	{if count($footprints) > 0}
+	{foreach item=item from=$footprints}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$item.fp_url}</td>
+		<td>{$item.fp_rec_date}</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="no footprints"}</td>
+	</tr>    
+	{/if}
+</table>    

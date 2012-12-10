@@ -1,0 +1,34 @@
+<div style="float: none;">
+	<div style="float: right;">
+		<input type="button" value="{trans str="Add New Response"}" onclick="location.href='index.php?module=LiveChat&action=PredResponsesEdit'" /> 
+	</div>
+	<div class="page_caption">{trans str="Predefined Responses List"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th width="200px;">{trans str="Name"}</th>
+		<th>{trans str="Comment"}</th>
+		<th width="60px;">&nbsp</th>
+	</tr>
+	
+	{if count($pred_responses) > 0}
+	{foreach item=item from=$pred_responses}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$item.resp_caption}</td>
+		<td>{$item.resp_body}</td>
+		<td align="right">
+			<a href="index.php?module=LiveChat&action=PredResponsesEdit&resp_id={$item.resp_id}"
+				><img src="images/edit.gif" border="0" width="21px" height="21px" /></a>
+			<a href="index.php?module=LiveChat&action=PredResponseDelete&resp_id={$item.resp_id}" 
+				onclick="return confirm('Are you sure you want to delete \'{$item.resp_caption}\' response?');" 
+				><img src="images/delete.gif" border="0" width="21px" height="21px" /></a>
+		</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="No Predefined Responses"}</td>
+	</tr>    
+	{/if}
+</table>    

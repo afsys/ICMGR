@@ -1,0 +1,60 @@
+{if $msg}
+<div style="color: red;">{$msg}</div>
+{/if}
+<div style="float: none;">
+	<div class="page_caption">{trans str="Edit EMail Template"}</div>
+</div>
+
+<form id="email_form" action="index.php" method="post">
+	<input type="hidden" name="action"   value="EditEmail">
+	<input type="hidden" name="module"   value="CannedEmails">
+	<input type="hidden" name="email_id" value="{$email.email_id}">
+	<input type="hidden" name="id"       value="{$id}">    
+
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="2">{trans str="Create new ticket"}</th></tr>
+		<tr>
+			<td valign="top" align="right">
+				{trans str="Category"}<span style="color: maroon;">*</span>:</td>
+			</td>
+			<td>
+				<select name="cat_id" style="width: 200px;">
+					{foreach item=cat key=key from=$cats}
+					<option value="{$cat.cat_id}" {if $cat_id == $cat.cat_id}selected="selected"{/if}>{$cat.cat_caption}</option>
+					{/foreach}
+				</select>
+			</td>
+		<tr>
+		</tr>
+			<td valign="top" align="right">
+				{trans str="Message"}<span style="color: maroon;">*</span>:</td>
+			</td>
+			<td>
+				<input name="email_caption" style="width: 450px;" value="{$email.email_caption}" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" align="right">
+				{trans str="Content"}<span style="color: maroon;">*</span>:</td>
+			</td>
+			<td>
+				<textarea name="email_content" rows="15" cols="70" style="width: 450px;">{$email.email_content}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" align="right">
+				{trans str="Highlighted"}:</td>
+			</td>
+			<td>
+				<input type="hidden"   name="highlighted" value="0" />
+				<input type="checkbox" name="highlighted" value="1" {if $email.highlighted}checked="checked"{/if} />
+			</td>
+		</tr> 
+		<tr>
+			<td colspan="2" style="text-align: center; padding: 5px; padding-bottom: 10px;">
+				<input type="submit" name="save_email" value="{trans str='Save Email'}" />
+			</td>
+		</tr>
+	</table>
+
+</form>

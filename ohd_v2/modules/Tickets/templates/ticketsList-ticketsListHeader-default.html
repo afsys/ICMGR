@@ -1,0 +1,53 @@
+<tr style="line-height: 18px;">
+	<th style="width: 20px;"><input type="checkbox" name="_call" onClick='checkAllBoxes(this);' /></th>
+	<th><br /></th>
+	
+	<th class="brd" style="width: 50px; text-align: center;">
+		{if $orderby == 'id'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=id">{trans str="Id"}</a>
+	</th>
+	<!-- <th style="width: 80px; text-align: center;">
+		{if $orderby == 'created'}{$ordertosign}{/if}
+		<a href="?{$URI}&orderby=created">Created</a>
+	</th> -->
+	<th class="brd" style="width: 95px; text-align: center;">
+		{if $orderby == 'updated'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=updated">{trans str="Last Update"}</a>
+	</th>
+	{* <th class="brd">
+		{if $orderby == 'subj'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=subj">{trans str="Caption"}</a>
+	</th> *}
+	<th class="brd">
+		{if $orderby == 'client'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=client">{trans str="Client"}</a>
+	</th>
+	{if $sys_options.tickets_list.show_product_name}
+	<th class="brd">
+		{if $orderby == 'product'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=product">{trans str="Product"}</a>
+	</th>
+	{/if}
+	<th class="brd" style="width: 100px; padding-left: 20px;">
+		{if $orderby == 'type'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=type">{trans str="Action"}</a>
+	</th>
+	<th class="brd" style="width: 70px; text-align: center;">
+		{if $orderby == 'priority'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=priority">{trans str="Priority"}</a>
+	</th>
+	<th class="brd" style="width: 70px; text-align: center;">
+		{if $orderby == 'status'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=status">{trans str="Status"}</a>
+	</th>
+	<!--
+	<th style="width: 150px;">
+		{if $orderby == 'owner'}{$ordertosign}{/if}
+		<a href="?{$URI}&orderby=owner">Created By</a>
+	</th>
+	-->
+	<th class="brd" style="_width: 95px; min-width: 95px;">
+		{if $orderby == 'assigned_to'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&orderby=assigned_to">{trans str="Ticket Owner"}</a>
+	</th>
+</tr>

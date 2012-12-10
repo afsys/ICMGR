@@ -1,0 +1,40 @@
+<div style="float: none;">
+	<div style="float: right;">
+		<!-- <a class="page" href="index.php?module=Manage&action=GroupsAdd">Add New Department</a> -->
+		<input type="button" value="{trans str="Add New Department"}" onclick="location.href='index.php?module=Manage&action=GroupsAdd'" /> 
+	</div>
+	<div class="page_caption">{trans str="Department List"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th width="200px;">{trans str="Name"}</th>
+		<th>{trans str="Comment"}</th>
+		<th width="60px;">&nbsp</th>
+	</tr>
+	
+	{if count($groups) > 0}
+	{foreach item=group from=$groups}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$group.group_caption}</td>
+		<td>{$group.group_comment}</td>
+		<td align="right">
+			<a href="index.php?module=Manage&action=GroupsAdd&group_id={$group.group_id}"
+				><img src="images/edit.gif" border="0" width="21px" height="21px" /></a>
+			<a href="index.php?module=Manage&action=GroupsDelete&group_id={$group.group_id}" 
+				onclick="return confirm('Are you sure you want to delete department {$group.group_caption}?');" 
+				><img src="images/delete.gif" border="0" width="21px" height="21px" /></a>
+		</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="no departments"}</td>
+	</tr>    
+	{/if}
+</table>  
+
+<!-- div style="padding-top: 5px;">
+	<strong>Note:</strong> While groups deleting could be occur ticket with lost groups. Here N tickets with deleted group. 
+	To remore groups from such tickets press clear link.  
+</div -->

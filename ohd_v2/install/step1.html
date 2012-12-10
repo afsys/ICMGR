@@ -1,0 +1,23 @@
+<Table cellpadding=5>
+<tr class=main_part>
+<td align=left valign=top>
+<div align=left class=notify><img src="../images/squares.gif" border=0 alt=""> &nbsp;<u>Installation</u> -> Beginning</u></div>
+<br>
+<div align=left class=title>Welcome to the Omni Help Desk installation process.</div>
+<br>
+<div align=left class=msg style="text-align: justify;">
+This install wizard will guide you through the installation process. If you already have db_config.php setup in your OHD directory you will be redirected directly to Step 2.<br>
+<br>
+Step 1 - If you are not running your own server or if there are alot of other users who access this server we DO NOT recommend you to set the permissions of the ohd directory to be readable and writable by the user of the web server.<br>
+<br>
+We say this because everyone on this server will be able to read the config file which reveals your mySQL username and password. If you are not using your own personal server DO NOT set the OHD directory to be readable and writable from the webserver. Create your db_config.php manually and upload it into the OHD folder. There is an example db_config.php.exm.<br>
+<br><br>
+</td></tr>
+<td align=center class=notify>
+<form method=get>
+<input type=hidden name=step value=2>
+<input type=submit class=submit value="Click here to proceed"></form>
+<img width=1 height=1 src="http://www.omnihelpdesk.com/ohd_licenser/first_track.php?ip=<?=$_SERVER['SERVER_ADDR']?>&domain=<?=$_SERVER['HTTP_HOST'];?>&server=<?=$_SERVER['SERVER_NAME'];?>&rand=<?=rand(0,100000);?>" border=0>
+</td>
+</tr>
+</table>

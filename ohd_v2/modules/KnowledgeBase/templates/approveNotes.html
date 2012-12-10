@@ -1,0 +1,46 @@
+<div style="float: none;">
+    <!-- <div style="float: right;">
+        <a class="page" href="index.php?module=Manage&action=GroupsAdd">Add new group</a>
+    </div> -->
+    <div class="page_caption">{trans str="Knowledge Base"} - {trans str="Approve Comments"}</div>
+</div>
+
+<form action="" method="post">
+<table class="page" cellspacing="0" cellpadding="2">
+    <tr style="">
+    	<th style="width: 20px;">&nbsp;</th>
+        <th style="width: 150px;">{trans str="Group Caption"}</th>    
+        <th style="width: 150px;">{trans str="Item Caption"}</th>
+        <th>{trans str="Note"}</th>
+        <th width="95px">{trans str="Posted By"}</th>        
+        <th style="text-align: center;" width="85px">{trans str="Posted At"}</th>
+    </tr>
+    
+    {if count($notes) > 0}
+    {foreach item=note from=$notes}
+    <tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+    	<td><input name="checked[{$note.item_id}][{$note.note_id}]" type="checkbox" value="1" /></td>
+        <td>{$note.cat_caption}</td>
+        <td>{$note.item_caption}</td>
+        <td>{$note.note_user}</td>
+        <td>{$note.note_text}</td>
+        <td>{$note.note_date}</td>
+    </tr>
+    {/foreach}
+    {else}
+    <tr>
+        <td colspan="3">{trans str="there is no non-approved user`s notes"}</td>
+    </tr>    
+    {/if}
+</table>    
+
+<div style="padding: 8px; padding-left: 0;">
+	<select name="action_type">
+		<option value="">{trans str="(select action)"}</option>
+		<option value="approve">{trans str="Approve selected"}</option>
+		<option value="delete">{trans str="Delete selected"}</option>
+	</select>
+	
+	<input name="submit_approvements" type="submit" value="{trans str="Apply"}" style="width: 100px;" />
+</div>
+</form>

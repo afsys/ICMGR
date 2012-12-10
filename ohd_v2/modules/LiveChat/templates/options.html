@@ -1,0 +1,52 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="System preferences"}</div>
+</div>
+
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="PreferencesEdit">
+	<input type="hidden" name="module" value="Manage">
+
+	<!-- LC FORMS -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Chat request image"}</th></tr>
+
+		<tr>
+			<td style="padding-left: 15px;">
+<pre>
+
+&lt!-- 
+    <strong>Insert the following javascript on each HTML page on which you wish to display the
+    Live Chat image and the form for tracking users:</strong>
+--&gt;
+&lt;script type="text/javascript"&gt;
+    var ohd_base_url = '{$ohd_base_url}';
+    document.write('&lt;a href="javascript:void(0)" onclick="ShowOhdLcRequestWindow()"&gt;');
+    document.write('&lt;img src="' + ohd_base_url + '/index.php?module=LiveChat&action=' + 
+        'StatusImage&curr_url=' + location.href + '" border="0" /&gt;');
+    document.write('&lt;/a&gt;');    
+    
+    var lc_req_window = null;
+    function ShowOhdLcRequestWindow() {ldelim}
+        var url = ohd_base_url + '/index.php?module=LiveChat&action=ChatRequest';
+        if (lc_req_window == null || lc_req_window.closed) {ldelim}
+            lc_req_window = window.open(url, 'UserLcReqWindow', 'resizable=yes,scrollbars=yes,' + 
+                                        'status=yes,width=500px,height=420px');
+        {rdelim}
+        lc_req_window.focus();
+    {rdelim}    
+&lt;/script&gt;
+
+
+
+</pre>
+			</td>
+		</tr>
+
+	</table>
+	<!-- /LC FORMS -->
+
+	<!-- div style="text-align: center; padding-top: 10px;">
+		<input type="submit" name="save_prefs" value="{trans str="Save Options"}">
+	</div -->
+
+</form>

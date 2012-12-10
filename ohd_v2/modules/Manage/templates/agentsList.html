@@ -1,0 +1,51 @@
+<div style="float: none; margin-bottom: 4px;">
+	<div style="float: right; padding-top: 5px;">
+		<!-- <a class="page" href="index.php?module=Manage&action=UsersAdd">Add New User</a> -->
+		<input type="button" value="{trans str="Add New Agent"}" onclick="location.href='index.php?module=Manage&action=AgentsAdd'" /> 
+	</div>
+	<div class="page_caption">{trans str="Agent List"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th style="width: 120px;">{trans str="Login"}</th>
+		<th style="width: 180px;">{trans str="Name"}</th>
+		<th style="width: 180px;">{trans str="Email"}</th>
+		<th>{trans str="Groups"}</th>
+		{if $smarty.const.F_LIVECHAT}
+		<th style="width: 80px;">{trans str="LC Priority"}</th>
+		{/if}
+		<th style="width: 50px;">&nbsp;</th>         
+	</tr>
+	
+    {if count($users) > 0}
+	{foreach item=sys_user from=$users}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$sys_user.user_login}</td>
+		<td>{$sys_user.user_name} {$sys_user.user_lastname}</td>
+		<td>{$sys_user.user_email|default:"(None)"}</td>
+		<td>
+			{if (count($sys_user.groups) > 0)}
+				{foreach name=groups item=group from=$sys_user.groups}{if !$smarty.foreach.groups.first}, {/if}{$group.group_caption}{/foreach}
+			{else}
+				(none)
+			{/if}
+		</td>
+		{if $smarty.const.F_LIVECHAT}
+		<td align="center">{$sys_user.lc_priority}</td>
+		{/if}
+		<td style="text-align: right;">
+			<a href="index.php?module=Manage&action=AgentsAdd&user_id={$sys_user.user_id}" 
+				><img src="images/edit.gif" border="0" width="21px" height="21px" /></a>
+			<a href="index.php?module=Manage&action=UsersDelete&user_id={$sys_user.user_id}" 
+				onclick="return confirm('{trans str="Are you sure you want to delete user"} {$sys_user.user_name} {$sys_user.user_lastname}?');" 
+				><img src="images/delete.gif" border="0" width="21px" height="21px" /></a>
+		</td>
+	</tr>
+	{/foreach}
+    {else}
+    <tr>
+        <td colspan="3">{trans str="no users"}</td>
+    </tr>    
+    {/if}
+</table>    

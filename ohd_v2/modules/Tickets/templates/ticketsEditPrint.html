@@ -1,0 +1,152 @@
+<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+	<tr><th>{$ticket.caption|strip_tags}</th></tr>
+	<tr>
+		<td style="vertical-align: top;">
+			<!-- TICKET HEADER -->            
+			<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px;">
+				<tr style="font-weight: bold;">
+					<td style="width: 80px;">{trans str="Ticket ID"}</td>
+					<td>{trans str="Ticket Product"}</td>
+					<td>{trans str="Submit Date"}</td>
+					<td>{trans str="Last Update"}</td>
+					<td>{trans str="Close Date"}</td>
+				</tr>
+				<tr>
+					<td>{if $ticket.ticket_num}{$ticket.ticket_num|string_format:"%06d"}{else}{$ticket.ticket_id|string_format:"%06d"}{/if}</td>
+					<td>{$ticket.ticket_product_caption}</td>
+					<td>{$ticket.created_at|date_format_usr:'short'}</td>
+					<td>{$ticket.modified_at|date_format_usr:'short'}</td>
+					<td>{$ticket.closed_at|date_format_usr:'short'|default:"(Still open)"}</td>
+				</tr>
+			</table>
+			<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px; border-top: 1px solid silver; margin-top: 3px;">
+				<tr style="font-weight: bold;">
+					<td>{trans str="Ticket Owner"}</td>
+					<td>{trans str="Department"}</td>
+					<td>{trans str="Action"}</td>
+					<td>{trans str="Priority"}</td>
+					<td>{trans str="Status"}</td>
+				</tr>
+				<tr>
+					<td>{$ticket.ticket_assigned_to_name}</td>
+					<td style="width: 185px;">
+						{foreach item=item key=key from=$groups}
+							{if $ticket.group_id == $item.group_id}{$item.group_caption}{/if}
+						{/foreach}
+					</td>
+					<td>{$ticket.type}</td>
+					<td>{$ticket.priority}</td>
+					<td>{$ticket.status}</td>
+				</tr>
+			</table>
+			
+			<table cellpadding="2" cellspacing="2" 
+				style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px; border-top: 1px solid silver; padding-top: 3px; margin-top: 3px;">
+				<tr style="text-align: left;">
+					<td style="font-weight: bold; width: 125px; ">{trans str="Customer Name"}:</td>
+					<td>{$ticket.customer_name|strip_tags}</td>
+				</tr>
+				<tr style="text-align: left;">
+					<td style="font-weight: bold; ">{trans str="Customer Phone"}:</td>
+					<td>{$ticket.customer_phone}</a>
+					</td>
+				</tr>
+				<tr style="text-align: left;">
+					<td style="font-weight: bold;">{trans str="Customer E-Mail"}:</td>
+					<td>
+						<a href="javascript:SelectEmail('{$ticket.customer_email}', '{$ticket.customer_name}')" style=" color: #006699;">
+							{$ticket.customer_email|strip_tags}</a>
+					</td>
+				</tr>
+				<tr style="text-align: left;">
+					<td style="font-weight: bold; ;">{trans str="Problem Desc"}:</td>
+					<td>
+						{if $ticket.description_is_html}
+							{$ticket.description}
+						{else}
+							{$ticket.description|nl2br}
+						{/if}
+					</td>
+				</tr>
+			</table>
+			<!-- TICKET HEADER -->                        
+			<br />
+			<br />
+		</td>
+	</tr>
+
+	
+	<tr>
+		<td>
+			<div style="float: none; font-weight: bold; font-size: large;">
+				{if $messages_type == 'EMails'}
+				Ticket E-Mails:
+				{elseif $messages_type == 'History'}
+				Ticket History:
+				{else}
+				Messages:
+				{/if}
+			</div>
+		</td>
+	</tr>
+	
+	{if isset($messages)}
+	{foreach item=message from=$messages}
+		{if $message.message_text != ""}
+		<tr><td height="8px"></td></tr>
+
+		<tr>
+			<td style="border-top: 1px solid #0D4C78; font-weight: bold; padding-top: 5px;">
+				<span title="{$message.message_datetime}">Posted {$message.message_datetime|date_format_usr:'short'} </span>
+				 by {if $message.message_owner_name}{$message.message_owner_name}{else}{$message.message_creator_user_name}{/if}
+			</td>
+		</tr>
+		<tr>
+			<td style="padding-left: 5px;padding-top:10px;padding-bottom:10px;">
+				{if $message.message_subject}<div><span style="text-decoration: underline;">Subject:</span> {$message.message_subject}</div>{/if}
+				<span id="tick_msg_{$message.message_id}">{$message.message_text}</span>
+				{if $message.message_atachment_name}
+				<div style="text-align: right;">
+					<a href="index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}&ticket_atachment={$message.message_id}" style=" color: #006699; font-weight: bold;">{$message.message_atachment_name}</a>
+				</div>
+				{/if}
+			</td>
+		</tr>
+		{/if}
+	{/foreach}
+	{/if}
+	
+	{if isset($emails)}
+	{foreach item=email from=$emails}
+	<tr>
+		<td style="border-top: 1px solid #0D4C78; border-bottom: 1px solid #0D4C78; {$email.header_style}">
+			Posted at {$email.message_datetime_formated} by {$email.sent_by_name} to {$email.email}
+		</td>
+	</tr>
+	<tr>
+		<td style="padding: 5px;">
+			<div style="text-decoration: underline; padding-bottom: 8px; font-weight: bold;">{$email.subj}</div>
+			{$email.message|escape|nl2br}
+		</td>
+	</tr>
+	{/foreach}
+	{/if}
+	
+	{if isset($history_items)}
+	{foreach item=history_item from=$history_items}
+	<tr>
+		<td style="border-top: 1px solid #C0C0C0; {$history_item.header_style}; ">
+			{$history_item.message_datetime_formated}: {$history_item.his_notes} by {$history_item.action_by_name}
+		</td>
+	</tr>
+	{/foreach}
+	{/if}
+	
+	<!--
+	<tr>
+		<td style="border-top: 1px solid silver; background-color: #E9E9E9;">
+			<div class="paging" style="float: right;">{$tickets_paging}</div>
+			<div>Total messages: {$messages_count}</div>
+		</td>
+	</tr> -->
+</table>

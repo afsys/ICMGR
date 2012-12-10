@@ -1,0 +1,25 @@
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr>
+		<th>Error 404: Page Not Found</th>
+	</tr>
+	<tr>
+		<td class="spacer_left_align" style="padding-bottom: 10px; padding-top: 10px; padding-left: 4px;">
+			The following Module or Action could not be found: &nbsp;Module = {$module}, &nbsp;Action = {$action}.
+
+			{if $smarty.const.ALLOW_AUTO_MODULE_GENERATION}
+				<br />
+				<form action="index.php">
+					<input type="hidden"  name="module"           value="System" />
+					<input type="hidden"  name="action"           value="PageNotFound" />
+					<input type="hidden"  name="generate_module"  value="{$module}.{$action}" />
+					<input type="text"    name="template_name"    value="" />
+					<input type="submit"  value="Submit" />
+				</form>
+			{/if}
+			
+			<br /><br />
+			Please contact the OHD staff to report the problem, and please identify what page of the software
+			you were trying to access or task you were trying to carry out. Thank you for your patience.
+		</td>
+	</tr>
+</table>

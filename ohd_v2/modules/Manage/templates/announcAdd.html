@@ -1,0 +1,33 @@
+<div style="float: none;">
+	<div class="page_caption">{if isset($ann)}{trans str="Edit"}{else}{trans str="Add New"}{/if} {trans str="Announcement"}</div>
+</div>
+
+<form action="index.php" method="post">
+	<input type="hidden" name="module"       value="Manage" />
+	<input type="hidden" name="action"       value="AnnouncAdd" />
+	<input type="hidden" name="ann[ann_id]"  value="{$ann.ann_id}" />
+
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Announcement Properties"}</th></tr>
+		<tr>
+			<td align="right" valign="top" style="width: 80px;">{trans str="Caption"}:</td>
+			<td valign="top"><input type="text" name="ann[ann_caption]" size="30" maxlength="30" value="{$ann.ann_caption}"></td>
+		</tr>
+
+		<tr>
+			<td align="right" valign="top" style="width: 80px;">{trans str="Short Text"}:</td>
+			<td valign="top"><input type="text" name="ann[ann_short]" size="100" maxlength="100" style="width: 400px;" value="{$ann.ann_short}"></td>
+		</tr>
+		<tr>
+			<td align="right">{trans str="Full Text"}:</td>
+			<td valign="top"><textarea name="ann[ann_full]" rows="7" style="width: 400px;">{$ann.ann_full}</textarea></td>
+		</tr>
+	</table>
+
+
+	<div style="text-align: center; padding-top: 12px;">
+		<input type="submit" name="edit_announc" value="{if isset($ann)}{trans str="Update"}{else}{trans str="Add"}{/if} {trans str="Announcement"}">
+	</div>
+</form>
+
+

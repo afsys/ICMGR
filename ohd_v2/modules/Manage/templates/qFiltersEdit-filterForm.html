@@ -1,0 +1,115 @@
+<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+	<tr><th colspan="3" id="filter[{$index}][caption]">{trans str="Filter Parameters"}</th></tr>
+	<tr>
+		<td  valign="top" width="210px;">
+			{trans str="Filter Name"}: 
+			<input type="text" id="filter[{$index}][name]" value="{$filter.props.name}" />
+		</td>
+		<td valign="top">
+			<pre>
+			{* {php} var_dump($this->_tpl_vars['filter']); {/php} *}
+			</pre>
+		
+		
+			<!-- FILTER FORM -->
+			<table cellspacing="0" cellpadding="2px" border="0px" style="font-size: 10px;">
+				<tr>
+					<td colspan="3">
+						{trans str="Select search method"}: 
+						<input type="radio" name="rel_type[{$index}]" id="filter[{$index}][rel_type]" value="AND" style="position: relative; top: 3px;" checked="checked" /> <strong>{trans str="AND"}</strong> /
+						<input type="radio" name="rel_type[{$index}]" id="filter[{$index}][rel_type_]" value="OR" style="position: relative; top: 3px;" /><strong>{trans str="OR"}</strong>
+					</td>
+				</tr>
+				<tr>
+					<td align="right" colspan="2">{trans str="Ticket Num"}</td>
+					<td>
+						{assign var=_tmp value="tickets.ticket_num"}
+						<input id="filter[{$index}][tickets.ticket_num]" value="{$filter.criteria.$_tmp}" style="width: 140px;">
+					</td>
+				</tr>
+				<tr>
+					<td align="right" colspan="2">{trans str="Include Tickets in Trash Folder"}</td>
+					<td>
+						{assign var=_tmp value="tickets.is_in_trash_folder"}
+						<select id="filter[{$index}][tickets.is_in_trash_folder]" style="width: 140px;">
+							<option value="">{trans str="All"}</option>
+							<option value="0" {if $filter.criteria.$_tmp === '0'}selected="selected"{/if}>{trans str="Do Not Trashed"}</option>
+							<option value="1" {if $filter.criteria.$_tmp === '1'}selected="selected"{/if}>{trans str="In Trash Folder"}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{trans str="Product"}</td>
+					<td align="center">{trans str="Is"}</td>
+					<td>
+						{assign var=_tmp value="tickets.ticket_product_id"}
+						<select id="filter[{$index}][tickets.ticket_product_id]" style="width: 140px;">
+							<option value="">{trans str="All"}</option>
+							{foreach item=item key=key from=$products}
+							<option value="{$item.ticket_product_id}"
+								{if $filter.criteria.$_tmp == $item.ticket_product_id}selected="selected"{/if}
+								>{$item.ticket_product_caption}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="right" valign="top">{trans str="Department"}</td>
+					<td align="center" valign="top">{trans str="Is"}</td>
+					<td>
+						<select id="filter[{$index}][tickets.group_id]" style="width: 140px;" multiple="multiple" size="5">
+							{assign var=ticket_name value="tickets.group_id"}
+							{foreach item=item from=$groups}
+							<option {if @in_array($item.group_id, $filter.criteria.$ticket_name)}selected="selected"{/if} value="{$item.group_id}">{$item.group_caption}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="right" valign="top">{trans str="Priority"}</td>
+					<td align="center" valign="top">{trans str="Is"}</td>
+					<td>
+						<select id="filter[{$index}][tickets.priority]" style="width: 140px;" multiple="multiple" size="5">
+							{assign var=ticket_name value="tickets.priority"}
+							{foreach item=item key=key from=$sys_options.ticket_priorities}
+							<option {if @in_array($key, $filter.criteria.$ticket_name)}selected="selected"{/if} value="{$key}">{$key}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="right" valign="top">{trans str="Status"}</td>
+					<td align="center" valign="top">{trans str="Is"}</td>
+					<td>
+						<select id="filter[{$index}][tickets.status]" style="width: 140px;" multiple="multiple" size="5">
+							{assign var=ticket_name value="tickets.status"}
+							{foreach item=item key=key from=$sys_options.ticket_statuses}
+							<option {if @in_array($key, $filter.criteria.$ticket_name)}selected="selected"{/if} value="{$key}">{$key}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">{trans str="Assigned User"}</td>
+					<td align="center">{trans str="Is"}</td>
+					<td>
+						<select id="filter[{$index}][tickets.assigned_to]" style="width: 140px;" multiple="multiple" size="5">
+							{assign var=ticket_name value="tickets.assigned_to"}
+							{foreach item=item key=key from=$at_users}
+							<option value="{$item.user_id}" {if @in_array($item.user_id, $filter.criteria.$ticket_name)}selected="selected"{/if}>{$item.user_name}</option>
+							{/foreach}
+						</select>
+					</td>
+				</tr>
+			</table>
+			<!-- /FILTER FORM -->
+			
+		</td>
+		<td valign="top" align="right">
+			<a href="javascript:void(0)" 
+				onclick="this.parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode.parentNode.parentNode)">
+				<img width="21px" height="21px" alt="Delete" title="Delete" src="images/delete.gif" />
+			</a>
+		</td>
+	</tr>
+</table>	

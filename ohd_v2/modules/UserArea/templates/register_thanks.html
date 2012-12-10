@@ -1,0 +1,17 @@
+{literal}
+<script type="text/javascript">
+	function makeRedirect() {
+		location.href = 'index.php?module=UserArea&action=Index'
+	}
+	
+	setTimeout('makeRedirect()', 7000);
+</script>
+{/literal}
+
+<div style="text-align: center;">
+	Thanks, for registration... You will revieve message with registration data... <br />
+	Please wait for 5 seconds and you will be redirected to User Area <br />or press button <br />
+	<div style="padding-top: 5px;">
+		<input type="button" onclick="makeRedirect()" value="User Admin Area" />
+	</div>
+</div>

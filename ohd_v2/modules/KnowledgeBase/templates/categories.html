@@ -1,0 +1,119 @@
+{literal}
+<script language="Javascript1.2">
+	
+	function ConfirmDelete(type)
+	{
+		var msg;
+		if (type == 'cat') msg = '{trans str="Are you sure, what do you want to delete category and all child items?"}';
+		else msg = '{trans str="Are you sure, what do you want to delete item?"}';
+		if (window.confirm(msg)) return true;
+		return false;
+	}
+
+</script>
+{/literal}
+
+<div style="float: none;">
+    <div class="page_caption">{trans str="Knowledge Base - Manage Categories"}</div>
+</div>
+
+<table class="page" cellpadding="5px" cellspacing="0">
+	<tr><th colspan="3">{trans str="Category Listing"}</th></tr>
+	<tr>
+		<td>
+			<!-- CATS PATH AND UTILITES -->
+			<div class="path">
+				<table cellpadding="0" cellspacing="0" width="100%" border="0px">
+					<tr>
+						<td>{$cats_path}</td>
+						{if $is_admin == true}
+						<td style="text-align: right;">
+							<a class="path" href="index.php?module=KnowledgeBase&action=EditCategory&cat_parent_id={$cat_id}">{trans str="Add new category"}</a> |
+							<a class="path" href="index.php?module=KnowledgeBase&action=EditItem&cat_id={$cat_id}">{trans str="Add new item"}</a>
+						</td>
+						{/if}
+					</tr>
+				</table>
+			</div>
+			<!-- /CATS PATH AND UTILITES -->        
+			
+			{if $msg}
+			<div style="color: red;">{$msg}</div>
+			{/if}
+	
+			<!-- CAPTION --
+			<div style="font-size: 16px; font-weight: bold;">{$directory_caption}</div>
+			!-- /CAPTION -->
+			
+			{if count($items) == 0 && count($categories) == 0} 
+				<div style="padding: 0 0 10px 10px;">{trans str="There is no any items and categories, yet..."}</div>
+			{/if}
+			
+			<!-- MOST RATED AND VIEWED ITEMS -->
+			{if !empty($most_rated) || !empty($most_viewed)}
+			<table border="0px" width="100%">
+				<tr>
+					{* Fake for translations parser:  {trans str="Most Rated Items:"}, {trans str="Most Viewed Items:"}*}
+					{if !empty($most_rated)}
+					<td width="50%">{include file="categories-itemslist.html" items_caption="Most Rated Items:" items_list=$most_rated}</td>
+					{/if}
+					<td width="50%">{include file="categories-itemslist.html" items_caption="Most Viewed Items:" items_list=$most_viewed}</td>
+				</tr>
+			</table>
+			<hr noshade="noshade" size="1" style="color: silver;" />
+			{/if}
+			<!-- /MOST RATED AND VIEWED ITEMS -->
+			
+			<!-- CATEGORY ITEMS -->    
+			{include file="categories-itemslist.html" items_caption="Category Items:" items_list=$items}
+			<!-- /CATEGORY ITEMS --> 
+			
+			<!-- CATEGORIES -->
+			{if count($categories) > 0}
+			<table cellspacing="0" cellpadding="0" border="0px">
+				<tr>
+					<td style="font-size: 15px; font-weight: bold; color: #007EFD; padding-bottom: 5px;" 
+						colspan="{$rows_count}">
+						{trans str="Sub-Categories:"}
+					</td>
+				</tr>        
+				{foreach name="categoryLoop" key=key item=item from=$categories[0]} 
+				<tr>
+					{foreach name="categoryLoop2" item=category from=$categories} 
+					<td width="{$rows_width}%" valign="top" style="padding-right: 12px;">
+						{if isset($category[$key])}
+						<table cellpadding="2" cellspacing="0">
+							<tr>
+								<td align="left" class="kb_caption" style="padding-left: 7px;">
+									{if $is_admin == true}
+									<!--<a href="index.php?module=KnowledgeBase&action=Categories&cat_id={$category[$key].id}"
+										><img width="16px" height="16px" alt="O" title="Open category item" style="border: none;"/></a>-->
+									<a href="index.php?module=KnowledgeBase&action=EditCategory&cat_id={$category[$key].id}"
+										><img src="images/button_edit.png"  width="12px" height="13px" alt="E" title="Edit category item" style="border: none;"/></a>
+									<a href="index.php?module=KnowledgeBase&action=DeleteCategory&cat_id={$category[$key].id}"
+										onclick="return ConfirmDelete('cat')"
+										><img src="images/button_del.png" width="11px" height="13px" alt="D" title="Delete category item" style="border: none;"/></a>
+									{/if}
+									<a href="index.php?module=KnowledgeBase&action=Categories&cat_id={$category[$key].id}">{$category[$key].caption}</a>
+									({$category[$key].cats_cnt}/{$category[$key].items_cnt})
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-left: 15px; padding-bottom: 10px;">
+									<div class="kb_notes">{$category[$key].notes}</div>
+								</td>
+							</tr>
+						</table>
+						{else}
+						&nbsp;
+						{/if}
+					</td>
+					{/foreach}
+				</tr>
+				{/foreach}
+			</table>
+			{/if}
+			<!-- /CATEGORIES -->
+		</td>
+	</tr>
+</table>

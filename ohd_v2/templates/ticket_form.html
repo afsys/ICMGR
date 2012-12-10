@@ -1,0 +1,126 @@
+<!-- SELECT PRODUCT FORM -->
+{if count($products)}
+<center>
+<form action="" method="post">
+	<input type="hidden" name="action" value="TicketsAdd">
+	<input type="hidden" name="module" value="Tickets">
+
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="3">{trans str="Select product"}</th></tr>
+		<tr>
+			<td style="width: 105px;">{trans str="Product name"}:</td>
+			<td>
+				<select name="ticket_product_id">
+					{foreach name=products item=product from=$products}
+					<option value="{$product.ticket_product_id}" {if $product.ticket_product_id == $ticket_product_id}selected="selected"{/if}>{$product.ticket_product_caption}{if $product.ticket_product_desc} - {$product.ticket_product_desc}{/if}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td>
+				<input type="submit" name="select_product_form" value="{trans str="Select product"}" />               
+			</td>
+		</tr>
+	</table>
+</form>
+<center>
+{/if}
+<!-- /SELECT PRODUCT FORM -->
+
+{if count($products) == 0}
+<form action="" method=POST enctype="multipart/form-data">
+	<input type="hidden" name="action" value="save_ticket">
+	<input type="hidden" name="ticket_product_id" value="{$vars.ticket_product_id}">
+	<center>
+		<!-- <h3>Submit New Ticket</h3> -->
+		
+		{if $errors|@count != 0}
+		Please fix errors:<br>
+		{foreach from=$errors item=error}
+		<span class=ohd_error>{$error}</span><br>
+		{/foreach}
+		<br>
+		{/if}
+
+		<table class=ohd_form_table cellpadding=1 cellspacing=1 width=90% align=center>
+		<!-- TYPE -->
+		<tr>
+			<td class="ohd_field_title"><nobr>{trans str="Select Issue"}:</nobr></td>
+			<td class="ohd_field_input">
+				<select name="type">
+					{foreach key=key item=type from=$types}
+					<option value="{$key}">{$key}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<!-- /TYPE -->
+		<!-- DEPARTMENTS -->
+		<tr style="display: none;">
+			<td class="ohd_field_title"><nobr>{trans str="Seletect Department"}:</nobr></td>
+			<td class="ohd_field_input">
+				<select name="group_id">
+					{foreach item=department from=$departments}
+					<option value="{$department.group_id}" {if $department.group_caption == 'Support'} selected="selected"{/if}>{$department.group_caption}</option>
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		<!-- /DEPARTMENTS -->
+		<tr>
+			<td class="ohd_field_title">{trans str="Your Name"}:</td>
+			<td class="ohd_field_input"><input type=text name=username value="{$vars.username|htmlspecialchars}" size=40></td>
+		</tr>
+		<tr>
+			<td class="ohd_field_title">{trans str="Your Phone"}:</td>
+			<td class="ohd_field_input"><input type=text name=phone value="{$vars.pnohe|htmlspecialchars}" size=40></td>
+		</tr>
+
+		<tr>
+			<td class="ohd_field_title">{trans str="Your E-Mail"}:</td>
+			<td class="ohd_field_input"><input type=text name=email value="{$vars.email|htmlspecialchars}" size=40></td>
+		</tr>
+
+		<tr>
+			<td class="ohd_field_title">{trans str="Subject (short description)"}:</td>
+			<td class="ohd_field_input"><input type=text name=caption value="{$vars.caption|htmlspecialchars}" size=40></td>
+		</tr>
+
+		<tr>
+			<td class="ohd_field_title">{trans str="Problem (full description)"}:</td>
+			<td class="ohd_field_input"><textarea name=description cols=40 rows=10>{$vars.description|htmlspecialchars}</textarea></td>
+		</tr>
+
+		{if $config.attachments.allow == 1}
+		<tr>
+			<td valign="top">
+				Attach file to this ticket:
+			</td>
+			<td>
+				<input type="file" name="file_atachment" size="40">
+			</td>
+		</tr>
+		{/if}
+
+		{foreach from=$ticket_fields key=field_id item=field_options}
+			{if $field_options.show_in_userside}
+				{include file="form_field.html"}
+			{/if}
+		{/foreach}
+		
+
+		<tr>
+			<td class="ohd_field_title">
+				{trans str="Notify me by e-mail when my ticket is answered"}
+			</td>
+			<td class="ohd_field_input">
+				<input type="checkbox" name="notify_customer" checked="checked" value="1" />
+			</td>
+		</tr>
+
+		
+		</table>
+		<br>
+		<input type="submit" name="button" value="{trans str="Submit Request"}">
+	</center>
+</form>
+{/if}

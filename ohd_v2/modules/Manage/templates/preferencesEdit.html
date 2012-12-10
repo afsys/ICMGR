@@ -1,0 +1,286 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="System preferences"}</div>
+</div>
+
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="PreferencesEdit">
+	<input type="hidden" name="module" value="Manage">
+
+	<!-- COMMON -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Common"}</th></tr>
+		<tr>
+			<td width="270px;">{trans str="Default Interface Language"}:</td>
+			<td>
+				<select name="prefs[common][language]">
+					{foreach item=lang from=$lang_list}
+					<option value="{$lang.code}" {if $lang.code == $sys_options.common.language}selected="selected"{/if}>{$lang.caption}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="URL for Ticket Form"}:</td>
+			<td><input name="prefs[common][ticket_form_url]" type="text" style="width: 400px;" value="{$sys_options.common.ticket_form_url}"></td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		{if $smarty.const.F_URL_TICKET_MANAGING}
+		<tr>
+			<td>{trans str="URL for user after ticket created by URL"}:</td>
+			<td><input name="prefs[common][url_after_ticket_created_by_url]" type="text" style="width: 400px;" value="{$sys_options.common.url_after_ticket_created_by_url}"></td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="URL for user if have ticket creation by URL error"}:</td>
+			<td><input name="prefs[common][url_after_ticket_if_error]" type="text" style="width: 400px;" value="{$sys_options.common.url_after_ticket_if_error}"></td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		{/if}
+		<tr>
+			<td>{trans str="Company Name"}:</td>
+			<td><input name="prefs[common][company_name]" type="text" style="width: 400px;" value="{$sys_options.common.company_name}"></td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="Admin E-Mail"}:</td>
+			<td><input name="prefs[common][admin_email]" type="text" style="width: 400px;" value="{$sys_options.common.admin_email}" /></td>
+			<td><span style="color: red;">{$attachments_error.directory}</span></td>
+		</tr>
+	</table>
+	<!-- /COMMON -->
+	
+	
+	{if $smarty.const.F_TIME_ARCHIVE_TICKETS}
+	<!-- COMMON -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Tickets Auto Archiving"}</th></tr>
+		<tr>
+			<td>{trans str="Archive after period (in days)"}:</td>
+			<td>
+				<input name="prefs[auto_ticket_arhciving][archive_after_days]" type="text" style="width: 50px;" value="{$sys_options.auto_ticket_arhciving.archive_after_days}">
+				(if value equal to Zero - auto-archiving turned off)
+			</td>
+		</tr>
+		<tr>
+			<td>{trans str="Prefix for Ticket Num"}:</td>
+			<td>
+				<input name="prefs[auto_ticket_arhciving][prefix]" type="text" style="width: 50px;" value="{$sys_options.auto_ticket_arhciving.prefix}">
+			</td>
+		</tr>
+		<tr>
+			<td width="270px;">{trans str="Status for archived ticket"}:</td>
+			<td>
+				<select name="prefs[auto_ticket_arhciving][status_for_ticket]">
+					<option value="">(default)</option>
+					{foreach key=key item=item from=$sys_options.ticket_statuses}
+					<option value="{$key}" {if $key == $sys_options.auto_ticket_arhciving.status_for_ticket}selected="selected"{/if}>{$key}</option>
+					{/foreach}
+				</select>
+				(default value is 'Archived')
+			</td>
+		</tr>
+	</table>
+	<!-- /COMMON -->
+	{/if}
+	
+	<!-- EMAILS -->
+	{literal}
+	<script type="text/javascript">
+		function setEmEnableLogs(sel) {
+			var cb = document.getElementById('EmEnableLogs');
+			if (sel.value != 'direct') {
+				cb.checked = false;
+				cb.disabled = true;
+			}
+			else {
+				cb.disabled = false;
+			}
+		}
+	</script>
+	{/literal}
+	
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="3">{trans str="Emails"}</th></tr>
+		<tr>
+			<td width="210px;">{trans str="Emails sending method"}:</td>
+			<td>
+				<select name="prefs[common][em_method]" onchange="setEmEnableLogs(this)">
+					<option value="sys_mail" {if $sys_options.common.em_method == 'sys_mail'}selected="selected"{/if}>{trans str="PHP Mail"}</option>
+					<option value="direct" {if $sys_options.common.em_method == 'direct'}selected="selected"{/if}>{trans str="Direct Send"}</option>
+				</select>
+			</td>
+			<td rowspan="4" style="padding-left: 10px; vertical-align: top;">
+				<strong>{trans str="PHP mail"}</strong> - {trans str="Use default php mail() function."} <br />
+				{trans str="This is the fastest Email method which doesn't require external connections."}
+				{trans str="NOTE: This method does not allow the user to check the Email log delivery status."} <br />
+
+				<hr noshade="noshade" size="1"/>
+				<strong>{trans str="Direct mail (Special Email script)."}</strong> <br />
+				{trans str="This method also allows you to view the delivery status of your mail in the Email log."}
+				{trans str="This method is somewhat slower than PHP mail."}
+				<!--
+				This method allows OHD to work like a mail server and will send Email directly to the user. 
+				Using this method allows you to view the delivery status within the mail log and allow can be sure what mail is delivered or not.
+				This method is slower than PHP mail. -->
+			</td>
+		</tr>
+		</tr>
+			<td width="170px;">{trans str="Enable server response logs"}:</td>
+			<td>
+				<input name="prefs[common][em_enable_logs]" type="hidden" value="0" />
+				<input id="EmEnableLogs" name="prefs[common][em_enable_logs]" type="checkbox" value="1" 
+					{if $sys_options.common.em_enable_logs == 1 && $sys_options.common.em_method == 'direct'}checked="checked"{/if}
+					{if $sys_options.common.em_method != 'direct'}disabled="disabled"{/if}
+					> {trans str="enable"}
+			</td>
+		</tr>
+		{php}if (checkAdmin()) {{/php}
+		<tr>
+			<td width="170px;">{trans str="Notify message grouping"}:</td>
+			<td>
+				<input name="prefs[common][mail_grouping]" type="hidden" value="0" />
+				<input name="prefs[common][mail_grouping]" type="checkbox" value="1" {if $sys_options.common.mail_grouping == 1}checked="checked"{/if}> {trans str="allow"}
+			</td>
+		</tr>
+		{php}}{/php}
+		<tr>
+			<td colspan="2" height="80px"></td>
+		</td>
+	</table>
+	<!-- /EMAILS -->
+	
+	<!-- ATTACHMENTS -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Attachments"}</th></tr>
+
+		<tr>
+			<td width="170px;">{trans str="Allow Attachments"}:</td>
+			<td>
+				<input name="prefs[attachments][allow]" type="hidden" value="0" />
+				<input name="prefs[attachments][allow]" type="checkbox" value="1" {if $sys_options.attachments.allow == 1}checked="checked"{/if}> {trans str="allow"}
+			</td>
+			<td><span style="color: red;">{$attachments_error.allow}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="Attachments Directory"}:</td>
+			<td><input name="prefs[attachments][directory]" type="text" style="width: 400px;" value="{$sys_options.attachments.directory}" /></td>
+			<td><span style="color: red;">{$attachments_error.directory}</span></td>
+		</tr>
+		<!--
+		<tr>
+			<td>{trans str="Allowed File Extensions"}:</td>
+			<td>
+				<select style="width: 100px;"></select>
+				<input type="button" value="Delete Selected" style="width: 110px" />
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<input type="text" style="width: 100px;" />
+				<input type="button" value="{trans str="Add new"}" style="width: 110px;" />
+			</td>
+			<td><span style="color: red;">{$sys_options.attachments_error.directory}</span></td>
+		</tr>
+		-->
+	</table>
+	<!-- /ATTACHMENTS -->
+	
+	<!-- TICKET`S LIST -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Tickets"}</th></tr>
+		<tr>
+			<td width="230px;">{trans str="Move Tickets to Trash on Delete"}:</td>
+			<td colspan="2">
+				<input name="prefs[tickets][trash_on_delete]"  type="hidden"   value="0" />
+				<input name="prefs[tickets][trash_on_delete]" type="checkbox" value="1" {if $sys_options.tickets.trash_on_delete == 1}checked="checked"{/if}> {trans str="move"}
+			</td>
+		</tr>
+		<tr>
+			<td width="230px;">{trans str="Ticket Numbers Generation Type"}:</td>
+			<td colspan="2">
+				<select name="prefs[common][ticket_num_gen_type]">
+					<option value="random" {if $sys_options.common.ticket_num_gen_type == 'random'}selected="selected"{/if}>{trans str="Random (6+ random digets)"}</option>
+					<option value="date_based" {if $sys_options.common.ticket_num_gen_type == 'date_based'}selected="selected"{/if}>{trans str="Date Based (YYYYMMDDHHMMSS)"}</option>
+					<option value="simple_seq" {if $sys_options.common.ticket_num_gen_type == 'simple_seq'}selected="selected"{/if}>{trans str="Simple sequence (1, 2, 3, 4, ...) "}</option>
+					<option value="simple_seq_with_year" {if $sys_options.common.ticket_num_gen_type == 'simple_seq_with_year'}selected="selected"{/if}>{trans str="Simple sequence with 2 digit year prefix(060001, 060002, ..., 070001, ...) "}</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td width="230px;">{trans str="Show Product Version Column"}:</td>
+			<td colspan="2">
+				<input name="prefs[tickets_list][show_product_name]" type="hidden"   value="0" style="display: none;"  />
+				<input name="prefs[tickets_list][show_product_name]" type="checkbox" value="1" {if $sys_options.tickets_list.show_product_name}checked="checked"{/if} />
+			</td>
+		</tr>
+		<tr>
+			<td width="230px;">{trans str="Flood Protection"}:</td>
+			<td colspan="2">
+				<input name="prefs[tickets_list][flood_protection]" type="text" value="{$sys_options.tickets_list.flood_protection}" size="4" />
+				({trans str="time is seconds between 2 tickets or messages posts. use 0 for switching off"})
+			</td>
+		</tr>
+		<!-- tr>
+			<td width="230px;">{trans str="Purge Opened"}:</td>
+			<td colspan="2">
+				<input name="prefs[tickets_list][purge_opened]" type="text" value="{$sys_options.tickets_list.purge_opened}" size="4" />
+				({trans str="time in days of ticket inactivity before ticket will be moved to trash folder"})
+
+			</td>
+		</tr -->
+		<tr valign="top">
+			<td width="230px;">{trans str="Banned E-Mails"}:</td>
+			<td><textarea name="prefs[tickets_list][banned_emails]" rows="6" cols="50">{$sys_options.tickets_list.banned_emails}</textarea></td>
+			<td>{trans str="Enter list of banned email addresses"} ({trans str="one per line"})</td>
+		</tr>
+		<tr valign="top">
+			<td width="230px;">{trans str="Banned IP Addresses"}:</td>
+			<td><textarea name="prefs[tickets_list][banned_ips]" rows="6" cols="50">{$sys_options.tickets_list.banned_ips}</textarea></td>
+			<td>{trans str="Enter list of banned IP addressed one per line"}.</td>
+		</tr>
+		<tr valign="top">
+			<td width="230px;">{trans str="Ticket Flags"}:</td>
+			<td><textarea name="prefs[tickets_list][flags]" rows="4" cols="50">{$sys_options.tickets_list.flags}</textarea></td>
+			<td>{trans str="Enter list of ticket flags one per line"}.</td>
+		</tr>
+		<tr valign="top">
+			<td width="230px;">{trans str="Escalation Ticket After"}:</td>
+			<td>
+				<input name="prefs[tickets_list][escalation_after_hours]" type="text" value="{$sys_options.tickets_list.escalation_after_hours}" size="3" />
+				{trans str="hours"}
+				<input name="prefs[tickets_list][escalation_after_mins]" type="text" value="{$sys_options.tickets_list.escalation_after_mins}" size="2" />
+				{trans str="minutes"}
+
+			</td>
+			<td></td>
+		</tr>
+
+	</table>
+	<!-- /TICKET`S LIST-->
+	
+	
+	<!-- Script URLs -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Script URLs"}</th></tr>
+
+		<tr>
+			<td>{trans str="New Ticket Script URL"}:</td>
+			<td><input name="prefs[script_urls][new_ticket]" type="text" style="width: 400px;" value="{$sys_options.script_urls.new_ticket}" /></td>
+			<td><span style="color: red;">{$script_urls_error.new_ticket}</span></td>
+		</tr>
+		<tr>
+			<td> {trans str="View Existing Ticket Script URL"}:</td>
+			<td><input name="prefs[script_urls][existing_ticket]" type="text" style="width: 400px;" value="{$sys_options.script_urls.existing_ticket}" /></td>
+			<td><span style="color: red;">{$script_urls_error.new_ticket}</span></td>
+		</tr>
+	</table>
+	<!-- /Script URLs -->
+
+	<div style="text-align: center; padding-top: 10px;">
+		<input type="submit" name="save_prefs" value="{trans str="Save preferences"}">
+	</div>
+
+</form>

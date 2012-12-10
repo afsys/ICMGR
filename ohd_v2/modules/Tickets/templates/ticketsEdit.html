@@ -1,0 +1,172 @@
+<link href="css/ticketsList-ext.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" src="js/ticketsEdit.js"></script>
+<iframe id="shield_frame" frameborder="0" scrolling="no" style="position: absolute; z-index: 50; left: 10px; top: 10px; display: none;"></iframe>
+
+{include file="ticketsEdit-nextPrevString.html" position="top"}
+
+<div style="float: none;">
+	<div style="float: right;">
+		<input type="button" value="{trans str="<< Back"}" onclick="location.href='index.php?module=Tickets&action=TicketsList&prev_filter=1'" /> 
+	</div>
+	<div class="page_caption">{trans str="Manage Ticket"}</div>
+</div>
+
+{if is_array($message)} 
+	{foreach item=msg from=$message}
+		<div style="padding-top: 2px;">{$msg.caption}<span style="color: red;">{$msg.message}</span></div>
+	{/foreach}
+{else}
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<!-- EDIT PRODUCT FORM ITEMS -->
+{include file="ticketsEdit-js.html"}
+{include file="select_email_table.inc.html"}
+{include file="ticketsEdit-addTimeTracking.html"} 
+
+<form id="post_form" action="index.php" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="action"      value="TicketsEdit">
+	<input type="hidden" name="module"      value="Tickets">
+	<input type="hidden" name="ticket_id"   value="{$ticket.ticket_id}" />
+	<input type="hidden" name="submit_type" value=""                    id="submit_type" />
+	
+	{if !$is_authenticated}
+	<input type="hidden" name="ticket_num"      value="{$ticket.ticket_num}">
+	<input type="hidden" name="customer_email"  value="{$ticket.customer_email}" />
+	{/if}
+	
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th><div id="requestStatus" style="float: right;"></div>{$ticket.caption|strip_tags|default:"OHD Ticket"}</th></tr>
+		<tr>
+			<td style="vertical-align: top;">
+				<!-- TICKET HEADER -->            
+				{include file="ticketsEdit-header.html"}
+				<!-- TICKET HEADER -->                        
+			</td>
+		</tr>
+		
+		<!-- TODO ITEMS -->
+		{if !$is_customer}{include file="ticketsEdit-todoList.html"}{/if}
+		<!-- /TODO ITEMS -->
+		
+		{include file="ticketsEdit-exOptions.html"}
+		{include file="ticketsEdit-exNotes.html"}
+		
+		<!-- POST NEW TEMPLATE -->
+		{include file="ticketsEdit-newMessagePostForm.html"}
+		<!-- /POST NEW TEMPLATE -->
+		
+		<!-- POST NEW MESSAGE -->
+		{if $messages_type == 'Messages' && $sort_order == 'DESC'}
+			{$smarty.capture.new_message_form}
+		{/if}
+		<!-- /POST NEW MESSAGE -->
+		
+		<!-- MESSAGES -->
+		<tr>
+			<td style="border-top: 1px solid silver;">
+				<div class="paging" style="float: right; padding-top: 5px;">{$tickets_paging}</div>
+				<div style="float: none; padding: 5px; font-weight: bold;">
+					{if $messages_type == 'EMails'}
+						{trans str="Ticket E-Mails"}:
+					{elseif $messages_type == 'History'}
+						{trans str="Ticket History"}:
+					{elseif $messages_type == 'TimeTracking'}
+						{trans str="Time Tracking"}:
+					{else}
+						{trans str="Messages"}:
+					{/if}
+				</div>
+			</td>
+		</tr>
+		
+		{if isset($messages)}
+		{foreach item=message from=$messages}
+		<tr>
+			<td style="border-top: 1px solid #0D4C78; border-bottom: 1px solid #0D4C78; {$message.header_style}">
+				<div style="float: right; padding-right: 5px;">
+					<!-- <a href="javascript:EditMessage({$message.message_id})">Edit</a> | -->
+					{if !$is_customer}
+					<a class="msg" href="index.php?module=Tickets&action=TicketsDeleteMsg&ticket_id={$ticket.ticket_id}&message_id={$message.message_id}" onclick="return window.confirm('Are you sure?')">{trans str="Delete"}</a> |
+					{/if}
+					<a class="msg" href="javascript:void(0)" onclick="AddTimerTracking({$message.message_id})">{trans str="Add Time Tracking"}</a> |
+					<a class="msg" href="#top">{trans str="Top"}</a>
+				</div>
+				<a class="msg" name="{$message.message_id}" href="#{$message.message_id}"> 
+					<span title="{$message.message_datetime} {if $message.time_after_last != false}, after {$message.time_after_last} {/if}">
+					{if $message.message_owner_name}
+						{$message.message_datetime|date_format_usr:'full':$message.message_owner_name}</span> 
+					{else}
+						{$message.message_datetime|date_format_usr:'full':$message.message_creator_user_name}</span> 
+					{/if}</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="tick_msg_{$message.message_id}" style="padding-left: 5px; padding-top:10px; padding-bottom:10px; overflow: auto;">
+					{if $message.message_subject}<div><span style="text-decoration: underline;">Subject:</span> {$message.message_subject}</div>{/if}
+					{$message.message_text}
+				</div>
+				{if $message.message_atachment_name}
+				<div style="text-align: right;">
+					<a href="index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}&ticket_atachment={$message.message_id}{if $is_customer}&ticket_num={$ticket.ticket_num}&customer_email={$ticket.customer_email}{/if}" style=" color: #006699; font-weight: bold;">{$message.message_atachment_name}</a>
+				</div>
+				{/if}
+			</td>
+		</tr>
+		{/foreach}
+		{/if}
+		
+		{if isset($emails)}
+		{foreach item=email from=$emails}
+		<tr>
+			<td style="border-top: 1px solid #0D4C78; border-bottom: 1px solid #0D4C78; {$email.header_style}">
+				{trans str="Posted at"} {$email.rec_date|date_format_usr:'short'} {trans str="by"} {$email.sent_by_name} {trans str="by"} {$email.email}
+			</td>
+		</tr>
+		<tr>
+			<td style="padding: 5px;">
+				<div style="text-decoration: underline; padding-bottom: 8px; font-weight: bold;">{$email.subj}</div>
+				{$email.message|escape|nl2br}
+			</td>
+		</tr>
+		{/foreach}
+		{/if}
+		
+		{if isset($history_items)}
+		{foreach item=history_item from=$history_items}
+		<tr>
+			<td style="border-top: 1px solid #C0C0C0; {$history_item.header_style}; ">
+				{$history_item.rec_date|date_format_usr:'long'}: {$history_item.his_notes} by {$history_item.action_by_name}
+			</td>
+		</tr>
+		{/foreach}
+		{/if}
+		<!-- /MESSAGES -->
+		
+		{include file="ticketsEdit-timeTrackingItems.html"}
+
+		<!-- POST NEW MESSAGE -->
+		{if $messages_type == 'Messages' && $sort_order == 'ASC'}
+			{$smarty.capture.new_message_form}
+		{/if}
+		<!-- /POST NEW MESSAGE -->
+		
+		<tr>
+			<td style="border-top: 1px solid silver; background-color: #E9E9E9;">
+				<div class="paging" style="float: right;">{$tickets_paging}</div>
+				<div>{trans str="Total messages"}: {$messages_count}</div>
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- /EDIT PRODUCT FORM ITEMS -->
+
+{include file="ticketsEdit-nextPrevString.html" position="bottom"}
+
+<script language="JavaScript1.2">
+HighlightTicketFlag() 
+{literal}
+//new sxForm({width: '500px'});
+{/literal}
+</script>

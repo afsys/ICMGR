@@ -1,0 +1,61 @@
+<link href="css/ticketsList-ext.css" rel="stylesheet" type="text/css" />
+
+<tr class="exs" style="line-height: 18px;">
+	<th style="width: 20px;"><input type="checkbox" name="_call" onClick='checkAllBoxes(this);' /></th>
+	<th style="min-width: 18px;"><br /></th>
+	
+	<th class="brd" style="text-align: center;">
+		{if $orderby == 'id'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=id">{trans str="Id"}</a> <br />
+	</th>
+
+	
+	<th class="brd" style="text-align: center;">
+		{if $orderby == 'updated'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=updated">{trans str="Last Update"}</a>
+	</th>
+	
+	{if $smarty.const.F_DUEDATE_FLD}
+	<th class="brd" style="width: 95px; text-align: center;">
+		{if $orderby == 'due_date'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=due_date">{trans str="Due Date"}</a>
+	</th>
+	{/if}
+
+	{* <th>
+		<br />
+	</th> *}
+
+	<th class="brd">
+		{if $orderby == 'subj'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=subj">{trans str="Caption"}</a> /
+		{if $orderby == 'client'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=client">{trans str="Client"}</a>
+	</th>
+
+	<th class="brd" style="text-align: center;">
+		{if $orderby == 'product'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=product">{trans str="Product"}</a> /
+		{if $orderby == 'type'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=type">{trans str="Action"}</a>
+	</th>
+	
+	<th class="brd" style="width: 70px; text-align: center;">
+		{if $orderby == 'priority'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=priority">{trans str="Priority"}</a>
+	</th>
+	<th class="brd" style="width: 70px; text-align: center;">
+		{if $orderby == 'status'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=status">{trans str="Status"}</a>
+	</th>
+	<!--
+	<th style="width: 150px;">
+		{if $orderby == 'owner'}{$ordertosign}{/if}
+		<a href="?{$URI}&orderby=owner">Created By</a>
+	</th>
+	-->
+	<th class="brd" style="_width: 95px; min-width: 95px;">
+		{if $orderby == 'assigned_to'}{$ordertosign}{/if}
+		<a class="hdr" href="?{$URI}&prev_filter=1&orderby=assigned_to">{trans str="Ticket Owner"}</a>
+	</th>
+</tr>

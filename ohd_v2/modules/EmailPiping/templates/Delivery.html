@@ -1,0 +1,28 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Delivery Result"}</div>
+</div>
+
+
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th width="200px;">{trans str="Server"}</th>
+		<th>{trans str="Result"}</th>
+		<th>{trans str="Delivered"}</th>
+	</tr>
+	
+	{if count($results) > 0}
+	{foreach item=result from=$results}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$result.server}</td>
+		<td>{$result.message}</td>
+		<td>{$result.delivered} messages</td>
+		
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="no servers"}</td>
+	</tr>    
+	{/if}
+</table>    

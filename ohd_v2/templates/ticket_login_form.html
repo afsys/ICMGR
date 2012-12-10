@@ -1,0 +1,19 @@
+{trans str="Please enter ticket id and your email to access ticket"}
+
+{if $error}
+	<br>
+	<font color=red>{$error}</font>
+{/if}
+
+<form action="{$show_ticket_url}" method="get">
+	<table class="lf_table" border="0px">
+		<tr>
+			<td align="right">{trans str="Ticket ID"}:</td>
+			<td align="left"><input type=text name=ticket_id value="{$vars.ticket_id|escape}"></td></tr>
+		<tr>
+			<td align="right">{trans str="Your E-Mail"}:</td>
+			<td align="left"><input type=text name=email value="{$vars.email|escape}"></td>
+		</tr>
+	</table>
+	<input type=submit name=button value="{trans str="View ticket"}">
+</form>

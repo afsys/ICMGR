@@ -1,0 +1,40 @@
+<tr>
+	<td class="ohd_field_title">
+		{if 1 != $field_options.ticket_field_is_optional}
+			{$field_options.ticket_field_caption}
+		{else}
+			{$field_options.ticket_field_caption}
+		{/if}
+	 </td>
+	 
+	 <td class="ohd_field_input">
+		{if $field_options.ticket_field_type == "input"}
+			<input type=text size=40 name="form_field[{$field_id}]" value="{$vars.form_field.$field_id|htmlspecialchars}">
+		{/if}
+
+		{if $field_options.ticket_field_type == "check"}
+			<input type=checkbox size=40 name="form_field[{$field_id}]" value=1 {if $vars.form_field.$field_id == 1}checked{/if}>
+		{/if}
+
+		{if $field_options.ticket_field_type == "textarea"}
+			<textarea name="form_field[{$field_id}]" cols=40 rows=10>{$vars.form_field.$field_id|htmlspecialchars}</textarea>
+		{/if}
+		
+		{if $field_options.ticket_field_type == "textarea"}
+			<textarea name="form_field[{$field_id}]" cols=40 rows=10>{$vars.form_field.$field_id|htmlspecialchars}</textarea>
+		{/if}
+		
+		{if $field_options.ticket_field_type == "select"}
+			<select name="form_field[{$field_id}]">
+				{foreach from=$field_options.ticket_field_options item=field_option}
+				<option value="{$field_option}">{$field_option}</option>
+				{/foreach}
+				
+			</select>
+		{/if}
+		
+		{* multiselect *}
+		
+		
+	</td>
+</tr>

@@ -1,0 +1,234 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Edit ToDo Item"}</div>
+</div>
+
+{if is_array($message)} 
+	{foreach item=msg from=$message}
+		<div style="padding-top: 2px;">{$msg.caption}<span style="color: red;">{$msg.message}</span></div>
+	{/foreach}
+{else}
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<!-- EDIT PRODUCT FORM ITEMS -->
+
+<form id="post_form" action="index.php" method="post">
+	<input type="hidden" name="action"             value="TodoItemEdit">
+	<input type="hidden" name="module"             value="Tickets">
+	<input type="hidden" name="submit_type"        value="" id="submit_type" />
+	<input type="hidden" name="todo_item[tdi_id]"  value="{$todo_item.tdi_id}" />	
+	{if $ticket}<input type="hidden" name="todo_item[ticket_id]" value="{$ticket.ticket_id}" />{/if}
+
+	
+	{if !$is_authenticated}
+	<input type="hidden" name="ticket_num"      value="{$ticket.ticket_num}">
+	<input type="hidden" name="customer_email"  value="{$ticket.customer_email}" />
+	{/if}
+	
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th><div id="requestStatus" style="float: right;"></div>{$todo_item.caption|strip_tags|default:"&nbsp;"}{*$ticket.customer_name*}</th></tr>
+		<tr>
+			<td style="vertical-align: top;">
+				<!-- ITEM HEADER -->            
+
+					{if $todo_item}
+					<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px;">
+						<tr style="background-color: #90AADD;">
+							<td style="width: 80px;">{trans str="Ticket Id"}</td>
+							<td style="width: 80px;">{trans str="ToDo Id"}</td>
+							<td>{trans str="Submit Date"}</td>
+							<td>{trans str="Last Update"}</td>
+							<td style="width: 174px;">{trans str="Close Date"}</td>
+						</tr>
+						<tr style="background-color: #DDD;">
+							<td>
+								{if $ticket}
+									<a href="index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}" style="text-decoration: underline; position: relative; top: -1px;"
+										>{if $ticket.ticket_num}{$ticket.ticket_num|string_format:"%06d"}{else}{$ticket.ticket_id|string_format:"%06d"}{/if}</a>
+								{else}
+									-
+								{/if}
+							</td>
+							<td>{$todo_item.tdi_id|string_format:"%06d"}</td>
+							<td>{$todo_item.created_at}</td>
+							<td>{$todo_item.updated_at}</td>
+							<td>{if $todo_item.closed_at}{$todo_item.closed_at}{else}({trans str="Still open"}){/if}</td>
+						</tr>
+					</table>
+					{/if}
+
+					{if !$is_customer}
+					<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+						<tr style="background-color: #90AADD;">
+							{if !$todo_item}<td style="width: 80px;">{trans str="Ticket Id"}</td>{/if}
+							<td>{trans str="ToDo Owner"}</td>
+							<td>{trans str="ToDo Priority"}</td>
+							<td>{trans str="ToDo Status"}</td>
+							<td>{trans str="ToDo Progress"}</td>
+						</tr>
+						<tr style="background-color: #DDD;">
+							{if !$todo_item}
+							<td>
+								{if $ticket}
+									<a href="index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}" style="text-decoration: underline; position: relative; top: -1px;"
+										>{if $ticket.ticket_num}{$ticket.ticket_num|string_format:"%06d"}{else}{$ticket.ticket_id|string_format:"%06d"}{/if}</a>
+								{else}
+									-
+								{/if}
+							</td>
+							{/if}
+							<td>
+								{if ($user_rights & SR_TL_REASIGN) == SR_TL_REASIGN}
+								<select name="todo_item[assigned_to]" style="background-color: #E8E8E8; width: 100%;" {if $todo_item.closed_at}disabled="disabled"{/if}>
+									<option value="">{trans str="(not assigned)"}</option>
+									{foreach item=item key=key from=$users}
+									<option value="{$item.user_id}" {if $item.user_id == $ticket.ticket_assigned_to_id}selected="selected"{/if}>{$item.user_name}{if !empty($item.user_lastname)} {$item.user_lastname}{/if}</option>
+									{/foreach}
+								</select>
+								<input id="opt_btn_assigned_to" type="button" value="Reasign" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('assigned_to')" disabled="disabled"  />
+								{else}
+								{$ticket.ticket_assigned_to_name}
+								{/if}
+							</td>
+							<td style="width: 150px;"> <!-- 174px; -->
+								<select name="todo_item[priority]" id="opt_sel_priority" style="background-color: #E8E8E8; width: 100%;" {if $todo_item.closed_at}disabled="disabled"{/if}>
+									{foreach item=item key=key from=$sys_options.ticket_priorities}
+									<option value="{$key}" {if ($todo_item && $todo_item.priority == $key) || ($sys_options.tickets.priority_for_new == $key)}selected="selected"{/if}>{$key}</option>
+									{/foreach}
+								</select>
+								<input id="opt_btn_priority" type="button" value="Set Proirity" style="border: 1px solid black; width: 75px; display: none;"/>
+							</td>
+							<td style="width: 150px;">
+								<select name="todo_item[status]" id="opt_sel_status" style="background-color: #E8E8E8; width: 100%;" {if $todo_item.closed_at}disabled="disabled"{/if}>
+									{foreach item=item key=key from=$sys_options.ticket_statuses}
+									<option value="{$key}" {if ($todo_item && $todo_item.status == $key) || ($sys_options.tickets.status_for_new == $key)}selected="selected"{/if} {if $sys_options.tickets.status_for_new == $key}style="font-weight: bold; color: green;"{elseif $sys_options.tickets.status_for_closed == $key}style="font-weight: bold;"{/if}>{$key}</option>
+									{/foreach}
+								</select>
+								<input id="opt_btn_status" type="button" value="Set Status" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('status')" disabled="disabled" />
+							</td>
+							<td style="width: 150px;"> <!-- 174px; -->
+								<select name="todo_item[progress]" id="opt_sel_progress" style="background-color: #E8E8E8; width: 100%;" {if $todo_item.closed_at}disabled="disabled"{/if}>
+									{foreach item=item key=key from=$item_progresses}
+									<option value="{$key}" {if $todo_item.progress == $key}selected="selected"{/if}>{$item}</option>
+									{/foreach}
+								</select>
+								<input id="opt_btn_priority" type="button" value="Set Proirity" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('priority')" disabled="disabled" />
+							</td>
+						</tr>
+					</table>
+					{/if}
+
+					<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+						{if $ticket}
+						<tr style="text-align: left;">
+							<td style="background-color: #90AADD; width: 145px;">{trans str="Customer Name"}</td>
+							<td style="background-color: #DDD;">{$ticket.customer_name|strip_tags}</td>
+						</tr>
+						{if $ticket.customer_phone}
+						<tr style="text-align: left;">
+							<td style="background-color: #90AADD; width: 145px;">{trans str="Customer Phone"}</td>
+							<td style="background-color: #DDD;">{$ticket.customer_phone}</a>
+							</td>
+						</tr>
+						{/if}
+						<tr style="text-align: left;">
+							<td style="background-color: #90AADD; width: 145px;">{trans str="Customer E-Mail"}</td>
+							<td style="background-color: #DDD;">
+								<a href="javascript:SelectEmail('{$ticket.customer_email}', '{$ticket.customer_name}')" style="color: #006699;"
+									>{$ticket.customer_email|strip_tags}</a>
+							</td>
+						</tr>
+						{/if}
+						<tr style="text-align: left;">
+							<td style="background-color: #90AADD; width: 145px;">{trans str="ToDo Caption"}</td>
+							<td style="background-color: #DDD;">
+								{if !$todo_item.closed_at}
+								<input name="todo_item[caption]" type="text" value="{$todo_item.caption}" style="width: 100%;" />
+								{else}
+								{$todo_item.caption}
+								{/if}
+							</td>
+						</tr>
+						<tr style="text-align: left;">
+							<td style="background-color: #90AADD; width: 145px;">{trans str="Time To Make"}</td>
+							<td style="background-color: #DDD;">
+								{if !$todo_item.closed_at}
+								<input name="todo_item[time_to_make]" type="text" value="{$todo_item.time_to_make}" style="width: 100%;" />
+								{else}
+								{$todo_item.time_to_make}
+								{/if}
+							</td>
+						</tr>
+						<tr style="text-align: left;">
+							<td style="background-color: #90AADD; vertical-align: top;">{trans str="ToDo Desc"}</td>
+							<td style="background-color: #DDD;" >
+								{if !$todo_item.closed_at}
+								<textarea name="todo_item[description]" style="width: 100%; height: 160px;">{$todo_item.description}</textarea>
+								{else}
+								{$todo_item.description}
+								{/if}
+								
+							</td>
+						</tr>
+					</table>
+
+					{if !$is_customer}
+					<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+						<tr style="background-color: #DDD; text-align: right;">
+							<td>
+								<!-- 
+								<input type="button" value="{trans str="Print"}" style="border: 1px solid black; width: 95px;" 
+									onclick="window.open(location.href + '&print_preview=1', '_blank')"  
+									/>
+								-->
+								
+								<input type="button" value="{trans str="Delete ToDo"}" style="border: 1px solid black; width: 95px;" 
+									onclick="if (window.confirm('Are you sure?')) location.href = 'index.php?module=ToDo&action=TodoDelete&tdi_id={$todo_item.tdi_id}'"  
+									/>
+								{if !$todo_item.closed_at}
+								<input type="button" value="{trans str="Close ToDo"}" style="border: 1px solid black; width: 95px;" 
+									onclick="location.href = 'index.php?module=ToDo&action=TodoClose&tdi_id={$todo_item.tdi_id}'"  />
+								<input type="button" value="{trans str="Save ToDo"}" style="border: 1px solid black; width: 95px;" 
+									onclick="$('submit_type').value = 'cur_todo'; form.submit();"  />
+								{else}
+								<input type="button" value="{trans str="Reopen ToDo"}" style="border: 1px solid black; width: 95px;" 
+									onclick="location.href = 'index.php?module=ToDo&action=TodoReopen&tdi_id={$todo_item.tdi_id}'"  />
+								{/if}
+							</td>
+							{if !$todo_item.closed_at}
+							<td style="width: 296px; text-align: center;">
+								<input type="button" value="{trans str="Save -&gt; Back To Ticket"}" style="border: 1px solid black; width: 145px;" 
+									onclick="$('submit_type').value = 'open_ticket'; form.submit();"  />
+								<input disabled type="button" value="{trans str="Save -&gt; ToDo List"}" style="border: 1px solid black; width: 145px;" 
+									onclick="$('submit_type').value = 'open_todo_list'; form.submit();"  />
+							</td>
+							{else}
+							<td style="width: 226px; text-align: center;">
+								<input type="button" value="{trans str="Back To Ticket"}" style="border: 1px solid black; width: 110px;" 
+									onclick="location.href='index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}'"  />
+								<input disabled type="button" value="{trans str="ToDo List"}" style="border: 1px solid black; width: 110px;" 
+									onclick="location.href='index.php?module=ToDo&action=ToDoItemsList'"  />
+							</td>
+							
+							{/if}
+						</tr>
+					</table>
+					{/if}
+
+				<!-- ITEM HEADER -->                        
+			</td>
+		</tr>
+		
+		<!-- TODO ITEMS -->
+		{* include file="ticketsEdit-todoList.html" *}
+		<!-- /TODO ITEMS -->
+		
+		<tr>
+			<td style="border-top: 1px solid silver; background-color: #E9E9E9;">
+				<div class="paging" style="float: right;">{$tickets_paging}</div>
+				<div>{trans str="Total messages"}: {$messages_count}</div>
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- /EDIT PRODUCT FORM ITEMS -->

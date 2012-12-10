@@ -1,0 +1,40 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Spam Filter Preferences"}</div>
+</div>
+
+{if $message} 
+	<div style="color: red;">{$message}</div>
+{/if}  
+
+<form method="post">
+
+	<!-- TICKET STATUSES -->
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="4">{trans str="Filtering Options"}</th></tr>
+		<tr> 
+			<td valign="top" align="right" width="130px">{trans str="Email"}:</td>
+			<td> 
+				<textarea name="prefs[piping_spam_filter][banned_emails]" rows="10" cols="80">{$sys_options.piping_spam_filter.banned_emails}</textarea>
+			</td>
+		</tr>
+		<tr> 
+			<td valign="top" align="right" width="130px">{trans str="Words in caption"}:</td>
+			<td> 
+				<textarea name="prefs[piping_spam_filter][words_in_caption]" rows="10" cols="80">{$sys_options.piping_spam_filter.words_in_caption}</textarea>
+			</td>
+		</tr>
+		<tr> 
+			<td valign="top" align="right" width="130px">{trans str="Words in body"}:</td>
+			<td> 
+				<textarea name="prefs[piping_spam_filter][words_in_body]" rows="10" cols="80">{$sys_options.piping_spam_filter.words_in_body}</textarea>
+			</td>
+		</tr>
+
+	</table>
+	<!-- /TICKET STATUSES -->
+	
+	<div style="text-align: center; padding-top: 10px;">
+		<input type="submit" value="{trans str="Submit Spam Filter"}">
+	</div>
+
+</form>

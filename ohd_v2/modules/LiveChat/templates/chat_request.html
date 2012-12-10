@@ -1,0 +1,191 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<META content="text/html; charset=windows-1251" http-equiv=Content-Type>
+
+<style type="text/css">
+{literal}
+	A:link {	COLOR: gray; TEXT-DECORATION: none}
+	A:active {	COLOR: white; TEXT-DECORATION: none}
+	A:visited {	COLOR: gray; TEXT-DECORATION: none}
+	A:hover {	COLOR: white; TEXT-DECORATION: none}
+	TD {	COLOR: #164e63; FONT-FAMILY: arial; FONT-SIZE: 8pt}
+	TH {	COLOR: #164e63; FONT-FAMILY: arial; FONT-SIZE: 8pt; TEXT-ALIGN: left}
+	B {	COLOR: black; FONT-FAMILY: arial; FONT-SIZE: 14pt}
+	P {	COLOR: silver; FONT-FAMILY: arial; FONT-SIZE: 8pt}
+	DIV {	COLOR: silver; FONT-FAMILY: arial; FONT-SIZE: 8pt; TEXT-ALIGN: center}
+{/literal}
+</style>
+
+<script type="text/javascript" src="index.php?module=System&action=GetJs&file=translations.js"></script>
+<script type="text/javascript">
+{literal}
+function CheckForm() {
+	if (document.getElementById('group_id').value == '') {
+		alert(trans.PLEASE_SELECT_ACTIVE_GROUP);
+		document.getElementById('group_id').focus();
+		//return false;
+	}
+	
+	if (document.getElementById('user_nickname').value == '') {
+		alert(trans.PLEASE_ENTER_NICKNAME);
+		document.getElementById('user_nickname').focus();
+		return false;
+	}
+
+	if (document.getElementById('email').value == '') {
+		alert(trans.PLEASE_ENTER_NICKNAME);
+		document.getElementById('email').focus();
+		return false;
+	}
+
+	return true;
+}
+
+function InitForm() 
+{
+	document.getElementById('user_data[browser]').value = navigator.userAgent;
+	var monitor_resolution = screen.width + ' x ' + screen.height;
+	document.getElementById('user_data[monitor_resolution]').value = monitor_resolution;
+	if (opener && opener.location) document.getElementById('user_data[clicked_from]').value = opener.location.href;
+}
+{/literal}
+</script>
+</head>
+
+
+<body alink=#ff0000 bgcolor=#ffffff bottommargin=16 leftmargin=16 link=#0000ff rrightmargin=16 text=#000000 
+topmargin=16 vlink=#ff0000 marginwidth="16" marginheight="16" onload="InitForm();">
+	<P align=center>&nbsp;</P>
+	<P>&nbsp;</P>
+	<TABLE height=214 cellSpacing=0 cellPadding=0 width=399 align=center border=0>
+	<TBODY>
+	<tr>
+		<td height=38 style="background: #51B8BE url(images/titl_login.gif); color: white; font-size: 18px; padding: 0 0 0 10px;">
+			{trans str="OMNI LIVE CHAT"}
+		</td>
+	</tr>
+	<TR vAlign=top align=middle bgColor=#efefef>
+	<TD height=153>
+	<TABLE cellSpacing=0 cellPadding=0 width=350 border=0>
+	<TBODY>
+	<TR>
+	<TD align=middle width="100%" colSpan=2><FONT face=Verdana size=3><B></B></FONT></TD></TR>
+	<TBODY>
+		<tr>
+			<td colspan="2" height="10px;">
+				<!-- img height=42 src="images/livechat/logo2.gif" width=126 / -->
+				&nbsp;
+			</td>
+		</tr>
+	<TR>
+				<!------------------------------------------------ Start login form -------------------------------------------//-->
+				<form id="chat_req_form" method="post">
+					<input type="hidden" id="user_data[browser]" name="user_data[browser]" value="" />
+					<input type="hidden" id="user_data[monitor_resolution]" name="user_data[monitor_resolution]" value="" />
+					<input type="hidden" id="user_data[clicked_from]" name="user_data[clicked_from]" value="" />
+					
+					
+
+				<TD width=250>
+				
+					<TABLE height=100 cellSpacing=0 cellPadding=4 width=250 border=0>
+
+						<tr valign=top>
+							<td width=60 height=18 style="color: black; font-size: 10px; font-weight: bold; font-family: Verdana; padding-left: 10px; padding-top: 6px;">Department</TD>
+							<td width=178 height=18>
+								<select name="group_id" id="group_id"
+									style="font-size: 11px; border-left-color: #e5e5e5; border-bottom-color: #e5e5e5; width: 250px; border-top-color: #e5e5e5; font-family: arial; height: 18px; background-color: #dfebfe; border-right-color: #e5e5e5">
+									{if count($groups) == 1}
+										<option  value="{if $groups[0].active_agents_count > 0}{$groups[0].group_id}{/if}">
+											{$groups[0].group_caption}
+											{if $groups[0].active_agents_count == 0}(offline){/if}
+										</option>
+									{else}
+										<option>(Choose Department)</option>
+										{foreach item=item from=$groups}
+											<option value="{if $item.active_agents_count > 0}{$item.group_id}{/if}">
+												{$item.group_caption}
+												{if $item.active_agents_count == 0}(offline){/if}
+											</option>
+										{/foreach}
+									{/if}
+								</select>
+							</td>
+						</tr>
+						<tr valign=top>
+							<td width=60 height=18 style="color: black; font-size: 10px; font-weight: bold; font-family: Verdana; padding-left: 10px; padding-top: 6px;">Nickname</TD>
+							<td width=178 height=18>
+								<input name="user_nickname" id="user_nickname" maxlength=60
+									style="font-size: 11px; border-left-color: #e5e5e5; border-bottom-color: #e5e5e5; width: 250px; border-top-color: #e5e5e5; font-family: arial; height: 18px; background-color: #dfebfe; border-right-color: #e5e5e5" />
+							</td>
+						</tr>
+						<TR>
+							<TD width=60 height=18 style="color: black; font-size: 10px; font-weight: bold; font-family: Verdana; padding-left: 10px; padding-top: 6px;">E-Mail</TD>
+							<td width=178 height=18>
+								<input name="user_data[email]" id="email" maxlength=60
+									style="font-size: 11px; border-left-color: #e5e5e5; border-bottom-color: #e5e5e5; width: 250px; border-top-color: #e5e5e5; font-family: arial; height: 18px; background-color: #dfebfe; border-right-color: #e5e5e5" />
+							</td>
+						</tr>
+						<tr>
+							<td width=60 height=18 valign="top" style="color: black; font-size: 10px; font-weight: bold; font-family: verdana; padding-left: 10px; padding-top: 6px;">Question</td>
+							<td width=178 height=18>
+								<textarea name="user_data[question]"
+									style="WIDTH: 250px; BORDER-TOP-COLOR: #e5e5e5; FONT-FAMILY: arial; font-size: 10px; HEIGHT: 65px; BACKGROUND-COLOR: #dfebfe; BORDER-RIGHT-COLOR: #e5e5e5"></textarea>
+							</td>
+						</TR>
+						<!--
+						<TR vAlign=top>
+							<TD width=60 height=1><IMG height=18 src="images/ipaddress.gif" width=66></TD>
+							<TD width=178 height=1 style="padding-top:7px"><FONT face=Verdana>{$remoteAddy}</FONT></TD>
+						</TR> -->
+						<TR vAlign=top align=left>
+							<td colspan=2 align=center>
+								<div id="restore_div" style="width: 75px; height: 21px; color: white; font-size: 11px; font-weight: bold; letter-spacing: 0.7px; background: #51B8BE url(images/submit.gif) no-repeat; line-height: 19px; cursor: pointer;" onclick="if (CheckForm()) document.getElementById('chat_req_form').submit();">{trans str="Submit"}</div>
+							</td>
+						</TR>
+
+					</TABLE>
+					
+				</TD>
+				</FORM>
+				<!------------------------------------------------ End login form -------------------------------------------//-->
+	     </TR>
+	    </TBODY>
+	   </TABLE>
+	  </TD>
+	 </TR>
+	</FORM>
+
+	  <TR vAlign=top>
+	   <TD height=4><IMG height=4 src="images/cell.gif" width=1></TD>
+	  </TR>
+	  <TR vAlign=top bgColor=#efefef>
+	   <TD>
+	    <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+	     <TR>
+	      <FORM name="mail" method="post" action="index.php" onSubmit="javascript:onRemindFormSubmit();">
+	      <TD>
+				<table cellspacing=0 cellpadding=0 width="100%" border=0>
+					<tr valign=top><td align=center></td></tr>
+					<tr valign=top>
+						<td height=8><img height=8 src="images/cell.gif" width=1></td>
+					</tr>
+					<tr>
+						<td valign=bottom align=left>&nbsp;&nbsp;{trans str="Powered by"} <a href="http://www.omnihelpdesk.com/" target="_new">omnihelpdesk.com</a></td>
+					</tr>
+					<tr valign=top>
+					<td height=4><img height=4 src="images/cell.gif" width=1></td>
+					</tr>
+				</table>
+	      </td>
+	      <td valign=bottom align=right width=29 height=24><img height=30 src="images/login_img04.gif" width=29></td>
+	     </tr>
+	    </table>
+	   </td>
+	  </tr>
+	 </tbody>
+	</table>
+
+</body>
+</html>

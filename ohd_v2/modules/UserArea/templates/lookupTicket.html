@@ -1,0 +1,32 @@
+<!-- CAPTION -->
+<div style="float: none;">
+	<div class="page_caption">{trans str="Lookup Ticket"}</div>
+</div>
+<!-- /CAPTION -->   
+
+{if $message} 
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<!-- LOOKUP TICKET FORM -->
+<form action="index.php" method="post">
+	<input type="hidden" name="module" value="Tickets">
+	<input type="hidden" name="action" value="TicketsEdit">
+
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="2">{trans str="Ticket Information"}</th></tr>
+		<tr>
+			<td>{trans str="Ticket Number:"}</td>
+			<td><input type="text" name="ticket_num" style="width: 200px; " /></td>
+		</tr>
+		<tr>
+			<td style="width: 105px;">{trans str="E-Mail:"}</td>
+			<td><input type="text" name="customer_email" style="width: 200px; " /></td>
+		</tr>
+	</table>
+	<div style="text-align: center; padding-top: 12px;"><input type="submit" value="{trans str="Search Ticket"}"></div>
+</form>
+
+<!-- /LOOKUP TICKET FORM -->
+
+

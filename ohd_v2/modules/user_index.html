@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	{if isset($page_autorefresh_time)}<meta http-equiv="refresh" content="{$page_autorefresh_time}">{/if}
+	<title>Omni Help Desk</title>
+	<link href="styles.css" rel="stylesheet" type="text/css">
+	<link href="emails.css" rel="stylesheet" type="text/css">
+	<link href="new.css" rel="stylesheet" type="text/css">
+	<link href="user.css" rel="stylesheet" type="text/css">
+	<link href="js/JSCookMenu/ThemeOffice/theme.css" rel="stylesheet" type="text/css">   
+	
+	<script type="text/javascript" language="JavaScript1.2" src="js/common.js"></script>
+	<script language="JavaScript" src="js/JSCookMenu/JSCookMenu.js"></script>
+	<script language="JavaScript" src="js/JSCookMenu/ThemeOffice/theme.js"></script>
+	<!-- <script language="JavaScript" src="index.php?module=System&action=GetJs&file=userMenu.js"></script> -->
+	
+	{assign var="is_authenticated" value=$user->isAuthenticated()}
+	{if $is_authenticated}
+		{include file="`$smarty.const.BASE_DIR`js/JSCookMenu/actualUserMenu.js"}
+	{else}
+		{include file="`$smarty.const.BASE_DIR`js/JSCookMenu/userMenu.js"}
+	{/if}
+
+	
+	
+	<script type="text/javascript" src="lib/FCKeditor/fckeditor.js"></script>	
+	
+	<script language="JavaScript1.2" type="text/javascript">
+	{literal} 
+		if(typeof window.addEventListener != 'undefined') window.addEventListener('load', ohdDrawMenu, true); 
+		else window.attachEvent('load', ohdDrawMenu); 
+	{/literal}
+	</script>
+</head>
+<body >
+	{assign var="SysInfo" value=$user->GetAttribute('SysInfo')}
+	
+	<a name="top"></a>
+
+	<div class="top_div">
+		<div style="height: 80px; background: #0851CE url(images/top_user.gif) no-repeat; position: relative;">
+		</div>
+	
+		<!-- HORISONTAL MENU -->
+		<div id="ohd_menu" class="hmenu_div">
+			<script language="JavaScript1.2" type="text/javascript"> ohdDrawMenu(); </script>      
+		</div>
+		<!-- /HORISONTAL MENU -->
+		
+		<!-- TOP PANEL -->
+		{if !$hide_top_panel && !$is_authenticated}
+		<div class="top_panel_div" style="position: relative; padding-left: 15px; border-bottom-color: #8B8B8B; height: 18px;">
+			<div style="position: absolute; left: 7px;">
+				<form name="login" action="index.php" method="post">
+					<input name="is_userside" type="hidden" value="1" />
+					<input name="username" type="text" style="width: 100px;" value="{trans str="Login"}" onclick="if (this.value == '{trans str="Login"}') this.value = '';" onblur="if (this.value == '') this.value = '{trans str="Login"}'"/>
+					<input name="password" type="password" style="width: 100px;" value="{trans str="Pass"}" onclick="if (this.value == '{trans str="Pass"}') this.value = '';" onblur="if (this.value == '') this.value = '{trans str="Pass"}'"/>
+					<input type="submit" value="{trans str="Login"}" style="position: relative; top: -1px;" />
+					{*<input type="button" onclick="location.href = 'index.php?module=UserArea&action=RestorePass'" value="{trans str="Restore Password"}" />*}
+					<a href="index.php?module=UserArea&action=RestorePass" >{trans str="Restore Password"}</a>
+				</form>
+				
+			</div>
+			<div style="position: absolute; right: 7px;">
+				&nbsp;
+				{*<input type="button" onclick="location.href = 'index.php?module=UserArea&action=Register'" value="{trans str="Register"}" />*}
+			</div>
+			
+		</div>
+		{/if}
+		<!-- /TOP PANEL -->
+		
+		<!-- MAIN BODY -->
+		<div class="body_div">
+			{if $pageBody}{include file="$pageBody"}{else}{trans str="No content..."}{/if}
+		</div>
+		<!-- /MAIN BODY -->
+		
+		<!-- FOOTER -->
+		<div class="footer_div">
+			Omni Help Desk, v {$smarty.const.OHD_VERSION} &copy;2006 <b>TSS Enterprises</b> {trans str="All rights reserved"}.
+			{trans str="See also"} <a href="http://www.omnihelpdesk.com/tandc.htm" target="_blank"> {trans str="Terms &amp; Conditions"}</a>
+		</div>
+		<!-- /FOOTER -->
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,85 @@
+{if isset($tt_items)}
+<tr>
+	{literal}
+	<style type="text/css">
+		#time_tracker th { text-align: center; width: 110px; }
+		#time_tracker td { vertical-align: top; }
+		#time_tracker td.val { text-align: right; }
+		#time_tracker td.btn { width: 45px; }
+		#time_tracker td.total { text-align: right; border-top: 1px solid #706969; }
+	</style>
+	{/literal}
+
+	<td style="border-top: 1px solid #0D4C78;">
+		<table id="time_tracker" width="100%" border="0px">
+			<tr >
+				<th style="width: 85px;">Date</th>
+				<th>Added by</th>
+				<th colspan="2">Worked</th>
+				<th colspan="2">Chargeable</th>
+				<th colspan="2">Billable</th>
+				<th colspan="2">Payable</th>
+				<th style="width: 60px;">Action</th>
+			</tr>
+			
+			{assign var="tt_worked_sum" value=0}
+			{assign var="tt_charged_sum" value=0}
+			{assign var="tt_billed_sum" value=0}
+			{assign var="tt_payed_sum" value=0}
+			
+			{foreach item=tt_item from=$tt_items}
+			<tr>
+				<td align="center">{$tt_item.tt_created|date_format_usr:'short'}</td>
+				<td>{$tt_item.tracked_by_user_name}</td>
+				<td class="val">{$tt_item.tt_worked}</td>
+				<td class="btn"><input type="button" value="Add" onclick="AddTT({$tt_item.tt_id}, 'worked')" /></td>
+				<td class="val">{$tt_item.tt_charged}</td>
+				<td class="btn"><input type="button" value="Add" onclick="AddTT({$tt_item.tt_id}, 'charged')" /></td>
+				<td class="val" 
+					{if $tt_item.tt_billed <  $tt_item.tt_charged}style="color: red; font-weight: bold;"{/if}
+					{if $tt_item.tt_billed == $tt_item.tt_charged}style="color: green;"{/if}
+					>{$tt_item.tt_billed}</td>
+				<td class="btn"><input type="button" value="Add" onclick="AddTT({$tt_item.tt_id}, 'billed', {math equation='x - y' x=$tt_item.tt_charged y=$tt_item.tt_billed})" {if $tt_item.tt_billed == $tt_item.tt_charged}disabled="disabled"{/if} /></td>
+				<td class="val" 
+					{if $tt_item.tt_payed <  $tt_item.tt_billed}style="color: red; font-weight: bold;"{/if}
+					{if $tt_item.tt_payed == $tt_item.tt_billed}style="color: green; "{/if}
+					>{$tt_item.tt_payed}</td>
+				<td class="btn"><input type="button" value="Add" onclick="AddTT({$tt_item.tt_id}, 'payed', {math equation='x - y' x=$tt_item.tt_billed y=$tt_item.tt_payed})" {if $tt_item.tt_payed == $tt_item.tt_billed}disabled="disabled"{/if} /></td>
+				<td align="center">
+					{* <a href="#">Full Info</a> | *}
+					<a href="javascript:void(0);" onclick="DelTT({$tt_item.tt_id})">Delete</a>
+				</td>
+			</tr>
+				{math assign="tt_worked_sum" equation="x + y" x=$tt_worked_sum y=$tt_item.tt_worked}
+				{math assign="tt_charged_sum" equation="x + y" x=$tt_charged_sum y=$tt_item.tt_charged}
+				{math assign="tt_billed_sum" equation="x + y" x=$tt_billed_sum y=$tt_item.tt_billed}
+				{math assign="tt_payed_sum" equation="x + y" x=$tt_payed_sum y=$tt_item.tt_payed}
+			{/foreach}
+			{if count($tt_items)>1}
+			<tr>
+				<td></td>
+				<td></td>
+				<td class="total">{$tt_worked_sum|string_format:"%.2f"}</td>
+				<td></td>
+				<td class="total">{$tt_charged_sum|string_format:"%.2f"}</td>
+				<td></td>
+				<td class="total" 
+					{if $tt_billed_sum <  $tt_charged_sum}style="color: red; font-weight: bold;"{/if}
+					{if $tt_billed_sum == $tt_charged_sum}style="color: green;"{/if}
+					>{$tt_billed_sum|string_format:"%.2f"}</td>
+				<td></td>
+				<td class="total" 
+					{if $tt_payed_sum <  $tt_billed_sum}style="color: red; font-weight: bold;"{/if}
+					{if $tt_payed_sum == $tt_billed_sum}style="color: green; "{/if}
+					>{$tt_payed_sum|string_format:"%.2f"}</td>
+				<td></td><td></td>
+			</tr>
+			{/if}
+			
+		</table>
+		<div style="padding: 2px 5px; margin: 3px 0 0 0; border-top: 1px solid silver; text-align: right;">
+			<a class="msg" href="javascript:void(0)" onclick="AddTimerTracking(null, true)">{trans str="Add New Time Tracking"}</a>
+		</div>
+	</td>
+</tr>
+{/if}

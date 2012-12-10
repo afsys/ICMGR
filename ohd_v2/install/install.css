@@ -1,0 +1,59 @@
+.main   {
+        background-color:#EAF2FF;
+        font-style: Verdana;
+        width:40%;
+//        font-size: 11pt;
+       }
+.main_part {
+	font-family: Verdana;
+	font-size: 10pt;
+	font-weight: bold;
+	color: black;
+}
+
+.notify {
+	font-style: Times New Romans;
+	font-size: 10pt;
+	color: #749ADD;
+}
+.title {
+        font-family: Arial;
+        font-size: 13pt;
+        color: black;
+	height: 20pt;
+	vertical-align: center;
+}
+.submit {
+        BACKGROUND-COLOR: #dfebfe;
+        BORDER-BOTTOM-COLOR: #e5e5e5;
+        BORDER-LEFT-COLOR: #e5e5e5;
+        BORDER-RIGHT-COLOR: #e5e5e5;
+        BORDER-TOP-COLOR: #e5e5e5;
+        FONT-FAMILY: arial;
+	font-weight:bold;
+}
+.button {
+        BACKGROUND-COLOR: #dfebfe;
+        BORDER-BOTTOM-COLOR: #e5e5e5;
+        BORDER-LEFT-COLOR: #e5e5e5;
+        BORDER-RIGHT-COLOR: #e5e5e5;
+        BORDER-TOP-COLOR: #e5e5e5;
+        FONT-FAMILY: arial;
+        font-weight:bold;
+}
+							
+.error {
+        font-family: Verdana;
+        font-size: 10pt;
+        font-weight: bold;
+        color: red;
+	}
+				
+.form
+        {
+        border-color:#e5e5e5;
+        BACKGROUND-COLOR: #dfebfe;
+        FONT-FAMILY: Verdana;
+        FONT-SIZE: 8pt;
+}
+									

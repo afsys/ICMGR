@@ -1,0 +1,26 @@
+<html>
+<head>
+	<title>Mail log - details</title>
+</head>
+<body bgcolor="white">
+	<h3 style="padding: 0; margin: 0;">Headers:</h3>
+	<div style="font-family: monospace;">
+		{foreach key=key item=item from=$info.email_headers}
+			<strong>{$key|escape:"html"}: </strong>
+			{if is_array($item)}
+				{foreach item=sub_item from=$item}
+					<br />&nbsp;&nbsp;&nbsp;{$sub_item|escape:"html"}
+				{/foreach}
+			{else}
+				{$item|escape:"html"}
+			{/if}
+			<br />
+		{/foreach}
+	</div>
+	
+	<div style="border-top: blue dashed 2px; padding-top: 4px;">
+		{$info.email_body}
+	</div>
+	<center><input type=button name=button value="Close Window" onClick="javascript:window.close();"></center>
+</body>
+</html>

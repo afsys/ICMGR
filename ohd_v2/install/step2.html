@@ -1,0 +1,66 @@
+<?
+	$dbhost = isset($_POST["dbhost"])?$_POST["dbhost"]:"localhost";
+	$dbuser = isset($_POST["dbuser"])?$_POST["dbuser"]:"";
+	$dbpass = isset($_POST["dbpass"])?$_POST["dbpass"]:"";
+	$dbname = isset($_POST["dbname"])?$_POST["dbname"]:"ohd";
+	$prefix = isset($_POST["prefix"])?$_POST["prefix"]:"ohd_";
+?>
+<Table cellpadding=5>
+ <tr class=main_part>
+  <td align=left valign=top>
+<div align=left class=notify><img src="../images/squares.gif" border=0 alt=""> &nbsp;<u>Installation</u> -> Step 2</div>
+<br>
+<div align=left class=title>Omni Help Desk Install Wizard</div>
+<br>
+Please enter hostname, username, password, and database name in the fields below.
+<div class=notify><br>
+NOTICE: When you click on the "Create config" button below it will automatically create the db_config.php file for you.  
+</div>
+ </td>
+</tr>
+<tr class=main_part>
+ <td valign=top align=center class=main_part>
+  <table cellspacing=2 cellpadding=2 align=center border=0>
+   <form method=post name=db>
+   <input type="hidden" name="step" value="3">
+    <tr class=main_part><td align=left colspan=2 valign=top><b><font color="red"><?php echo $error;?></font></b><br><p>Fill in the fields below:<br><br></td></tr>
+<?php #if(function_exists('pg_connect')) { ?><!--<tr class=main_part><td align=left valign=center>Database:</td>
+<td align=left valign=center><select class="form" name="dbtype"><option value="mysql">MySQL</option><option value="pgsql">PostgreSQL</option></select></td></tr>-->
+<?php #} else 
+echo '<input type="hidden" name="dbtype" value="mysql">';?>
+    <tr class=main_part><td align=left valign=center>Hostname:</td>
+     <td align=left valign=center><input type=text class=form name="dbhost" size=17 value="<?=$dbhost;?>"></td></tr>
+    <tr class=main_part><td align=left valign=center>Username:</td>
+     <td align=left valign=center><input type=text class=form name="dbuser" size=17 value="<?=$dbuser;?>"></td></tr>
+    <tr class=main_part><td align=left valign=center>Password:</td>
+     <td align=left valign=center><input type=password class=form name="dbpass" size=17 value="<?=$dbpass;?>"></td></tr>
+    <tr class=main_part><td align=left valign=center>Database name:</td>
+     <td align=left valign=center><input type=text class=form name="dbname" size=17 value="<?=$dbname;?>"></td></tr>
+    <tr class=main_part><td align=left valign=center>Table prefix:</td>
+     <td align=left valign=center><input type=text class=form name="prefix" size=17 value="<?=$prefix;?>"></td></tr>
+    <tr class=main_part><td align=center valign=center colspan=2>
+     <br><br><input type=submit value="Create config file and go to the next step" class=submit></tD></tr>
+    </form>
+   </table>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top align=center class=msg>
+<div align=left class=main_part><div style="text-align: justify;">
+If you get the "warning" error message make sure that you granted
+permissions (chmod 777) to the folder you are installing OHD in. If
+you continue to have problems edit the db_config.php file manually and
+upload it to your server. Then click on "Go to the next step directly".<br>
+</div>
+<br>
+<div align=center class=waring>WARNING: Before going to the next step, upload db_config.php !</div>
+<br></div>
+<div align=center class=main_part>
+<form>
+<input type="hidden" name="step" value="3">
+<input type="submit" name="noGen" class=button value="Go to step to the next step directly" onClick="location.href='install.php?step=2';" class=submit>
+</form></div>
+<br><br>
+  </td>
+ </tr>
+</table>

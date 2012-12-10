@@ -1,0 +1,105 @@
+<!--
+<div style="float: none;">
+    <div style="float: right;">
+        <a class="page" href="index.php?module=Tickets&action=TicketsAdd">Add New Ticket</a>
+    </div>
+    <div class="page_caption">Tickets Frontpage</div>
+</div>
+-->
+
+<table class="page" cellspacing="0" cellpadding="2px" border="0px">
+    <tr>
+        <th>Tickets Frontpage</th>
+    </tr>
+    
+
+    <tr>
+        <td>
+        
+			<table width="100%">
+				<!-- ASSIGNED TICKETS -->
+				<tr style="background-color: #CCC;">
+					<td colspan="7" style="text-align: center; padding: 5px;">
+						Assigned Tickets
+					</td>
+				</tr>
+				<tr style="background-color: #90AADD;">
+					<td style="width: 25px; text-align: center;">Id</td>
+					<td style="width: 120px; text-align: center;">Last update</td>
+					<td>Client</td>
+					<td style="width: 70px; text-align: center;">Priority</td>
+					<td style="width: 70px; text-align: center;">Status</td>
+					<td style="text-align: center;">Owner</td>
+					<td>&nbsp;</td>
+				</tr>
+				{foreach item=ticket from=$assigned_tickets}
+				<tr style="background-color: #DDD;">
+					<td style="width: 50px; text-align: center;">{$ticket.ticket_num}</td>
+					<td style="width: 80px; text-align: center;">{$ticket.modified_at|date_format_usr:'short'}</td>
+					<td>
+      			{if $ticket.caption != ""}
+      				{$ticket.caption|strip_tags|truncate:30}
+      			{else}
+      				{$ticket.customer_name|strip_tags|truncate:20}
+      			{/if}
+
+					</td>
+					<td style="width: 70px; text-align: center;">{$ticket.priority}</td>
+					<td style="width: 70px; text-align: center;">{$ticket.status}</td>
+					<td>{$ticket.ticket_owner_name}</td>
+					<td style="background-color: #90AADD; width: 45px;">
+						<input type="button" value="View" onclick="location.href='index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}'"/>
+					</td>
+				</tr>
+				{foreachelse}
+				<tr style="background-color: #DDD;">
+					<td colspan="7">There are currently no tickets assigned to you...</td>
+				</tr>
+				{/foreach}
+				<!-- /ASSIGNED TICKETS -->
+				
+				<!-- LAST 7 TICKETS -->
+				<tr style="background-color: #CCC;">
+					<td colspan="7" style="text-align: center; padding: 5px;">
+						Last 7 Tickets
+					</td>
+				</tr>
+				<tr style="background-color: #90AADD;">
+					<td style="width: 25px; text-align: center;">Id</td>
+					<td style="width: 120px; text-align: center;">Last update</td>
+					<td>Client</td>
+					<td style="width: 70px; text-align: center;">Priority</td>
+					<td style="width: 70px; text-align: center;">Status</td>
+					<td style="text-align: center;">Owner</td>
+					<td>&nbsp;</td>
+				</tr>
+				{foreach item=ticket from=$last_tickets}
+				<tr style="background-color: #DDD;">
+					<td style="width: 50px; text-align: center;">{$ticket.ticket_num}</td>
+					<td style="width: 80px; text-align: center;">{$ticket.modified_at|date_format_usr:'short'}</td>
+					<td>
+      			{if $ticket.caption != ""}
+      				{$ticket.caption|strip_tags|truncate:30}
+      			{else}
+      				{$ticket.customer_name|strip_tags|truncate:20}
+      			{/if}
+
+					</td>
+					<td style="width: 70px; text-align: center;">{$ticket.priority}</td>
+					<td style="width: 70px; text-align: center;">{$ticket.status}</td>
+					<td>{$ticket.ticket_owner_name}</td>
+					<td style="background-color: #90AADD; width: 45px;">
+						<input type="button" value="View" onclick="location.href='index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}'"/>
+					</td>
+				</tr>
+				{foreachelse}
+				<tr style="background-color: #DDD;">
+					<td colspan="7">There is no any tickets for today...</td>
+				</tr>
+				{/foreach}
+				<!-- /LAST 7 TICKETS -->
+			</table>        
+        
+        </td>
+    </tr>    
+</table>    

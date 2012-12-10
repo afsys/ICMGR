@@ -1,0 +1,54 @@
+<div style="	float: none;">
+	<div class="page_caption">{if isset($acc)}{trans str="Edit"}{else}{trans str="Add New"}{/if} {trans str="Piping Account"}</div>
+</div>
+
+<form action="index.php" method="post">
+	<input type="hidden" name="module"       value="Manage" />
+	<input type="hidden" name="action"       value="PipingAccAdd" />
+	<input type="hidden" name="acc[acc_id]"  value="{$acc.acc_id}" />
+
+	<table class="page space" cellspacing="0">
+		<tr><th colspan="2">{trans str="Piping Account Properties"}</th></tr>
+		<tr>
+			<td align="right" valign="top" style="width: 330px;">{trans str="Caption"}:</td>
+			<td valign="top"><input type="text" name="acc[acc_caption]" size="55" maxlength="55" value="{$acc.acc_caption}"></td>
+		</tr>		
+		<tr>
+			<td align="right" valign="top" style="width: 330px;">{trans str="POP3 Server Hostname"}:</td>
+			<td valign="top"><input type="text" name="acc[acc_host]" size="55" maxlength="55" value="{$acc.acc_host}"></td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" style="width: 330px;">{trans str="Server Port"}:</td>
+			<td valign="top"><input type="text" name="acc[acc_port]" size="55" maxlength="8" value="{$acc.acc_port}"></td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" style="width: 330px;">{trans str="Login"}:</td>
+			<td valign="top"><input type="text" name="acc[acc_login]" size="55" maxlength="55" value="{$acc.acc_login}"></td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" style="width: 330px;">{trans str="Password"}:</td>
+			<td valign="top"><input type="password" name="acc[acc_pass]" size="55" maxlength="55" value="{$acc.acc_pass}"></td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" style="width: 330px;">{trans str="Delete Emails From Server after Piping"}:</td>
+			<td valign="top">
+				<input type="hidden" name="acc[delete_email]"   value="0" />
+				<input type="checkbox" name="acc[delete_email]" value="1" {if $acc.delete_email}checked="checked"{/if} />
+			</td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" style="width: 330px;">{trans str="Disabled"}:</td>
+			<td valign="top">
+				<input type="hidden" name="acc[acc_disabled]"   value="0" />
+				<input type="checkbox" name="acc[acc_disabled]" value="1" {if $acc.acc_disabled}checked="checked"{/if} />
+			</td>
+		</tr>
+	</table>
+
+
+	<div style="text-align: center; padding-top: 12px;">
+		<input type="submit" name="edit_acc" value="{if isset($acc)}{trans str="Update"}{else}{trans str="Add"}{/if} {trans str="Account"}">
+	</div>
+</form>
+
+

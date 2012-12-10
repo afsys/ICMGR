@@ -1,0 +1,33 @@
+{literal}
+<script language="Javascript1.2">
+	
+	function ConfirmDelete(type)
+	{
+		var msg;
+		if (type == 'cat') msg = '{trans str="Are you sure, what do you want to delete category and all child items?"}';
+		else msg = '{trans str="Are you sure, what do you want to delete item?"}';
+		if (window.confirm(msg)) return true;
+		return false;
+	}
+
+</script>
+{/literal}
+
+<div style="float: none;">
+    <div class="page_caption">{trans str="Knowledge Base - Expired Items"}</div>
+</div>
+
+<table class="page" cellpadding="5px" cellspacing="0">
+	<tr><th colspan="3">{trans str="Items Listing"}</th></tr>
+	<tr>
+		<td>
+			
+			{if count($items)}
+				{include file="categories-itemslist.html" items_caption="" items_list=$items}
+			{else}
+				{trans str="There is no expired items..."}
+			{/if}
+			
+		</td>
+	</tr>
+</table>

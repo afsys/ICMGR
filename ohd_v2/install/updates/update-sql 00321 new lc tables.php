@@ -1,0 +1,1 @@
+RENAME TABLE #_PREF_lc_footprints1` TO `ohd_inst`.`ohd_lc_footprints`;

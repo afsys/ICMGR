@@ -1,0 +1,188 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<META content="text/html; charset=windows-1251" http-equiv="Content-Type">
+{literal}
+<STYLE type="text/css">
+A:link {	COLOR: gray; TEXT-DECORATION: none}
+A:active {	COLOR: white; TEXT-DECORATION: none}
+A:visited {	COLOR: gray; TEXT-DECORATION: none}
+A:hover {	COLOR: white; TEXT-DECORATION: none}
+TD {	COLOR: #164e63; FONT-FAMILY: arial; FONT-SIZE: 8pt}
+TH {	COLOR: #164e63; FONT-FAMILY: arial; FONT-SIZE: 8pt; TEXT-ALIGN: left}
+B {	COLOR: black; FONT-FAMILY: arial; FONT-SIZE: 14pt}
+P {	COLOR: silver; FONT-FAMILY: arial; FONT-SIZE: 8pt}
+DIV {	COLOR: silver; FONT-FAMILY: arial; FONT-SIZE: 8pt; TEXT-ALIGN: center}
+{/literal}
+</STYLE>
+<script>
+{literal}
+function clear(field){
+    field.value="";
+}
+function chk_l()
+{
+ var d = document;
+ if(d.getElementById('username').value=="") 
+ {
+	alert("No username entered! \n Please enter it!");
+	d.getElementById('username').focus();
+	return false;
+ }
+ if(d.getElementById('password').value=="")
+ {
+	alert("No password entered! \n Please enter it!");
+	d.getElementById('password').focus();
+	return false;	
+ }
+ return true;
+}
+function chk_lr()
+{
+	if (document.mail.email.value=="" || document.mail.email.value=="Enter your e-mail address") {
+		alert("You didn\'t typed any e-mail address! \n Please enter it.");
+		document.mail.email.focus();
+		return false;
+	}
+	return true;
+}
+function onLoginFormSubmit(){
+	if (!chk_l()) return false;
+	document.getElementById('login_div').onclick = function() {};
+	document.getElementById('login_div').style.backgroundImage = "url(images/submit_dis.gif)";
+	document.getElementById('login_error').innerHTML = "<font color=black style='font-weight:bold'>Processing login, please wait</font>";
+	return true;
+}
+function onRemindFormSubmit(){
+	document.getElementById('SearchPass').disabled = true;
+	document.getElementById('SearchPass').src = "images/searchpass_dis.gif";
+	document.getElementById('login_error').innerHTML = "<font color=black style='font-weight:bold'>Processing, please wait</font>";
+}
+{/literal}
+</script>
+<BODY aLink=#FF0000 bgColor=#FFFFFF bottomMargin=16 leftMargin=16 link=#0000FF rrightMargin=16 text=#000000 topMargin=16 vLink=#FF0000 marginwidth="16" marginheight="16" onLoad="javascript:document.login.username.focus();">
+<P align=center>&nbsp;</P>
+<P>&nbsp;</P>
+<TABLE height=214 cellSpacing=0 cellPadding=0 width=399 align=center border=0>
+<TBODY>
+	<tr valign=top>
+		<td height=38 style="background: #51B8BE url(images/titl_login.gif) no-repeat 0 0; color: white; font-size: 17px; font-weight: bold; padding: 12px 0 0 5px;">
+			{trans str="Members Login"}
+		</td>
+	</tr>
+	<TR vAlign=top align=middle bgColor=#efefef>
+	<TD height=153>
+<TABLE cellSpacing=0 cellPadding=0 width=350 border=0>
+<TBODY>
+<TR>
+<TD align=middle width="100%" colSpan=2><FONT face=Verdana size=3><B></B></FONT></TD></TR>
+<TBODY>
+<TR>
+<!------------------------------------------------ Start login form -------------------------------------------//-->
+	<FORM id="login_form" name="login" method="post" action="index.php" onSubmit="javascript:return onLoginFormSubmit();">
+	{if $smarty.request.module != "" && $smarty.request.action != ""}
+	<input type=hidden name=module value="{$smarty.request.module}">
+	<input type=hidden name=action value="{$smarty.request.action}">
+	{/if}
+	<td valign=top align=middle width=100>
+		<span style="font-size: 5pt"><br></span><br><img height=98 src="images/login_img.jpg" width=100>
+	</td>
+	<TD width=250>
+		<TABLE height=100 cellSpacing=0 cellPadding=4 width=250 border=0>
+			<TBODY>
+				<tr valign=top>
+					<td colspan=2 height=16 style="color: #2B559B; font-size: 12px;  padding: 7px 0 5px 12px;">
+						<span id="login_error"><font color=red>{$errors.login|default:""}</font></span>
+						<br>
+						{trans str="Enter you account information:"} 
+					</td>
+				</tr>
+				<TR vAlign=top>
+					<td width=100 height=18 style="color: black; padding: 7px 0 0 8px; font-size: 10px; font-weight: bold; font-family: Verdana;">
+						{trans str="User Name"}
+					</td>
+					<TD width=178 height=18><INPUT style="FONT-SIZE: 11px; BORDER-LEFT-COLOR: #e5e5e5; BORDER-BOTTOM-COLOR: #e5e5e5; WIDTH: 150px; BORDER-TOP-COLOR: #e5e5e5; FONT-FAMILY: arial; HEIGHT: 18px; BACKGROUND-COLOR: #dfebfe; BORDER-RIGHT-COLOR: #e5e5e5" maxLength=60 name=username id=username value="{$info.username}"> </TD></TR>
+				<TR>
+					<td width=100 height=18 style="color: black; font-size: 10px; font-weight: bold; font-family: Verdana; padding: 2px 0 0 8px">
+						{trans str="Password"}
+					</td>
+					<TD width=178 height=18><INPUT style="FONT-SIZE: 11px; BORDER-LEFT-COLOR: #e5e5e5; BORDER-BOTTOM-COLOR: #e5e5e5; WIDTH: 150px; BORDER-TOP-COLOR: #e5e5e5; FONT-FAMILY: arial; HEIGHT: 18px; BACKGROUND-COLOR: #dfebfe; BORDER-RIGHT-COLOR: #e5e5e5" type=password id=password maxLength=60 name=password value="{$info.password}"> </TD>
+				</TR>
+				<TR vAlign=top>
+					<td width=100 height=18 style="color: black; font-size: 10px; font-weight: bold; font-family: Verdana; padding: 8px 0 0 8px">
+						{trans str="Ip Address"}
+					</td>
+					<TD width=178 height=1 style="padding-top:7px"><FONT face=Verdana>{$remoteAddy}</FONT></TD>
+				</TR>
+				<TR vAlign=top align=left>
+					<td colspan=2 align=center>
+						<!-- <div style="color: red; font-size: 12px; font-weight: bold; position: absolute; top: 1px; left: 1px;">SIGN-IN</div> -->
+						<div id="login_div" style="width: 75px; height: 21px; color: white; font-size: 11px; font-weight: bold; letter-spacing: 0.7px; background: #51B8BE url(images/submit.gif) no-repeat; line-height: 19px; cursor: pointer;" onclick="document.getElementById('login_form').submit();">{trans str="SIGN-IN"}</div>
+					</td>
+				</TR>
+			</TBODY>
+		</TABLE>
+	</TD>
+	</FORM>
+<!------------------------------------------------ End login form -------------------------------------------//-->
+     </TR>
+    </TBODY>
+   </TABLE>
+  </TD>
+ </TR>
+</FORM>
+
+  <TR vAlign=top>
+   <TD height=4><IMG height=4 src="images/cell.gif" width=1></TD>
+  </TR>
+  <TR vAlign=top bgColor=#efefef>
+   <TD>
+    <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+     <TR>
+      <FORM id="restore_form" name="mail" method="post" action="index.php" onSubmit="javascript:onRemindFormSubmit();">
+      <TD>
+       <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TR vAlign=top>
+         <TD align=center>
+          <TABLE cellspacing=0 cellpadding=0 width="85%" border=0>
+           <TR>
+            <TD colspan=2></TD>
+           </TR>
+			<tr>
+				<td style="color: #0B7D6E; font-size: 11px; background: #EFEFEF url(images/login_img03.gif) no-repeat; padding: 4px 0 0 14px">
+					{trans str="Did you forget your password?"}
+				</td>
+			</tr>
+           <TR>
+            <TD> 
+             <INPUT style="FONT-SIZE: 11px; BORDER-LEFT-COLOR: #e5e5e5; BORDER-BOTTOM-COLOR: #e5e5e5; WIDTH: 175px; BORDER-TOP-COLOR: #e5e5e5; FONT-FAMILY: arial; HEIGHT: 20px; BACKGROUND-COLOR: #dfebfe; BORDER-RIGHT-COLOR: #e5e5e5" onfocus=clear(this); size=35 value="{trans str="Your E-Mail address"}" name=email><BR>
+             <INPUT style="FONT-SIZE: 11px; BORDER-LEFT-COLOR: #e5e5e5; BORDER-BOTTOM-COLOR: #e5e5e5; WIDTH: 175px; BORDER-TOP-COLOR: #e5e5e5; FONT-FAMILY: arial; HEIGHT: 20px; BACKGROUND-COLOR: #dfebfe; BORDER-RIGHT-COLOR: #e5e5e5" onfocus=clear(this); size=35 value="{trans str="Your username"}" name=username>
+            </TD>
+            <TD align=left vAlign=top width="100%" style="padding: 0 0 0 10px;">
+            	<div id="restore_div" style="width: 75px; height: 21px; color: white; font-size: 11px; font-weight: bold; letter-spacing: 0.7px; background: #51B8BE url(images/submit.gif) no-repeat; line-height: 19px; cursor: pointer;" onclick="if (chk_lr()) document.getElementById('restore_form').submit();">{trans str="FIND PASS"}</div>
+           	</TD>
+           </TR>
+          </TABLE>
+         </TD>
+        </TR>
+        <TR vAlign=top>
+         <TD height=8><IMG height=8 src="images/cell.gif" width=1></TD>
+        </TR>
+        <TR>
+         <TD valign=bottom align=left>&nbsp;&nbsp;{trans str="Powered by"} <A href="http://www.omnihelpdesk.com/" target="_blank">omnihelpdesk.com</A></TD>
+        </TR>
+        <TR vAlign=top>
+         <TD height=4><IMG height=4 src="images/cell.gif" width=1></TD>
+        </TR>
+       </TABLE>
+      </TD>
+      <TD vAlign=bottom align=right width=29 height=24><IMG height=30 src="images/login_img04.gif" width=29></TD>
+     </TR>
+    </TABLE>
+   </TD>
+  </TR>
+ </TBODY>
+</TABLE>
+</FORM>
+</BODY>
+</HTML>

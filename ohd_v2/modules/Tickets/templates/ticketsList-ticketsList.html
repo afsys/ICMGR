@@ -1,0 +1,31 @@
+{if $orderto == 'ASC'}
+	{assign var="ordertosign" value='<img src="images/sort_desc.gif" width="10px" height="8px" />'}
+{else}
+	{assign var="ordertosign" value='<img src="images/sort_asc.gif"  width="10px" height="8px" />'}
+{/if}
+
+
+<table class="page" cellspacing="0" cellpadding="2px" border="0px" style="line-height: 22px;">
+
+	{if !empty($user_options.defaults.tickets_list_style)}
+		{assign var="theme" value=$user_options.defaults.tickets_list_style}
+	{else}
+		{assign var="theme" value="extended"}
+	{/if}
+	
+	{assign var="fileListHeader" value="ticketsList-ticketsListHeader-`$theme`.html"}
+	{assign var="fileListString" value="ticketsList-ticketsListString-`$theme`.html"}
+
+	{include file=$fileListHeader}
+	
+	{if count($tickets) > 0}
+		{foreach name=ticketListForeach item=ticket from=$tickets}
+			{include file=$fileListString}
+		{/foreach}
+	{else}
+		<tr>
+			<td colspan="3">{trans str="No Tickets"}</td>
+		</tr>    
+	{/if}
+	
+</table>

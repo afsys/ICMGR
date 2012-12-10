@@ -1,0 +1,16 @@
+{foreach key=caption item=ticket_status from=$sys_options.ticket_statuses}
+  div.status_{$caption|md5} {ldelim}
+    {if $ticket_status.textcolor}color: {$ticket_status.textcolor}; {/if}
+    {if $ticket_status.bordercolor}border: 1px solid {$ticket_status.bordercolor};{/if}
+    {if $ticket_status.bgcolor}background: {$ticket_status.bgcolor};{/if}
+    line-height: 16px;
+  {rdelim}
+{/foreach}
+{foreach key=caption item=ticket_priority from=$sys_options.ticket_priorities}
+  div.priority_{$caption|md5} {ldelim}
+    {if $ticket_priority.textcolor}color: {$ticket_priority.textcolor}; {/if}
+    {if $ticket_priority.bordercolor}border: 1px solid {$ticket_priority.bordercolor};{/if}
+    {if $ticket_priority.bgcolor}background: {$ticket_priority.bgcolor};{/if}
+    line-height: 16px;
+  {rdelim}
+{/foreach}

@@ -1,0 +1,56 @@
+tr.exs { background-color: #FEFEFF; cursor: pointer; }
+tr.exs_on { background-color: #FFFFCC; cursor: pointer; } /* FFF0C1 FFFFCC */
+
+tr.exs th a:link, tr.exs th a:visited {
+	color: #0026AA;
+}
+tr.exs th a:hover, tr.exs th a:active {
+	color: #D7C700;
+}	
+
+
+tr.exs th {
+	background-color: #E5E5E5;
+	line-height: 14px;
+	font-family: Verdana;
+	font-size: 11px;
+}
+
+tr.exs td {
+	line-height: 14px;
+	font-family: Verdana;
+	font-size: 10px;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+tr.exs.np td { /* extended - next-prev item */
+	border-bottom: none;
+}
+
+tr.last td { border: none; }
+
+tr.exs h4 {
+	display: block;
+	padding: 0; margin: 0;
+	padding-right: 5px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #009EEA;
+}
+
+tr.exs h2 {
+	display: block;
+	padding: 0; margin: 0;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+	color: #006291;
+}
+
+td.msg_cnt { text-align: center; padding-left: 14px; }
+td.msg_cnt div { position: relative; left: -5px; top: 2px; }
+td.msg_cnt em { position: relative; left: 5px; top: -2px; font-style: normal; color: red; }
+
+nobr.msg_cnt { color: #7F7F7F}
+nobr.msg_cnt span { color: red; }
+nobr.msg_cnt.null span {color: #7F7F7F;}

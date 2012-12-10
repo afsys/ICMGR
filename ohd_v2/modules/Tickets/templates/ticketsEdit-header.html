@@ -1,0 +1,242 @@
+<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px;">
+	<tr style="background-color: #90AADD;">
+		<td style="width: 80px;">{trans str="Ticket Id"}</td>
+		<td style="width: 230px;">{trans str="Ticket Product"}</td>
+		{if $smarty.const.F_DUEDATE_FLD}<td>{trans str="Due Date"}</td>{/if}
+		{if $smarty.const.F_EXPIREDAT_FLD}<td>{trans str="Expired At"}</td>{/if}
+		<td>{trans str="Submit Date"}</td>
+		<td>{trans str="Last Update"}</td>
+		<td style="width: 174px;">{trans str="Close Date"}</td>
+	</tr>
+	<tr style="background-color: #DDD;">
+		<td>
+			{if $smarty.const.F_MANUAL_TICKET_NUM}
+				{$ticket.ticket_num}
+			{else}
+				{if $ticket.ticket_num}{$ticket.ticket_num}{else}{$ticket.ticket_id|string_format:"%06d"}{/if}</td>
+			{/if}
+		<td>{$ticket.ticket_product_caption}</td>
+		{if $smarty.const.F_DUEDATE_FLD}<td>{if $ticket.due_date}{$ticket.due_date|date_format_usr:'short'}{else}-{/if}</td>{/if}
+		{if $smarty.const.F_EXPIREDAT_FLD}<td>{if $ticket.expired_at}{$ticket.expired_at|date_format_usr:'short'}{else}-{/if}</td>{/if}
+		<td>{$ticket.created_at|date_format_usr:'short'}</td>
+		<td>{$ticket.modified_at|date_format_usr:'short'}</td>
+		<td>{if $ticket.closed_at}{$ticket.closed_at|date_format_usr:'short'}{else}({trans str="Still open"}){/if}</td>
+	</tr>
+</table>
+
+{if !$is_customer}
+<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+	<tr style="background-color: #90AADD;">
+		<td>{trans str="Ticket Owner"}</td>
+		<td>{trans str="Department"}</td>
+		<td>{trans str="Action"}</td>
+		<td>{trans str="Priority"}</td>
+		<td>{trans str="Status"}</td>
+	</tr>
+	<tr style="background-color: #DDD;">
+		<td>
+			{if ($user_rights & SR_TL_REASIGN) == SR_TL_REASIGN}
+			<select id="opt_sel_assigned_to" style="background-color: #E8E8E8; width: 100%;" initial="{$ticket.ticket_assigned_to_id}" onchange="CheckOption('assigned_to')" {if $ticket.closed_at}disabled="disabled"{/if}>
+				<option value="">{trans str="(not assigned)"}</option>
+				{foreach item=item key=key from=$users}
+				<option value="{$item.user_id}" {if $item.user_id == $ticket.ticket_assigned_to_id}selected="selected"{/if}>{$item.user_name}{if !empty($item.user_lastname)} {$item.user_lastname}{/if}</option>
+				{/foreach}
+			</select>
+			<input id="opt_btn_assigned_to" type="button" value="Reasign" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('assigned_to')" disabled="disabled"  />
+			{else}
+			{$ticket.ticket_assigned_to_name}
+			{/if}
+		</td>
+		<td style="width: 185px;">
+			<select id="opt_sel_group_id" style="background-color: #E8E8E8; width: 100%;" initial="{$ticket.group_id}" onchange="CheckOption('group_id')" {if $ticket.closed_at}disabled="disabled"{/if}>
+				<option value="">({trans str="none_"})</option>
+				{foreach item=item key=key from=$groups}
+				<option value="{$item.group_id}" {if $ticket.group_id == $item.group_id}selected="selected"{/if}>{$item.group_caption}</option>
+				{/foreach}
+			</select>
+			<input id="opt_btn_group_id" type="button" value="Set Group" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('group_id')" disabled="disabled" />
+		</td>
+		<td style="width: 150px;">
+			<select id="opt_sel_type" style="background-color: #E8E8E8; width: 100%;" initial="{$ticket.type}" onchange="CheckOption('type')" {if $ticket.closed_at}disabled="disabled"{/if}>
+				<option value="">({trans str="none_"})</option>
+				{foreach item=item key=key from=$ticket_types}
+				<option value="{$key}" {if $ticket.type == $key}selected="selected"{/if}>{$key}</option>
+				{/foreach}
+			</select>
+			<input id="opt_btn_type" type="button" value="Set Type" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('type')" disabled="disabled" />
+		</td>
+		<td style="width: 150px;"> <!-- 174px; -->
+			<select id="opt_sel_priority" style="background-color: #E8E8E8; width: 100%;" initial="{$ticket.priority}" onchange="CheckOption('priority')" {if $ticket.closed_at}disabled="disabled"{/if}>
+				{foreach item=item key=key from=$ticket_priorities}
+				<option value="{$key}" {if $ticket.priority == $key}selected="selected"{/if}>{$key}</option>
+				{/foreach}
+			</select>
+			<input id="opt_btn_priority" type="button" value="Set Proirity" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('priority')" disabled="disabled" />
+		</td>
+		<td style="width: 150px;">
+			<select id="opt_sel_status" style="background-color: #E8E8E8; width: 100%;" initial="{$ticket.status}" onchange="CheckOption('status')" {if $ticket.closed_at}disabled="disabled"{/if}>
+				{foreach item=item key=key from=$ticket_statuses}
+				<option value="{$key}" {if $ticket.status == $key}selected="selected"{/if} {if $sys_options.tickets.status_for_new == $key}style="font-weight: bold; color: green;"{elseif $sys_options.tickets.status_for_closed == $key}style="font-weight: bold;"{/if}>{$key}</option>
+				{/foreach}
+			</select>
+			<input id="opt_btn_status" type="button" value="Set Status" style="border: 1px solid black; width: 75px; display: none;" onclick="SetOption('status')" disabled="disabled" />
+		</td>
+	</tr>
+</table>
+{/if}
+
+{assign var=first_row_width value="125px"}
+
+<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+	<tr style="text-align: left;">
+		<td style="background-color: #90AADD; width: {$first_row_width};">{trans str="Customer Name"}</td>
+		<td style="background-color: #DDD;">{$ticket.customer_name|strip_tags}</td>
+	</tr>
+	<tr style="text-align: left;">
+		<td style="background-color: #90AADD;">{trans str="Customer Phone"}</td>
+		<td style="background-color: #DDD;">{$ticket.customer_phone}</a>
+		</td>
+	</tr>
+</table>
+<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+	<tr style="text-align: left;">
+		<td style="background-color: #90AADD; width: {$first_row_width};">{trans str="Customer E-Mail"}</td>
+		<td style="background-color: #DDD;" colspan="2">
+			{if $is_customer}
+				{$ticket.customer_email|strip_tags}
+			{else}
+				<a href="javascript:SelectEmail('{$ticket.customer_email}', '{$ticket.customer_name}')" style="color: #006699;"
+					>{$ticket.customer_email|strip_tags}</a>
+			{/if}
+		</td>
+		{* {if !$is_customer && !empty($ticket.customer_add_emails)}
+		<td style="background-color: #DDD; width: 37px; text-align: center;"rowspan="2" valign="center">
+			<a href="javascript:SelectEmail('{$add_email}', '{$add_email}')" style="color: #006699;">All</a>
+		</td>
+		{/if} *}
+	</tr>
+	
+	{if !empty($ticket.customer_add_emails)}
+	<tr style="text-align: left;">
+		<td style="background-color: #90AADD;">{trans str="Additional E-Mails"}</td>
+		<td style="background-color: #DDD;">
+			{foreach name=add_emails item=add_email from=$ticket.customer_add_emails}
+				{if !$is_customer}<a href="javascript:SelectEmail('{$add_email}', '{$add_email}')" style="color: #006699;">{$add_email}</a>{else}{$add_email}{/if}{if !$smarty.foreach.add_emails.last}, {/if}
+			{/foreach}
+		</td>
+		{* {if !$is_customer}
+		<td style="background-color: #DDD; width: 37px; text-align: center;">
+			<a href="javascript:SelectEmail('{$add_email}', '{$add_email}')" style="color: #006699;">Row</a>
+		</td>
+		{/if} *}
+	</tr>
+	{/if}
+</table>
+<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+	{if $ticket.carbon_copy_email}
+	<tr style="text-align: left;">
+		<td style="background-color: #90AADD; width: {$first_row_width};">{trans str="Carbon copy"}</td>
+		<td style="background-color: #DDD;">
+			{foreach name=cc_emails item=cc_email from=$ticket.carbon_copy_email}
+				<a href="javascript:SelectEmail('{$cc_email}', '{$cc_email}')" style="color: #006699;">{$cc_email}</a>{if !$smarty.foreach.cc_emails.last}, {/if}
+			{/foreach}
+		</td>
+	</tr>
+	{/if}
+	<tr style="text-align: left;">
+		<td style="background-color: #90AADD; vertical-align: top;  width: {$first_row_width};">{trans str="Problem Desc"}</td>
+		<td  style="background-color: #DDD;" >
+			<div id="div_desc_parent" style="position: relative;">
+				<a id="desc_full_view" style="display: none;" href="javascript:void(0)" onfocus="return false;" onclick="SwithDescView()">FULL VIEW</a>
+				<div id="div_desc" style="max-height: {$max_desc_height}px; overflow: auto;">
+					<div id="desc_full_view_shld" style="float: right; width: 95px; display: none;">&nbsp;</div>
+					{if $ticket.description_is_html}
+						{$ticket.description}
+					{else}
+						{$ticket.description|nl2br}
+					{/if}
+				</div>
+			</div>
+		</td> 
+	</tr>
+	
+	<!-- CUSTOM FIELDS -->
+	{if isset($ticket_fileds)}
+	{foreach item=ticket_filed from=$ticket_fileds}
+		{if !empty($ticket_filed.ticket_field_value)}
+		<tr style="text-align: left;">
+			<td style="background-color: #90AADD; vertical-align: top;">{$ticket_filed.ticket_field_caption}</td>
+			<td  style="background-color: #DDD;">{$ticket_filed.ticket_field_value}</td>
+		</tr>
+		{/if}
+	{/foreach}
+	{/if}
+	<!-- /CUSTOM FIELDS -->
+</table>
+
+{if !$is_customer}
+<table cellpadding="2" cellspacing="2" style="width: 100%; text-align: center; padding: 0px; margin: 0px; margin-top: -2px;">
+	<tr>
+		<td colspan="2" style="background-color: #DDD; text-align: right;">
+			{if (count($sys_options.tickets_list.flags))}
+			<select id="ticket_flag" onchange="SaveTicketFlag()" style="background: #DDDDDD; float: left;">
+				<option value="0">Flag this Ticket</option>
+				{foreach name=pred_responses item=item from=$sys_options.tickets_list.flags}
+					<option value="{$item|trim|escape:'html'}" {if trim($item) == trim($ticket.flags)}selected="selected"{/if}>{$item|escape:'html'}</option>
+				{/foreach}
+			</select>
+			{/if} 
+		
+		
+			<input type="button" value="{trans str="Options"}" style="border: 1px solid black; width: 70px;" 
+				onclick="tbl = $('ex_options_tr'); tbl.style.display = tbl.style.display == '' ? 'none' : '';"  
+				/>
+				
+			<input type="button" value="{trans str="Add Notes"}" style="border: 1px solid black; width: 70px; {if !empty($ticket.add_options.ex_notes)}background-color: #BBEBB1;{/if}}" 
+				onclick="tbl = $('ex_notes_tr'); tbl.style.display = tbl.style.display == '' ? 'none' : '';"  
+				/>
+				
+			<input type="button" value="{trans str="Print"}" style="border: 1px solid black; width: 70px;" 
+				onclick="window.open(location.href + '&print_preview=1', '_blank')"  
+				/>
+			{if $messages_type != 'Messages'}
+			<input type="button" value="{trans str="Messages"}" style="border: 1px solid black; width: 70px;" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}'"  
+				/>
+			{/if}
+			{if $messages_type != 'TimeTracking'}
+			<input type="button" value="{trans str="Time Tracking"}" style="border: 1px solid black; width: 88px;" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}&MessagesType=TimeTracking'"  
+				/>
+			{/if}
+			{* {if $messages_type != 'History'}
+			<input type="button" value="{trans str="History Log"}" style="border: 1px solid black; width: 76px;" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}&MessagesType=History'"  
+				/>
+			{/if} *}
+			{if $messages_type != 'EMails'}
+			<input type="button" value="{trans str="E-Mails Log"}" style="border: 1px solid black; width: 76px;" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}&MessagesType=EMails'"  
+				/>
+			{/if}
+			{if !$ticket.closed_at}
+			<input type="button" value="{trans str="Edit"}" style="border: 1px solid black; width: 70px;" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsAdd&ticket_id={$ticket.ticket_id}'"  />
+			{/if}
+			<input type="button" value="{trans str="Merge"}" style="border: 1px solid black; width: 70px;" onclick="MergeTicket()" />
+			{if ($user_rights & SR_TICKETS_DEL) == SR_TICKETS_DEL}
+			<input type="button" value="{trans str="Delete"}" style="border: 1px solid black; width: 70px;" 
+				onclick="if (window.confirm('Are you sure?')) location.href = 'index.php?module=Tickets&action=TicketsDelete&ticket_id={$ticket.ticket_id}&prev_filter=1'"  
+				/>
+			{/if}
+			{if !$ticket.closed_at}
+			<input type="button" value="{trans str="Close"}" style="border: 1px solid black; width: 70px;" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsClose&ticket_id={$ticket.ticket_id}'"  />
+			{else}
+			<input type="button" value="{trans str="Reopen"}" style="border: 1px solid black; width: 70px;" 
+				onclick="location.href = 'index.php?module=Tickets&action=TicketsClose&reopen=1&ticket_id={$ticket.ticket_id}'"  />
+			{/if}
+		</td>
+	</tr>
+</table>
+{/if}

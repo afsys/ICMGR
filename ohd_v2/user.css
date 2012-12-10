@@ -1,0 +1,46 @@
+/* horisontal menu */
+.hmenu_div
+{
+    background-color: #A2BAE8; 
+    height: 15px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;    
+}
+
+
+.hmenu_div .hmenu_itm
+{
+    border-left: 1px solid #8DACE3;
+    border-right: 1px solid #485F86;
+    background-color: #749ADD;
+    font-size: 10px;
+    color: white;
+    width: 147px;
+    text-align: center;
+    padding-top: 1px; padding-bottom: 2px;
+}
+
+.hmenu_div .main
+{
+    background-color: #074FC5;
+    width: 155px;
+    border: none;
+    font-weight: bold;
+}
+
+.hmenu_div .tickets
+{
+    background-color: #5683D6;
+    width: 145px;
+    border: none;
+    font-weight: bold;
+}
+
+.hmenu_div .logout
+{
+    background-color: #C1DF01;
+    color: black;
+    width: 149px;
+    border: none;
+    font-weight: bold;
+}

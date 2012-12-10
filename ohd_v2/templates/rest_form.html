@@ -1,0 +1,18 @@
+<!-- RESTORE PASSWORD -->
+<form action="" method="post">
+
+	<input type="hidden" name="action" value="rest_ticket">
+	<center>
+	    <br />
+		<div>{$rest_error}</div>
+		{trans str="Restore by"}: 
+		<select name="rest_by">
+			<option value="ticket_num">{trans str="Ticket Id"}</option>
+			<option value="customer_email">{trans str="E-Mail"}</option>
+		</select>
+		<input name="rest_value" type="text" value="{$rest_value}" />
+		<input name="" type="submit" value="{trans str="Restore"}" />
+		
+	</center>
+</form>
+<!-- /RESTORE PASSWORD -->

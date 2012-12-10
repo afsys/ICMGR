@@ -1,0 +1,88 @@
+{literal}
+<script type="text/javascript">
+	var lc_trs_window = null;
+	var lc_trs_prev_url = null;
+	function ShowTranscript(sid)
+	{
+		var url = 'index.php?module=LiveChat&action=ConvertationLog&sid=' + sid;
+		if (lc_trs_window == null || lc_trs_window.closed) {
+			lc_trs_window = window.open(url, 'UserShowTranscript', 'resizable=yes,scrollbars=yes,status=yes,width=500px,height=420px');
+		}
+		lc_trs_window.focus();
+		if (lc_trs_prev_url != url) {
+			lc_trs_window.location.href = url;
+		}
+		
+		lc_trs_prev_url = url;
+	}
+</script>
+{/literal}
+
+
+<!-- CAPTION -->
+<div style="float: none;">
+	<div class="page_caption">{trans str="Transcripts History"}</div>
+</div>
+<!-- /CAPTION -->   
+
+<!-- DEPARTMENT SELECT FORM -->
+<form action="index.php" method="get">
+	<input type="hidden" name="module" value="LiveChat" />
+	<input type="hidden" name="action" value="ConvertationLogs" />
+
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="2">{trans str="Select Department"}</th></tr>
+		<tr>
+			<td style="width: 135px;">{trans str="Department Name"}:</td>
+			<td>
+				<select name="curr_group_id">
+					{if empty($curr_group_id)}<option>({trans str="select department"})</option>{/if}
+					{foreach item=item from=$groups}
+					<option value="{$item.group_id}" {if $item.group_id == $curr_group_id}selected="selected"{/if}>{$item.group_caption}</option>
+					{/foreach}
+				</select>
+				<input type="submit" value="{trans str="Select Department"}" />               
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- /DEPARTMENT SELECT FORM -->
+
+
+
+<table class="page" cellspacing="0" cellpadding="2px" border="0px" style="line-height: 22px;">
+
+	<tr class="exs" style="line-height: 14px;">
+		<th class="brd" style="text-align: center; width: 130px;">Created</th>
+		<th class="brd" style="text-align: center;">Customer</th>
+		<th class="brd" style="text-align: center;">Question</th>
+		<th class="brd" style="text-align: center; width: 90px;">Duration</th>
+		<th class="brd" style="text-align: center; width: 90px;">Size</th>
+	</tr>
+
+	{if count($transcripts) > 0}
+		{foreach name=ticketListForeach item=item from=$transcripts}
+		<tr class="exs{if $smarty.foreach.ticketListForeach.last} last{/if}" 
+			style="cursor: pointer; background-color: {cycle values='#FFFFFF,#FFFFFF,#F9F9F9,#F9F9F9'};" 
+			onclick="ShowTranscript({$item.sid})"
+			onmouseover="this.style.backgroundColor='#ECF1FF'" 
+			onmouseout="this.style.backgroundColor='{cycle values='#FFFFFF,#FFFFFF,#F9F9F9,#F9F9F9'}'"  
+			>
+			
+			<td align="center">{$item.created|date_format_usr:'short'}</td>
+			<td>{$item.data.name}</td>
+			<td>{$item.data.question}</td>
+			<td align="right">{$item.duration} sec</td>
+			<td align="right">{$item.size} bytes</td>
+		</tr>
+		{/foreach}
+	{else}
+		<tr>
+			<td colspan="3">{trans str="No Transcripts"}</td>
+		</tr>    
+	{/if}
+</table>
+
+<div style="text-align: center; padding-top: 10px;">
+	{$pages}
+</div>

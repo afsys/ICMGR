@@ -1,0 +1,35 @@
+<div style="float: none;">
+	<div style="float: right;">
+		<input type="button" value="{trans str="Add New Announcement"}" onclick="location.href='index.php?module=Manage&action=AnnouncAdd'" /> 
+	</div>
+	<div class="page_caption">{trans str="Announcement List"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th width="200px;">{trans str="Name"}</th>
+		<th>{trans str="Comment"}</th>
+		<th width="60px;">&nbsp</th>
+	</tr>
+	
+	{if count($anns) > 0}
+	{foreach item=ann from=$anns}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$ann.ann_caption}</td>
+		<td>{$ann.ann_short}</td>
+		<td align="right">
+			<a href="index.php?module=Manage&action=AnnouncAdd&ann_id={$ann.ann_id}" 
+				><img src="images/edit.gif" border="0" width="21px" height="21px" /></a>
+				
+			<a href="index.php?module=Manage&action=AnnouncList&delete=1&ann_id={$ann.ann_id}" 
+				onclick="return confirm('Are you sure you want to delete announcement {$ann.ann_caption}?');" 
+				><img src="images/delete.gif" border="0" width="21px" height="21px" /></a>
+		</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="None"}</td>
+	</tr>    
+	{/if}
+</table>    

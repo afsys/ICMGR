@@ -1,0 +1,28 @@
+<script language="JavaScript1.2">
+	var items_types = [
+		{foreach item=sel_items from=$items_types}
+		{ldelim} 'type' : '{$sel_items.type}',    'caption': '{$sel_items.caption}' {rdelim},
+		{/foreach}
+	];
+	
+	var ticket_id = '{$ticket.ticket_id}';
+	var curr_user_id = '{$user_id}';
+	var max_desc_height = {$max_desc_height};
+
+	{literal}
+	
+	function updateTicket(field,obj) 
+	{
+		current_select = obj;
+		obj.disabled = true;
+		{/literal}
+		xmlhttp.open("GET", "index.php?id={$ticket.id}&module=HelpTickets&action=ShowTicket&"+field+"=go&"+obj.name+"="+obj.value);
+		{literal}       
+		xmlhttp.onreadystatechange = ChangeSuccess;
+		xmlhttp.send(null);    
+
+	}	
+
+
+{/literal}
+</script>

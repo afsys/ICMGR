@@ -1,0 +1,41 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="E-Mails Response Log"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr>
+		<th style="text-align: center;">{trans str="E-Mail To"}</th>
+		<th style="text-align: center;">{trans str="Send Time"}</th>
+		<th>{trans str="Subject"}</th>
+		<th style="text-align: center;">{trans str="Result"}</th>
+	</tr>
+	
+	{if count($email_list) > 0}
+	{foreach item=email from=$email_list}
+	<tr style="background-color: {cycle values="#FFFFFF,#E4E4E4"};">
+		<td>
+			{* $email.mail_from_email *}
+			{$email.mail_to_email}
+		</td>
+		<td><nobr>{$email.mail_send_time|date_format_usr:'short'}</nobr></td>
+		<td>{$email.mail_subject}</td>
+		<td align="center">
+			{if $email.mail_send_result == "success"}
+				<font color="green" onclick="window.open('index.php?module=System&action=EmailLog&view_details=backtrace&id={$email.id}','log','width=600,height=700,scrollbars=yes')">{$email.mail_send_result}</font>
+			{else}
+				<font color="red" onclick="window.open('index.php?module=System&action=EmailLog&view_details=backtrace&id={$email.id}','log','width=600,height=700,scrollbars=yes')">{$email.mail_send_result}</font><br>
+				<a href="javascript:void(window.open('index.php?module=System&action=EmailLog&view_details=error&id={$email.id}','log','width=600,height=700,scrollbars=yes'))">{trans str="View Details"}</a>
+			{/if}
+		</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="no email logs"}</td>
+	</tr>    
+	{/if}
+</table>    
+
+<br/>
+
+<center>Pages: {$pages}</center>

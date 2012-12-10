@@ -1,0 +1,48 @@
+{if count($items_list) > 0}    
+<table cellspacing="0" border="0px">
+	<tr>
+		<td style="font-size: 15px; font-weight: bold; color: #007EFD; padding-bottom: 5px;" 
+			colspan="{$rows_count}">
+			{trans str=$items_caption}
+		</td>
+	</tr>
+	{foreach name="itemsLoop" item=item from=$items_list} 
+	<tr>
+		<td align="left" class="kb_caption" style="padding: 3px 0 0px 10px;">
+			{if $is_admin == true}
+			<a href="index.php?module=KnowledgeBase&action=EditItem&item_id={$item.id}{if $root_page}&root_page={$root_page}{/if}"
+				><img src="images/button_edit.png"  width="12px" height="13px" alt="E" title="Edit category item" style="border: none;"/></a>
+			<a href="index.php?module=KnowledgeBase&action=DeleteItem&item_id={$item.id}{if $root_page}&root_page={$root_page}{/if}"
+				onclick="return ConfirmDelete('item')"
+				><img src="images/button_del.png" width="11px" height="13px" alt="D" title="Delete item" style="border: none;"/></a>
+			{/if}
+			<a href="index.php?module=KnowledgeBase&action=ShowItem&item_id={$item.id}">{$item.caption}</a>
+			{if $item.expiration_date}
+				<em {if $item.expired_in_days < 0}style="color: red;"{elseif $item.expired_in_days < 7}style="color: #AB8C54;"{/if}>
+					(expired at: {$item.expiration_date|date_format_usr:'short'},
+						{if $item.expired_in_days > 0}
+							in {$item.expired_in_days} days
+						{else}
+							{$item.expired_in_days|abs} days ago
+						{/if}
+					)
+				</em>
+			{/if}
+		</td>
+	</tr>        
+
+	<tr>
+		<td style="padding-left: 15px; padding-bottom: 12px;">
+			<div class="kb_notes">{$item.notes|truncate:115:"...":true}</div>
+			<div class="kb_addinfo" style="padding-top: 5px;">
+				{$item.created_at}
+				&nbsp;&nbsp;&nbsp;&nbsp;{trans str="Notes:"} {$item.notes_count}
+				&nbsp;&nbsp;&nbsp;&nbsp;{trans str="Views:"} {$item.viewed_count}
+				&nbsp;&nbsp;&nbsp;&nbsp;{trans str="Rating:"} {$item.notes_raiting|string_format:"%.1f"}
+			</div>
+		</td>
+	</tr>              
+
+	{/foreach}            
+</table>
+{/if}

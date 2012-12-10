@@ -1,0 +1,39 @@
+<div style="float: none;">
+	<div style="float: right;">
+		<!-- <a class="page" href="index.php?module=Manage&action=ProductsAdd">Add New Product</a> -->
+		<input type="button" value="{trans str="Add New Product"}" onclick="location.href='index.php?module=Manage&action=ProductsAdd'" /> 
+	</div>
+	<div class="page_caption">{trans str="Product List"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+	<tr style="">
+		<th width="200px;">{trans str="Name"}</th>
+		<th>{trans str="Comment"}</th>
+		<th width="60px;">&nbsp;</th>
+	</tr>
+	
+	{if count($products) > 0}
+	{foreach item=product from=$products}
+	<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+		<td>{$product.ticket_product_caption}</td>
+		<td>{$product.ticket_product_desc}</td>
+		<td align="right">
+			<a href="index.php?module=Manage&action=ProductsAdd&product_id={$product.ticket_product_id}">
+				<img src="images/edit.gif" border="0" width="21px" height="21px" />
+			</a>
+			{if $sys_user.username != 'Unassigned' && $sys_user.username != 'admin' && $canDelete || 1}
+				<a href="index.php?module=Manage&action=ProductsDelete&product_id={$product.ticket_product_id}" 
+					onclick="return confirm('Are you sure you want to delete product {$product.ticket_product_caption}?');">
+					<img src="images/delete.gif" border="0" width="21px" height="21px" />
+				</a>
+			{/if}
+		</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="no products"}</td>
+	</tr>    
+	{/if}
+</table>    

@@ -1,0 +1,56 @@
+<div style="float: none;">
+	<div class="page_caption">Clean Ticket Message</div>
+</div>
+
+<form action="index.php?module=System&action=CleanTicketMessage" method="post">
+
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="2">{trans str="Id Numbers"}</th></tr>
+		<tr>
+			<td align="right" valign="top" style="width: 100px;">{trans str="Ticket Id"}:</td>
+			<td valign="top"><input type="text" name="ticket_id" size="30" maxlength="30" value="{$ticket_id}"></td>
+		</tr>
+		<tr>
+			<td align="right" valign="top" style="width: 100px;">{trans str="Message Id"}:</td>
+			<td valign="top"><input type="text" name="message_id" size="30" maxlength="30" value="{$message_id}"></td>
+		</tr>
+	</table>
+	
+	<div style="text-align: center; padding-top: 12px; padding-bottom: 22px;">
+		<input type="submit" name="edit_announc" value="{trans str='Get Message'}">
+	</div>
+</form>
+
+
+<form action="index.php?module=System&action=CleanTicketMessage" method="post">
+
+	<input type="hidden" name="ticket_id"     value="{$ticket_id}" />
+	<input type="hidden" name="message_id"    value="{$message_id}" />
+	<input type="hidden" name="clear_message" value="1" />
+	
+	{if $message_original}
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th>{trans str="Original Message"}</th></tr>
+		<!-- <tr>
+			<td>{$message_original}</td>
+		</tr> -->
+		<tr>
+			<td><div style="width: 100%; overflow: auto;">{$message_original}</div></td>
+		</tr>
+	</table>
+	{/if}
+	
+	{if $message_cleaned}
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th>{trans str="Message After Filters"}</th></tr>
+		<tr>
+			<td>{$message_cleaned}</td>
+		</tr>
+	</table>
+	<div style="text-align: center; padding-top: 12px;">
+		<input type="submit" name="edit_announc" value="{trans str='Update'}">
+	</div>
+	{/if}
+	
+</form>
+

@@ -1,0 +1,34 @@
+<div style="float: none;">
+    <div style="float: right;">
+        <input type="button" value="{trans str="Add New Group"}" onclick="location.href='index.php?module=CannedEmails&action=GroupsEdit'" /> 
+    </div>
+    <div class="page_caption">{trans str="Canned E-Mail Groups"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2">
+    <tr style="">
+        <th width="200px;">{trans str="Name"}</th>
+        <th>{trans str="Comment"}</th>
+        <th width="60px;">&nbsp;</th>
+    </tr>
+    
+    {foreach item=cat from=$cats}
+    <tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+        <td>{$cat.cat_caption}</td>
+        <td>{$cat.cat_desc}</td>
+        <td align="right">
+            <a href="index.php?module=CannedEmails&action=GroupsEdit&cat_id={$cat.cat_id}" 
+                ><img src="images/edit.gif" border="0" width="21px" height="21px" /></a>
+            {if $sys_user.username != 'Unassigned' && $sys_user.username != 'admin' && $canDelete || 1}
+                <a href="index.php?module=CannedEmails&action=GroupsDelete&cat_id={$cat.cat_id}" 
+                    onclick="return confirm('{trans str="Are you sure you want to delete product"} {$cat.cat_caption}?');" 
+                    ><img src="images/delete.gif" border="0" width="21px" height="21px" /></a>
+            {/if}
+        </td>
+    </tr>
+    {foreachelse}
+    <tr>
+        <td colspan="3">{trans str="there is no categories yet..."}</td>
+    </tr>    
+    {/foreach}
+</table>    

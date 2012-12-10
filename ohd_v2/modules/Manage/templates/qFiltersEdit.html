@@ -1,0 +1,88 @@
+{literal}
+<script language="JavaScript1.2" type="text/javascript">
+	function GetValuesList(obj_id) {
+		var sel = document.getElementById(obj_id);
+		var sel_items = new Array();
+		for (var i = 0; i < sel.options.length; i++) {
+			if (sel.options[i].selected) sel_items.push(sel.options[i].value);
+		}
+		//alert(sel_items);
+		return sel_items;
+	}
+
+	function SaveFilters() {
+		$('save_button').disabled = true;
+		$('reqStatus_cnt').style.display = '';
+		$('reqStatus_msg').innerHTML = 'saving...';
+		
+		SaveFilters_step2();
+		//setTimeout('SaveFilters_step2()', 1000);
+	}
+
+	function SaveFilters_step2() {
+		
+		var tbl = document.getElementById('filters_table');
+		// for (var i = 0; i < tbl.rows.length; i++) {
+
+		for (var i = 0; i < 20; i++) {
+			var row = tbl.rows;
+			
+			if (!document.getElementById('filter[' + i + '][name]')) continue;
+			
+			var props = {
+				'name':       document.getElementById('filter[' + i + '][name]').value
+			};
+			
+			var filter = {
+				'#DELIM':                       document.getElementById('filter[' + i + '][rel_type]').checked ? 'AND' : 'OR',
+				'tickets.ticket_num':           document.getElementById('filter[' + i + '][tickets.ticket_num]').value,
+				'tickets.ticket_product_id':    document.getElementById('filter[' + i + '][tickets.ticket_product_id]').value,
+				'tickets.is_in_trash_folder':   document.getElementById('filter[' + i + '][tickets.is_in_trash_folder]').value,
+				'tickets.group_id':             GetValuesList('filter[' + i + '][tickets.group_id]'),
+				'tickets.priority':             GetValuesList('filter[' + i + '][tickets.priority]'),
+				'tickets.status':               GetValuesList('filter[' + i + '][tickets.status]'),
+				'tickets.assigned_to':          GetValuesList('filter[' + i + '][tickets.assigned_to]')
+			};
+			
+			xajax_SaveFilter(i, props, filter);
+		}
+		
+		$('save_button').disabled = false;
+		$('reqStatus_cnt').style.display = 'none';
+	}
+</script>
+{/literal}
+
+
+{$js_code}
+
+<div style="float: none;">
+	<div style="float: right;">
+		<input type="button" value="{trans str="Add New Filter"}" 
+			onclick="xajax_AddFilterForm(document.getElementById('filters_table').rows.length)" /> 
+	</div>
+	<div class="page_caption">
+		{trans str="Quick Filters"}<span id="reqStatus_cnt" style="color: black; display: none;"> - <span id="reqStatus_msg" style="color: #FF9933;">saving...</span></span>
+	</div>
+</div>
+
+<form method="post">
+
+	<table id="filters_table" cellpadding="0" cellspacing="0" width="100%">
+		{assign var=index value=0}
+		{foreach item=filter key=key from=$sys_options.quick_filters}
+		<tr>
+			<td>
+				{include file="qFiltersEdit-filterForm.html"}
+			</td>
+		</tr>
+		{math assign=index equation="src + 1" src=$index}
+		{/foreach}
+	</table>
+
+	
+
+	<div style="text-align: center; padding-top: 12px;">
+		<input type="button" id="save_button" value="{trans str="Save Filters"}" onclick="xajax_ClearFilters();" />
+	</div>    
+</form>

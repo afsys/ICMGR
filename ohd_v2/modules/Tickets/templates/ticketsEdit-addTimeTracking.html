@@ -1,0 +1,61 @@
+{literal}
+<style type="text/css">
+	h3 { font-size: 12px; padding: 1px 4px; margin: 0px; background: #D1DCE7;}
+
+	div.window { 
+		display: none;
+		position: absolute;
+		top: 400px; left: 350px;
+		border: 1px solid black;
+		background: white;
+		padding: 2px;
+		float: left;
+		z-index: 100;
+	}
+	
+	div.tracking_hdr {
+		padding: 4px 4px 3px;
+		background: #DBD9DF;
+		margin: 2px;
+		font-weight: bold;
+	}
+	
+	div.tracking_cnt {
+		margin-top: 2px;
+		padding: 4px 4px 3px;
+		background: #E6E6E6;
+	}
+	
+	div.tracking_cnt.bottom {
+		text-align: right;
+	}
+	
+	div.tracking_cnt input.time {
+		width: 60px;
+	
+	}
+	
+	
+	
+</style>
+{/literal}
+
+<!-- TIME TRACKING TABLE -->
+<div id="time_tracking_div" class="window">
+	<h3>Add new time tracking</h3>
+	<div class="tracking_cnt">
+		Worked <input id="tt_worked" type="text" class="time" />&nbsp;
+		Chargeable <input id="tt_chargeable" type="text" class="time" />&nbsp;
+		Billable <input id="tt_billable" type="text" class="time" />&nbsp;
+		Payable <input id="tt_payable" type="text" class="time" />
+	</div>
+	<div class="tracking_cnt">
+		<p>Notes:</p>
+		<textarea rows="5" cols="80"></textarea>
+	</div>
+	<div class="tracking_cnt bottom">
+		<input type="button" value="Cancel" onclick="HideWnd('time_tracking_div')" />
+		<input type="button" value="Save Form" onclick="AddTimerTrackingSbt()" />
+	</div>
+</div>
+<!-- /TIME TRACKING TABLE -->

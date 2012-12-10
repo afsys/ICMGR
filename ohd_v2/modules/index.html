@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset={trans action='get_parameter' parameter_name='charset'}" />
+	<meta http-equiv="Content-Language" content="{trans action='get_parameter' parameter_name='lang'}" />
+	<meta name="Author" content="Konstantin Gorbachov" />
+	<meta name="EMail"  content="slyder@bk.ru" />
+	
+	{if isset($page_autorefresh_time)}<meta http-equiv="refresh" content="{$page_autorefresh_time}">{/if}
+	<title>Omni Help Desk</title>
+	<link href="styles.css" rel="stylesheet" type="text/css" />
+	<link href="emails.css" rel="stylesheet" type="text/css" />
+	<link href="new.css" rel="stylesheet" type="text/css" />
+	<link href="css/dhtmlgoodies_calendar.css" rel="stylesheet" type="text/css" />
+	
+	{assign var="is_customer" value=$user->GetAttribute('is_customer')}
+	{assign var="user_options" value=$user->GetOptions()}
+	
+	{if $is_customer}
+	<link href="user.css" rel="stylesheet" type="text/css">
+	{/if}
+	
+	<link href="js/JSCookMenu/ThemeOffice/theme.css" rel="stylesheet" type="text/css">   
+
+	<script type="text/javascript" src="index.php?module=System&action=GetJs&file=translations.js"></script>
+	<script type="text/javascript" src="js/ufo.js"></script>
+	<script type="text/javascript" src="js/json.js"></script>	
+	<script type="text/javascript" src="js/prototype.js"></script>
+	<script type="text/javascript" src="js/prototype_sx.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	
+	<script type="text/javascript" src="js/JSCookMenu/JSCookMenu.js"></script>
+	<script type="text/javascript" src="js/JSCookMenu/ThemeOffice/theme.js"></script>
+	<script type="text/javascript" src="js/dhtmlgoodies_calendar.js"></script>
+	<!-- <script type="text/javascript" src="index.php?module=System&action=GetJs&file=adminMenu.js"></script> -->
+	{assign var="is_customer" value=$user->getAttribute('is_customer')}
+	{if $is_customer}
+		{include file="`$smarty.const.BASE_DIR`js/JSCookMenu/actualUserMenu.js"}
+	{else}
+		{include file="`$smarty.const.BASE_DIR`js/JSCookMenu/actualMenu.js"}
+	{/if}
+	
+	<script type="text/javascript" src="lib/FCKeditor/fckeditor.js"></script>
+	{popup_init src="js/overlib/overlib.js"}
+	
+	<script language="JavaScript1.2" type="text/javascript">
+	{literal} 
+		if(typeof window.addEventListener != 'undefined') window.addEventListener('load', ohdDrawMenu, true); 
+		else window.attachEvent('load', ohdDrawMenu); 
+	{/literal}
+	</script>
+</head>
+<body>
+	{assign var="SysInfo" value=$user->GetAttribute('SysInfo')}
+	<a name="top"></a>
+
+	<div id="sound_div" style="position: absolute; width: 10px; height: 10px; left: -320px;"></div>
+
+	<div class="top_div">
+		<div style="height: 80px; background: #0851CE url(images/top.gif) no-repeat; position: relative;">
+			<div style="background-color: transparent; position: absolute; top: 0; right: 0; width: 30px; height: 30px;"
+				ondblclick="location.href='index.php?module=Updates&action=UpdateFiles'"
+				></div>
+			<div style="background-color: transparent; position: absolute; top: 30; right: 0; width: 30px; height: 30px;"
+				ondblclick="location.href='index.php?module=LiveChat&action=SessionsInfo'"
+				></div>
+		</div>
+	
+		<!-- HORISONTAL MENU -->
+		<div id="ohd_menu" class="hmenu_div">
+			<script language="JavaScript1.2" type="text/javascript"> ohdDrawMenu(); </script>      
+		</div>
+		<!-- /HORISONTAL MENU -->
+		
+		<!-- TOP PANEL -->
+		<div class="top_panel_div" style="float: none; padding-left: 15px;">
+			
+			<div style="float: right; position: relative; top: 3px;">
+				{trans str="Logged in as"} <strong>{$user->GetAttribute('username')}</strong>
+				<!-- <input type="button" name="button" value="List Open Tickets" onclick="SetFilter('special','opened');">&nbsp;
+				<input type="button" name="button" onclick="SetFilter('status','closed');" value="List Closed Tickets"> -->
+				
+				{if $smarty.const.F_LIVECHAT}
+					{if $user_options.defaults.enable_livechat || 1} | {/if}
+					
+					<!-- <input type="button" value="Ring test" onfocus="return false" onclick="ring_play('ring')"
+						style="width: 70px; border: 1px solid black; background: #E4E9E8; height: 18px;" /> -->
+					<span id="lc_statuses_cnt"></span>
+					<input id="lc_user_req" type="button" value="Chat Req" disabled="disabled" onfocus="return false" onclick="lcOpenChatWindow()"
+						style="width: 70px; display: none; border: 1px solid black; background: #E4E9E8; height: 18px;" />
+					{trans str="Live Chat:"} 
+					<strong id="lc_state_status">Enabled</strong>
+					<input id="lc_enable" type="checkbox" value="Enable" onclick="lcSwithOnOff()" onfocus="return false" checked="checked"
+						style="border: 1px solid black; background: #E4E9E8; border: none; padding: 0px; margin: 0px;" onfocus="this.blur();"/>
+
+					
+					<!--
+					<input type="button" value="Start LiveChat" onclick="window.open('index.php?module=LiveChat&action=Start')" /> 
+					<input type="button" value="Test" onclick="lc_checkChatWindow()" /> -->
+					
+					<!-- http://ohd/index.php?module=LiveChat&action=SessionsInfo -->
+					<!-- http://ohd/index.php?module=LiveChat&action=ChatWindow -->
+					
+					{assign var="lc_req_status"  value=$user->GetLiveChatReqStatus()}
+					{assign var="lc_talk_status" value=$user->GetLiveChatTalkingStatus()}
+					
+					
+					<script language="JavaScript1.2" type="text/javascript">
+						var lc_is_enabled = {if $user_options.defaults.enable_livechat}true{else}false{/if};
+						var lc_rings_more_init = {$user_options.lc.req_rings_count};
+						
+						{literal}
+						// start LC status requester
+						new Ajax.Request('index.php?module=LiveChat&action=GetAgentStatusesAjax&func=getAgentStatuses', {onComplete: lcUpdateAgentReqStatuses}); 
+						var lcGetUserStatusPE = new sxPeriodicalExecuter(
+							function() { new Ajax.Request('index.php?module=LiveChat&action=GetAgentStatusesAjax&func=getAgentStatuses', {onComplete: lcUpdateAgentReqStatuses}); },
+							3,
+							lc_is_enabled // TODO: если вырублено все-равно идет один запрос
+						);
+						lcInitState(lc_is_enabled);
+						{/literal}
+					</script>
+					
+					
+					{*
+					{if $lc_talk_status.sid && $lc_talk_status.allowed_last_action_time}
+						<script language="JavaScript1.2" type="text/javascript">
+							// chating
+							lc_curr_user_data = {ldelim}
+								/* 1 */
+								user_id: {$lc_req_status.user_id}, 
+								lc_user_request: {$lc_req_status.lc_user_request},
+								lc_user_request_time: '{$lc_req_status.allowed_last_action_time}'
+							{rdelim}
+						
+							lv_swithOnOff(false);
+							lc_setChatingStatus(true);
+						</script>
+					{elseif $lc_req_status.lc_user_request && $lc_req_status.allowed_last_action_time}
+						<script language="JavaScript1.2" type="text/javascript">
+							// chat request
+							lc_curr_user_data = {ldelim}
+								user_id: {$lc_req_status.user_id}, 
+								lc_user_request: {$lc_req_status.lc_user_request},
+								lc_user_request_time: '{$lc_req_status.allowed_last_action_time}'
+							{rdelim}
+							lv_swithOnOff(false);
+							lv_reqButtonEnable(lc_curr_user_data.lc_user_request);
+							lv_flash_timerId = setInterval(lv_reqButtonFlashing, 100);
+							// lc_setUserStatus('requesting');
+						</script>
+					{elseif $user_options.defaults.enable_livechat}
+						<script language="JavaScript1.2" type="text/javascript">
+							// enable LC
+							lv_swithOnOff(false);
+						</script>
+					{/if} *}
+				{/if}
+			</div>
+			
+			<!--
+			<form id="search_form" action="index.php?module=Tickets&action=TicketsList" method="POST">
+				<input id="search_value" name="search_value" type="text" style="width: 73px;" value="{trans str='Search'}..." onclick="if (this.value == '{trans str="Search"}...') this.value = '';" onblur="if (this.value == '') this.value = '{trans str="Search"}...'"/>
+				<input type="button" value="{trans str="Go"}!" style="position: relative; top: -1px;" onclick="SubmitSearch()" />
+			</form>
+			-->
+			
+<table>
+<tr>
+<td>
+			<form id="search_form" action="index.php?module=Tickets&action=TicketsList" method="POST">
+				<input id="search_value" name="search_value" type="text" style="width: 173px;" value="{trans str='Search in tickets params'}..." onclick="if (this.value == '{trans str="Search in tickets params"}...') this.value = '';" onblur="if (this.value == '') this.value = '{trans str="Search in tickets params"}...'"/> 
+				<input type="button" value="{trans str="Go"}!" style="position: relative; top: -1px;" onclick="SubmitSearch()" />
+			</form>			
+</td>
+<td width="10">&nbsp;</td>
+<td>			
+			<form id="search_form2" action="index.php?module=Tickets&action=TicketsList" method="POST">			
+				<input id="search_value2" name="search_value2" type="text" style="width: 173px;" value="{trans str='Search in tickets messages'}..." onclick="if (this.value == '{trans str="Search in tickets messages"}...') this.value = '';" onblur="if (this.value == '') this.value = '{trans str="Search in tickets messages"}...'"/>
+				<input type="button" value="{trans str="Go"}!" style="position: relative; top: -1px;" onclick="SubmitSearch2()" />
+			</form>			
+</td>
+</tr>
+</table>
+			
+			
+		</div>
+		<!-- /TOP PANEL -->
+		
+		<!-- MAIN BODY -->
+		<div class="body_div">
+			{if $pageBody}{include file="$pageBody"}{else}No content...{/if}
+		</div>
+		<!-- /MAIN BODY -->
+		
+		<!-- FOOTER -->
+		<div class="footer_div">
+			Omni Help Desk, v {$smarty.const.OHD_VERSION}  &copy;2006 <b>TSS Enterprises</b> {trans str="All rights reserved"}. 
+			{trans str="See also"} <a href="http://www.omnihelpdesk.com/tandc.htm" target="_blank">{trans str="Terms &amp; Conditions"}</a>
+		</div>
+		<!-- /FOOTER -->
+	</div>
+	
+<form id="filter_form" action="index.php?module=Tickets&action=TicketsList" method="POST">
+	<input type=hidden name=module value="Tickets">
+	<input type=hidden name=action value="TicketsList">
+	<input id="hf_set_filter"   type="hidden" name="set_filter"       value="0" />
+	<input id="priority_filter" type="hidden" name="filter_ex_params" value="" />
+	<input id="priority_filter" type="hidden" name="filter[priority]" value="" />
+	<input id="status_filter"   type="hidden" name="filter[status]"   value="" />
+	<input id="special_filter"  type="hidden" name="filter[special]"  value="" />
+</form>
+
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Piping E-Mails Logs"}</div>
+</div>
+
+<table class="page" cellspacing="0" cellpadding="2" border="0">
+	<tr>
+		<th style="text-align: center; width: 100px;">{trans str="Added At"}</th>
+		<th>{trans str="E-Mail Subject"}</th>
+		<th style="text-align: center; width: 80px;">{trans str="Status"}</th>
+		<th style="text-align: center; width: 110px;">{trans str="Result"}</th>
+	</tr>
+	
+	{if count($email_list) > 0}
+	{foreach item=email from=$email_list}
+	<tr style="background-color: {cycle values="#FFFFFF,#E4E4E4"}">
+		<td align="center">{$email.email_added_at|date_format_usr:'short'}</td>
+		<td>{$email.email_subject}</td>
+		<td align="center">
+			{if $email.email_status == "ok"}
+				<font color=green>Ok</font>
+			{else}
+				<font color=red>{$email.email_status}</font>
+			{/if}
+		</td>
+		<td align="center">
+			<a href="javascript:void(window.open('index.php?module=EmailPiping&action=EmailsLog&view_details=1&id={$email.email_id}','log','width=800,height=700,scrollbars=yes,resize=yes'))">{trans str="View Details"}</a>
+		</td>
+	</tr>
+	{/foreach}
+	{else}
+	<tr>
+		<td colspan="3">{trans str="no email logs"}</td>
+	</tr>    
+	{/if}
+</table>    
+
+<br />
+
+<center>Pages: {$pages}</center>

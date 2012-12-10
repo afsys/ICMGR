@@ -1,0 +1,90 @@
+.r353 New search filter by date. With flexible date formats.
+.r350 Added opiton for deleting message from server on piping
+.r347 Added 'Clicked From' value for LC logs window
+.r346 Breakdown per last week for agents
+.r345 Added simple agents breakdown statistics
+.r343 Changed merge tickets feature
+      Added customer status information  
+.r333 Added user status for LC
+.r333 Fixed some bugs in LC.
+      Added Move To Trash Folder on Delete option
+      In Trash Folder quick filters option
+.r330 Added Beta LC version!!!!!!!!!!!!
+.r323 Complete German Translation
+      Added date-based ticket numbers generation
+.r320 97% of translations
+.r319 Added German language support
+.r315 LC: quick enable/disable button
+      LC: tranfer select auto-refresh
+.r307 Added Norwegian language support
+      Added OLC Writing activity status
+.r303 Added message subject value for email piping
+.r302 Now filters save value, for moving on Opened page use CLR button
+.r300 'Allow to delete ticket' user right
+      LC beta version
+      Finished TicketsAddFromLink
+      Fixed bugs in User Side
+      Added group rights for tickets
+.r297 Added Italian language support
+.r295 Added French language support
+.r292 Expired date for KB items
+.r290 Spain language pack
+.r280 Agent grups considered in ticket list limitations
+.r277 Notify emails captions
+      Ticket additional notes
+.r275 Modules auto-genarator
+      XAJAX version updated
+      Fixed problems with database upgrades
+.r270 Added a lot of diff items
+      Rewrited user side and fixed a lot of bug for registered user area
+.r259 Additional emails feature
+      Disabling piping accounts
+.r256 User variables for emails
+.r255 Piping emails log
+      Carbon copy email field uin tickets edit
+.r253 Escalation tickets options
+.r251 User options for tickest editor (rich/simple)
+.r250 Simple spam filter
+.r241 LC footprints, LC status image. Date formats.
+.r240 CVS Export + more...
+.r238 LiveChat beta version 
+.r235 Added ex ticket options (ex_opt_exclude_from_common_list)
+.r225 LiveChat aplha version 
+.r215 Menu loading restored to include
+.r212 Long and Short date formats.... Some additional fixes
+.r211 ToDo feature extenshions
+.r210 ToDo feature
+.r195 Minor bug fixes
+.r190 aSpell integration
+      Adding rich-editor conversion
+      First version of next-prev item on ticket edit form.
+.r189 Most viewed and most rated items in KB
+.r187 Completed KB custom form. Added KB-class.
+.r185 Configurable livetime for user sessions
+.r184 Added {$ticket_message} variable for customer notify messages
+      Added new options for custom filters
+.r183 'Disable at' property for users
+.r180 Automatical database update feature
+.r174 Added last updated by name it ticket list
+.r172 Added total messages and new message per user in tickets list
+.r170 Custom field in userarea
+.r169 Quick info popup windows configuration in user preferences
+.r166 Quick info popup windows
+.r162 Required custom fields
+.r160 "Show in userside" option for ticket forms fields
+.r156 Scripts execution time
+.r155 Uniform db-source
+.r142 Extendet tickets list style
+.r139 Complicated Quick Filters Params
+.r134 Users (customers) registration 
+.r132 JS and CSS moved to separate cashed files
+.r130 Piping Filters Order
+.r125 Quick Filters
+.r120 Multiple accounts for piping
+.r112 Формат дат
+.r102 Настройки мыльника.... И т.д.
+.r100 Очередь сообщений index.php?module=System&action=ProcessEmailsQuery
+
+.r94  заменил почти все файлы на свою БД... добавлен префикс таблиц... нотисы + шаблоны к ним
+.r88  после: новая система прав.. пофикшено куча багов... вроде пашет
+.r67  до глобальных изменений

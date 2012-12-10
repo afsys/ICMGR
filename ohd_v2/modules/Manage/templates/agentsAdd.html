@@ -1,0 +1,109 @@
+<div style="float: none;">
+	<div style="float: right; padding-top: 5px; padding-right: 3px;">
+		<input type="button" value="{trans str="Agent List"}" onclick="location.href='index.php?module=Manage&action=AgentsList'" 
+			style="position: relative; top: -5px; left: 3px;" /> 
+	</div>
+	<div class="page_caption">{if $user_id}{trans str="Edit"}{else}{trans str="Add New"}{/if} {trans str="Agent"}</div>
+</div>
+
+{if is_array($message)} 
+	{foreach item=msg from=$message}
+		<div style="padding-top: 2px;">{$msg.caption}<span style="color: red;">{$msg.message}</span></div>
+	{/foreach}
+{else}
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<form action="index.php" method="post">
+<input type="hidden" name="action"   value="AgentsAdd">
+<input type="hidden" name="module"   value="Manage">
+<input type="hidden" name="user_id"  value="{$user_id}">
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Agent Properties"}</th></tr>
+		<tr>
+			<td width="150px">{trans str="Login Name"}:</td>
+			<td width="200px"><input type="text" name="username" size="15" maxlength="40" value="{$user_data.user_login}"></td>
+			<td><span style="color: red;">{$errors.username}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="Password"}:</td>
+			<td><input type="password" name="password1" size="15" maxlength="40"></td>
+			<td><span style="color: red;">{$errors.password}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="Retype Password"}:</td>
+			<td><input type="password" name="password2" size="15" maxlength="40"></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>{trans str="First Name"}:</td>
+			<td><input type="text" name="firstName" size="25" maxlength="40" value="{$user_data.user_name}"></td>
+			<td><span style="color: red;">{$errors.firstName}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="Last Name"}:</td>
+			<td><input type="text" name="lastName" size="25" maxlength="40" value="{$user_data.user_lastname}"></td>
+			<td><span style="color: red;">{$errors.lastName}</span></td>
+		</tr>
+		<tr>
+			<td>{trans str="E-Mail"}:</td>
+			<td><input type="text" name="email" size="30" maxlength="100" value="{$user_data.user_email}"></td>
+			<td><span style="color: red;">{$errors.email}</span></td>
+		</tr>
+		
+		{if $smarty.const.F_LIVECHAT}
+		<tr>
+			<td>{trans str="Livechat weight"}:</td>
+			<td>
+				<select name="lc_priority">
+				{foreach item=item from=$lc_weights}
+					<option value="{$item}" {if $user_data.lc_priority == $item}selected="selected"{/if}>{$item}</option>
+				{/foreach}
+				</select>
+				
+			</td>
+			<td><span style="color: red;">{$errors.email}</span></td>
+		</tr>
+		{/if}
+		
+		<tr>
+			<td>{trans str="Disable at"}:</td>
+			<td>
+				<input id="disable_at" name="disable_at" type="text" value="{$user_data.disable_at}" readonly>
+				<!-- <input type="button" value="Cal" onclick="displayCalendar(document.getElementById('disable_at') , 'yyyy/mm/dd', this)"> -->
+				<img width="15px" height="15px" title="Select date" alt="Select date" src="images/calendar.gif" 
+					style="cursor: pointer; position: relative; top: 2px;" 
+					onclick="displayCalendar(document.getElementById('disable_at') , 'yyyy-mm-dd', this)" />
+			</td>
+			<td><span style="color: red;">{$errors.email}</span></td>
+		</tr>
+	</table>
+
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th>{trans str="Agent Groups"}</th></tr>
+		<tr><td>{trans str="Set which groups will be available for agent:"}</td></tr>
+		<tr>
+			<td align="left" style="padding-left: 30px;">
+				{foreach key=group_name item=group from=$groups}
+					<input type="checkbox" name="groups[{$group.group_id}]" value="1" {if $group.checked}checked{/if}>&nbsp;<strong>{$group.group_caption}</string><br>
+				{/foreach}
+			</td>
+		</tr>
+	</table>
+
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th>{trans str="Agent Rights"}</th></tr>
+		<tr>
+			<td style="padding-left: 30px;">
+				{foreach key=pr_value item=privilege from=$SR_NOTES}
+					
+					<input type="checkbox" name="user_rights[]" value="{$pr_value}" { if (($user_data.user_rights & $pr_value) == $pr_value) || $user_data.is_sys_admin }checked="checked"{/if} {if $user_data.is_sys_admin}disabled="disabled"{/if} /> 
+					&nbsp;{$privilege}<br />
+				{/foreach}
+			</td>
+		</tr>
+	</table>
+
+
+	<div style="text-align: center; padding-top: 12px;"><input type="submit" name="add_user" value="{if $user_id}{trans str="Update"}{else}{trans str="Add"}{/if} {trans str="Agent"}"></div>
+</form>

@@ -1,0 +1,196 @@
+<script type="text/javascript" language="JavaScript1.2">
+var is_ie = navigator.userAgent.match('MSIE') ? true : false;            
+var xmlhttp;
+if (is_ie) xmlhttp = new ActiveXObject("MSXML2.XMLHTTP");
+else xmlhttp = new XMLHttpRequest();
+
+function AddNote()
+{ldelim}
+    document.getElementById('new_note_link').style.display = 'none';
+    document.getElementById('new_note_form').style.display = '';
+{rdelim}
+
+function SendNote()
+{ldelim}
+    var usr = document.getElementById('note_user');
+    if (usr.value == '')
+    {ldelim}
+        alert('Please, enter user name');
+        usr.focus();
+        return;
+    {rdelim}
+    var txt = document.getElementById('note_text');
+    if (txt.value == '')
+    {ldelim}
+        alert('Please, enter user name');
+        txt.focus();
+        return;
+    {rdelim}  
+    
+    document.getElementById('send_button').disabled = 'disabled';
+
+    var url = "{$url_prefix}/modules/KnowledgeBase/actions/AddItemNoteAction.class.php?item_id={$item_id}&" +
+              "note_user=" + decodeURI(usr.value) + "&note_text=" + decodeURI(txt.value);
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.onreadystatechange = OnXmlHttpResponse;
+    xmlhttp.send(null);    
+{rdelim}
+
+function OnXmlHttpResponse()
+{ldelim}
+    if (xmlhttp.readyState == 4) 
+    {ldelim}
+        // if (xmlhttp.responseText != 'OK!') 
+        document.getElementById('new_note_form').style.display = 'none';
+        
+        var tbl = document.getElementById('notes_table');
+        var tr  = tbl.insertRow(3);
+        var td  = tr.insertCell(0);
+        td.className = 'user_note';
+        td.style.paddingLeft = '20px';
+        td.innerHTML = '<strong>' + document.getElementById('note_user').value + 
+                       '</strong><br />' + document.getElementById('note_text').value;
+        alert('Thanks for you notes');
+    {rdelim}
+{rdelim}
+
+
+function CancelNote()
+{ldelim}
+    document.getElementById('new_note_link').style.display = '';
+    document.getElementById('new_note_form').style.display = 'none';
+{rdelim}
+
+function RateArticle()
+{ldelim}
+    var sel = document.getElementById('raiting_select');
+    var rait_value = sel.options[sel.selectedIndex].value;
+    if (rait_value == 0)
+    {ldelim}
+        alert('Please, select rating value.');
+        sel.focus();
+        return;
+    {rdelim}
+    
+    var user_ip = '{$user_ip}';
+    var url = "{$url_prefix}/modules/KnowledgeBase/actions/RateItemAction.class.php?item_id={$item_id}&user_ip=" + 
+              user_ip + "&rait_value=" + rait_value;
+    //alert(url);
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.onreadystatechange = RateArticle_Resp;
+    xmlhttp.send(null);        
+{rdelim}
+
+function RateArticle_Resp()
+{ldelim}
+    if (xmlhttp.readyState == 4) 
+    {ldelim}
+        if (xmlhttp.responseText != 'OK!') {ldelim}
+            alert(xmlhttp.responseText);
+            return;
+        {rdelim}
+        document.getElementById('new_note_form').style.display = 'none';
+        
+        document.getElementById('raiting_button').disabled = true;
+        document.getElementById('raiting_select').disabled = true;        
+
+        alert('Thanks for you rating');
+    {rdelim}
+{rdelim}
+
+</script>
+
+<div style="float: none;">
+	<div class="page_caption">Knowledge Base</div>
+</div>
+
+{if isset($message)} 
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+	<tr><th><div id="requestStatus" style="float: right;"></div>{$page_caption}</th></tr>
+	<tr>
+		<td>
+		
+	        <div class="path" style="padding-top: 4px; padding-bottom: 4px;">{$cats_path}</div> 
+	        {if isset($msg)}
+	        <div style="color: red;">{$msg}</div>
+	        {/if}
+	        
+	        <table cellspacing="0" border="0px">
+	            <tr>
+	                <td valign="top" style="font-size: 14px; font-weight: bold;">{$item_info.caption}</td>
+	            </tr>
+	            <tr>
+	                <td valign="top" style="padding-left: 20px;">
+	                    {$item_info.notes}
+	                </td>
+	            </tr>
+	        </table>
+		        
+            {if $no_vote}
+            <div id="rating_row" align="right">
+            <!--
+                <td valign="top" style="padding-left: 20px; font-size: 11px; color: #8A8A8A;" > -->
+                    Please, help us rate this article: 
+                    <select id="raiting_select" style="background: #E1DED9;">
+                        <option value="0"></option>
+                        <option value="5">5 - Very Helpfull</option>
+                        <option value="4">4</option>
+                        <option value="3">3 - Somewhat Helpfull</option>
+                        <option value="2">2</option>
+                        <option value="1">1 - Not Helpfull</option>
+                    </select>
+                    <input id="raiting_button" type="button" value="Rate" style="border: 1px solid black;" onclick="RateArticle()" />
+                <!-- </td> -->
+            </div>
+            {/if} 
+            
+	        {if count($user_notes) gt -1}
+	        <table id="notes_table" cellspacing="5" border="0px" style="padding-top: 10px;">
+	            <tr>
+	                <td style="font-size: 14px; font-weight: bold; color: silver;">
+	                    User notes:
+	                </td>
+	            </tr>
+	            <tr id="new_note_link" >
+	                <td style="font-size: 12px;">
+	                    <a class="path" href="javascript:AddNote();">Add note</a>
+	                </td>
+	            </tr>            
+	            <tr id="new_note_form" style="display: none;">
+	                <td>
+	                    <table cellspacing="0px"
+	                      style="border: 1px solid silver; border-bottom: 1px solid black; border-right: 1px solid #575757;">
+	                        <tr><td style="padding-left: 4px; font-weight: bold; background-color: #F5F5F5;" colspan="2">Add new note</td></tr>
+	                        <tr>
+	                            <td style="padding-left: 4px; padding-top: 3px;">User name:</td>
+	                            <td style="padding-top: 3px;"><input id="note_user" type="text" style="width: 280px;"/></td>
+	                        </tr>
+	                        <tr><td valign="top" style="padding-left: 4px;">Notes:</td><td><textarea id="note_text" cols="40" rows="5" style="width: 280px;"></textarea></td></tr>
+	                        <tr>
+	                            <td colspan="2" align="center">
+	                                <input type="button" value="Cancel" onclick="CancelNote();" style="width: 100px" />
+	                                <input id="send_button" type="button" value="Send note" onclick="SendNote();" style="width: 100px" />
+	                            </td>
+	                        </tr>
+	                    </table> 
+	                </td>
+	            </tr>            
+	            {foreach name="userNotesLoop" item=user_note from=$user_notes} 
+	            <tr>
+	                <td class="user_note" valign="top" style="padding-left: 20px;">
+	                    <!-- <img src="images/comment.gif" width="12" height="11" align="middle" /> -->
+	                    <strong>{$user_note.user}</strong> [{$user_note.date}] <br />
+	                    {$user_note.text}
+	                </td>
+	            </tr>        
+	            {/foreach}
+	        </table>
+	        {/if}	            
+		</td>
+	</tr>
+</table>

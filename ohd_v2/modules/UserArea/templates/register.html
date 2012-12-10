@@ -1,0 +1,63 @@
+<style>
+{literal}
+
+{/literal}
+</style>
+
+<div style="float: none;">
+	<div class="page_caption">{trans str="User Registration"}</div>
+</div>
+
+{if is_array($message)} 
+	{foreach item=msg from=$message}
+		<div style="padding-top: 2px;">{$msg.caption}<span style="color: red;">{$msg.message}</span></div>
+	{/foreach}
+{else}
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<table class="vpage" border="0px" width="100%;" cellspacing="0px">
+<form action="index.php?module=UserArea&action=Register" method="post">
+	<thead>
+		<th colspan="2">{trans str="User Info"}</th>
+	</thead>
+
+	<tr>
+		<td colspan="2" style="padding: 5px 10px 9px;">{trans str="Please fill out the form below to create your user account."}</td>
+	</tr>
+
+	<tr>
+		<th>{trans str="Login:"}</th>
+		<td><input name="user_data[user_login]" value="{$user_data.user_login}" /></td>
+	</tr>
+	<tr>
+		<th>{trans str="Password:"}</th>
+		<td>
+			<input type="password" name="user_data[user_pass]" value="" />
+		</td>
+	</tr>
+	<tr>
+		<th>{trans str="Retype password:"}</th>
+		<td><input type="password" name="user_data[user_pass2]" value="" /></td>
+	</tr>
+	<tr>
+		<th>{trans str="Email:"}</th>
+		<td><input name="user_data[user_email]" value="{$user_data.user_email}" /></td>
+	</tr>
+
+	<tr>
+		<th>{trans str="Name:"}</th>
+		<td><input name="user_data[user_name]" value="{$user_data.user_name}" /></td>
+	</tr>
+	<tr>
+		<th>{trans str="Lastname:"}</th>
+		<td><input name="user_data[user_lastname]" value="{$user_data.user_lastname}" /></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center" style="padding: 5px;">
+			<input type="submit" value="{trans str="Create Account"}" />
+		</td>
+	</tr>
+	
+</form>
+</table>

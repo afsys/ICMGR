@@ -1,0 +1,74 @@
+<!-- CAPTION -->
+<div style="float: none;">
+	<div class="page_caption">{trans str="Active Sessions Info"}</div>
+</div>
+<!-- /CAPTION -->   
+
+<!-- ACTIVE SESSIONS -->
+<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+	<tr>
+		<th colspan="1">{trans str="Session Data"}</th>
+		<th colspan="1">{trans str="Users Data"}</th>
+	</tr>
+	
+	{foreach name=sessionsListForeach item=session from=$sessions}
+	<tr>
+		<td style="border-bottom: 1px solid silver;">
+			{trans str="SID"}: {$session.sid} <br />
+			{if $session.closed}Closed{/if}
+			{* {trans str="Created at"}: {$session.created_at} *}
+			
+		</td>
+		<td style="border-bottom: 1px solid silver;">
+			{foreach name=usersListForeach item=user from=$session.users}
+				{$user.nickname} 
+				(id: {$user.user_id}, 
+				{* ip: {$user.user_ip},  *}
+				type: {if $user.agent_id}agent{else}customer{/if},
+				status: {$user.status}
+				
+				) <br />
+			{/foreach}
+		</td>
+	</tr>
+	{/foreach}
+</table>
+<!-- /ACTIVE SESSIONS-->
+
+
+<!-- CAPTION -->
+<div style="float: none; padding-top: 10px;">
+	<div class="page_caption">{trans str="Closed Sessions Info"}</div>
+</div>
+<!-- /CAPTION -->  
+
+<!-- /CLOSED SESSIONS-->
+<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+	<tr>
+		<th colspan="1">{trans str="Session Data"}</th>
+		<th colspan="1">{trans str="Users Data"}</th>
+	</tr>
+	
+	{foreach name=sessionsListForeach item=session from=$closed_sessions}
+	<tr>
+		<td style="border-bottom: 1px solid silver;">
+			{trans str="SID"}: {$session.sid} <br />
+			{if $session.closed}Closed {if $session.other_close_reason}({$session.other_close_reason}){/if}{/if} <br />
+			{trans str="Closed at"}: {$session.closed_at}
+			
+		</td>
+		<td style="border-bottom: 1px solid silver;">
+			{foreach name=usersListForeach item=user from=$session.users}
+				{$user.nickname} 
+				(id: {$user.user_id}, 
+				{* ip: {$user.user_ip},  *}
+				type: {if $user.agent_id}agent{else}customer{/if},
+				status: {$user.status}
+				
+				) <br />
+			{/foreach}
+		</td>
+	</tr>
+	{/foreach}
+</table>
+<!-- /CLOSED SESSIONS-->

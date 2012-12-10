@@ -1,0 +1,498 @@
+{literal}
+<script language="JavaScript1.2">
+	
+	function SyhcOptions(type)
+	{
+		var sel = document.getElementById('sel_' + type);
+		
+		switch (type)
+		{
+			case 'statuses':
+				CopySelectOptions(sel, document.getElementById('status_for_new'));
+				CopySelectOptions(sel, document.getElementById('status_for_closed'));
+				CopySelectOptions(sel, document.getElementById('status_for_reopened'));
+				CopySelectOptions(sel, document.getElementById('status_for_unanswered'), true);
+				break;
+				
+			case 'priorities':
+				CopySelectOptions(sel, document.getElementById('priority_for_new'));
+				break;
+		}
+	}
+	
+	function CopySelectOptions(sel_src, sel_dst, add_none)
+	{
+		var add_none = add_none || false;
+		var selectedValue = sel_dst.value;
+		for (var i = sel_dst.options.length-1; i >= 0; i--) sel_dst.removeChild(sel_dst.options[i]);
+		
+		var shift = 0;
+		if (add_none) 
+		{
+			var opt = document.createElement('OPTION');
+			opt.innerHTML = '(none)';
+			opt.value     = '';
+			sel_dst.appendChild(opt);
+			shift = 1;
+		}
+		
+		for (var i = 0; i < sel_src.options.length; i++) 
+		{
+			var opt = sel_src.options[i].cloneNode(true);
+			sel_dst.appendChild(opt, i+shift);
+			if (selectedValue == opt.value) sel_dst.selectedIndex = i+shift;
+		}
+	}
+
+	function AddItem(type)
+	{
+		var inp = document.getElementById('inp_' + type);
+		var sel = document.getElementById('sel_' + type);
+		var opt = document.createElement('OPTION');
+		opt.innerHTML = inp.value;
+		sel.appendChild(opt);
+		
+		SyhcOptions(type);
+	}
+	
+	function MoveDown(type)
+	{
+		var sel = document.getElementById('sel_' + type);
+		if (sel.selectedIndex == -1) return;
+				
+		if (sel.selectedIndex < sel.options.length-1)
+		{
+			var b = sel.options[sel.selectedIndex];
+			b.parentNode.insertBefore(b, b.nextSibling.nextSibling);
+		}
+		SyhcOptions(type);
+	}
+	
+	function MoveUp(type)
+	{
+		var sel = document.getElementById('sel_' + type);
+		if (sel.selectedIndex == -1) return;
+				
+		if (sel.selectedIndex > 0)
+		{
+			var b = sel.options[sel.selectedIndex];
+			b.parentNode.insertBefore(b, b.previousSibling);
+		}
+		SyhcOptions(type);
+	}
+	
+	function SetColorToSelItem(type, prop_type) {
+		var sel = document.getElementById('sel_' + type);
+		if (sel.selectedIndex == -1) {
+			alert('Please choose item at select-control.');
+			document.getElementById(prop_type + '_for_' + type + '_field').value = '';
+			document.getElementById(prop_type + '_for_' + type + '_').style.backgroundColor = '#fff';
+			return;
+		}
+
+		var inp = document.getElementById(prop_type + '_for_' + type + '_field');
+		var pr = document.getElementById('preview_' + type);
+		switch (prop_type) {
+			case 'textcolor'  : pr.style.color = inp.value; break;
+			case 'bordercolor' : pr.style.border = '1px solid ' + inp.value; break;
+			case 'bgcolor' : pr.style.backgroundColor = inp.value; break;
+		}
+		sel.options[sel.selectedIndex]['option_' + prop_type] = inp.value;
+	}
+	
+	function SetColorSetEdit(type) {
+		var sel = document.getElementById('sel_' + type);
+		if (sel.selectedIndex == -1) return;
+		var pr = document.getElementById('preview_' + type);
+		var $vvv;
+		// text color
+		$vvv = sel.options[sel.selectedIndex].option_textcolor || '#000000';
+		pr.style.color = $vvv;
+		relateColor('textcolor_for_' + type + '_', $vvv);
+		document.getElementById('textcolor_for_' + type + '_field').value = $vvv;
+
+		// border color
+		$vvv = sel.options[sel.selectedIndex].option_bordercolor || '';
+		if ($vvv) pr.style.border = '1px solid ' + $vvv;
+		else pr.style.border = '1px solid white';
+		relateColor('bordercolor_for_' + type + '_', $vvv);
+		document.getElementById('bordercolor_for_' + type + '_field').value = $vvv;
+		
+		// background color
+		$vvv = sel.options[sel.selectedIndex].option_bgcolor || '';
+		pr.style.backgroundColor = $vvv;
+		relateColor('bgcolor_for_' + type + '_', $vvv);
+		document.getElementById('bgcolor_for_' + type + '_field').value = $vvv;
+
+	}
+
+	
+	function DeleteItem(type)
+	{
+		var sel = document.getElementById('sel_' + type);
+		if (sel.selectedIndex != -1)
+		{
+			sel.removeChild(sel.options[sel.selectedIndex]);
+			SyhcOptions(type);
+		}
+	}
+	
+	function SavePreferences()
+	{
+		// CHECK DATA
+		var sel_new = document.getElementById('status_for_new');
+		if (!sel_new.value) {
+			alert('{trans str="Status for new ticket can not be null."}');
+			sel_new.focus();
+			return;
+		}
+
+		var sel_cls = document.getElementById('status_for_closed');
+		if (!sel_cls.value) {
+			alert('{trans str="Status for closed ticket can not be null."}');
+			sel_cls.focus();
+			return;
+		}
+		
+		var sel_reopen = document.getElementById('status_for_reopened');
+		if (!sel_reopen.value) {
+			alert('{trans str="Status for reopened ticket can not be null."}');
+			sel_reopen.focus();
+			return;
+		}
+		
+		var sel_unansw = document.getElementById('status_for_unanswered');
+		
+		if (sel_new.value == sel_cls.value) {
+			alert('{trans str="Statuses for new and closed tickets can not be equal."}');
+			//return;
+		}
+		
+		// priority_for_new
+		var sel_pr_new = document.getElementById('priority_for_new');
+
+		
+		// SAVE
+		document.getElementById('requestStatus').innerHTML = '<span style="color: #EA7500">Saving Ticket Preferences...</span>';
+		// statuses
+		var statuses = "";
+		var sel = document.getElementById('sel_statuses');
+		for (var i = 0; i < sel.options.length; i++)
+		{
+			var o = sel.options[i];
+			if (statuses != "") statuses = statuses + ",";
+			statuses = statuses + o.innerHTML + ":" + encodeURIComponent(o.option_textcolor || '') + 
+			           ":" + encodeURIComponent(o.option_bordercolor || '') + ":" + encodeURIComponent(o.option_bgcolor || '');
+		}
+		
+		// priorities
+		var priorities = "";
+		var sel = document.getElementById('sel_priorities');
+		for (var i = 0; i < sel.options.length; i++)
+		{
+			var o = sel.options[i];
+			if (priorities != "") priorities = priorities + ",";
+			//priorities = priorities + sel.options[i].innerHTML;
+			priorities = priorities + o.innerHTML + ":" + encodeURIComponent(o.option_textcolor || '') + 
+			           ":" + encodeURIComponent(o.option_bordercolor || '') + ":" + encodeURIComponent(o.option_bgcolor || '');
+		}
+		
+		
+		// types
+		var types = "";
+		var sel = document.getElementById('sel_types');
+		for (var i = 0; i < sel.options.length; i++)
+		{
+			if (types != "") types = types + ",";
+			types = types + sel.options[i].innerHTML;
+		}
+		
+		document.getElementById('submit_btn').disabled = true;
+	    //"modules/Manage/quicks/TicketsPreferencesSave.php?statuses=" + statuses + 
+	    var url = "index.php?module=Manage&action=TicketsPreferencesSave&statuses=" + statuses + 
+		          "&priorities=" + priorities + "&types=" + types + 
+		          "&status_for_new=" + sel_new.value + "&status_for_closed=" + sel_cls.value +
+		          "&status_for_reopened=" + sel_reopen.value + "&status_for_unanswered=" + sel_unansw.value +
+		          "&priority_for_new=" + sel_pr_new.value        
+		          ;
+		          
+		//alert( (url));
+	    xmlhttp.open("GET", url, true);
+	    xmlhttp.onreadystatechange = SavePreferences_Reps;
+	    xmlhttp.send(null);    
+	}
+	
+	function SavePreferences_Reps()
+	{
+	    if (xmlhttp.readyState == 4) 
+	    {
+	        // alert(xmlhttp.responseText);
+	        eval(xmlhttp.responseText);
+	        
+	    }    
+	}
+	
+	// Moz treats whitespace as nodes (text nodes) while IE do not. So the siblings will differ.
+	// this script cleans them up! 
+	// thanks here: http://www.codingforums.com/showthread.php?t=7028
+	var notWhitespace = /\S/;
+	function cleanWhitespace(node) 
+	{
+		for (var x = 0; x < node.childNodes.length; x++) 
+		{
+			var childNode = node.childNodes[x]
+			if ((childNode.nodeType == 3)&&(!notWhitespace.test(childNode.nodeValue))) 
+			{
+				// that is, if it's a whitespace text node
+				node.removeChild(node.childNodes[x])
+				x--
+			}
+			if (childNode.nodeType == 1) 
+			{
+				// elements can have text child nodes of their own
+				cleanWhitespace(childNode)
+			}
+		}
+	}	
+	
+	window.onload = function()
+	{
+		cleanWhitespace(document.getElementById('sel_statuses'));
+		cleanWhitespace(document.getElementById('sel_priorities'));
+		cleanWhitespace(document.getElementById('sel_types'));
+	}
+
+	
+</script>
+<script type="text/javascript" language="JavaScript1.2" src="js/colorpickerFlooble.js"></script>
+{/literal}
+
+<div style="float: none;">
+	<div class="page_caption">{trans str="Ticket Preferences"}</div>
+</div>
+
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="PreferencesEdit">
+	<input type="hidden" name="module" value="Manage">
+
+	<!-- TICKET STATUSES -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3"><div id="requestStatus" style="float: right;"></div>{trans str="Ticket Statuses"}</th></tr>
+		<tr>
+			<td width="210px;" valign="top">
+				<select id="sel_statuses" size="12" style="width: 210px;" onchange="SetColorSetEdit('statuses')">
+					{foreach key=key item=item from=$sys_options.ticket_statuses}
+					<option value="{$key}" textcolor="{$item.textcolor}" bordercolor="{$item.bordercolor}" bgcolor="{$item.bgcolor}">{$key}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td style="padding: 5px; width: 120px;" valign="top">
+				<input id="inp_statuses" type="text" style="width: 110px;" /><br />
+				<input type="button" value="{trans str="Add New"}" style="width: 110px" onclick="AddItem('statuses')" /><br />
+				<br style="line-height: 4px; font-size: 1pt;" />
+				
+				<input type="button" value="{trans str="Delete Selected"}" style="width: 110px" onclick="DeleteItem('statuses')" /><br />
+				<br style="line-height: 4px; font-size: 1pt;" />
+				
+				<input type="button" value="{trans str="Move Up"}"   style="width: 110px" onclick="MoveUp('statuses')" /><br />
+				<input type="button" value="{trans str="Move Down"}" style="width: 110px" onclick="MoveDown('statuses')" /><br />
+			</td>
+			<td valign="top">
+				<table>
+					<tr>
+						<td>{trans str="Default status of new ticket:"}</td>
+						<td>
+							<select id="status_for_new" name="ticket[status_for_new]">
+								{foreach key=key item=item from=$sys_options.ticket_statuses}
+								<option value="{$key}" {if $key == $sys_options.tickets.status_for_new}selected="selected"{/if}>{$key}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>{trans str="Default status of closed ticket:"}</td>
+						<td>
+							<select id="status_for_closed" name="ticket[status_for_closed]">
+								{foreach key=key item=item from=$sys_options.ticket_statuses}
+								<option value="{$key}" {if $key == $sys_options.tickets.status_for_closed}selected="selected"{/if}>{$key}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>{trans str="Default status of re-opened ticket:"}</td>
+						<td>
+							<select id="status_for_reopened" name="ticket[status_for_reopened]">
+								{foreach key=key item=item from=$sys_options.ticket_statuses}
+								<option value="{$key}" {if $key == $sys_options.tickets.status_for_reopened}selected="selected"{/if}>{$key}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>{trans str="Default status of customer-reply ticket:"}</td>
+						<td>
+							<select id="status_for_unanswered" name="ticket[status_for_unanswered]">
+								<option value="">({trans str="none"})</option>
+								{foreach key=key item=item from=$sys_options.ticket_statuses}
+								<option value="{$key}" {if $key == $sys_options.tickets.status_for_unanswered}selected="selected"{/if}>{$key}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+				</table>
+				<table style="border-top: 1px solid silver;" border="0px">
+					<tr>
+						<td>{trans str="Item Preview:"}</td>
+						<td style="padding-right: 40px;"><div id="preview_statuses" style="padding: 1px 5px; border: 1px solid white;">{trans str="Status"}</div></td>
+					</tr>
+					<tr>
+						<td>{trans str="Text Color:"}</td>
+						<td>
+							<input id="textcolor_for_statuses_field" size="8" name"textcolor_for_statuses_field" value="" onchange="SetColorToSelItem('statuses', 'textcolor')">
+							<a href="javascript:pickColor('textcolor_for_statuses_');" id="textcolor_for_statuses_" 
+							style="border: 1px solid #000000; font-family: Verdana; font-size: 10px; text-decoration: none; position: relative; top: -1px; left: -2px;">&nbsp;&nbsp;&nbsp;</a>
+							<!-- <script language="javascript">relateColor('textcolor_for_statuses_', getObj('textcolor_for_statuses_field').value);</script> -->
+						</td>
+						<td width="20px"></td>
+						<td>{trans str="Background Color:"}</td>
+						<td>
+							<input id="bgcolor_for_statuses_field" size="8" name"bgcolor_for_statuses_field" value="" onchange="SetColorToSelItem('statuses', 'bgcolor')">
+							<a href="javascript:pickColor('bgcolor_for_statuses_');" id="bgcolor_for_statuses_" 
+							style="border: 1px solid #000000; font-family: Verdana; font-size: 10px; text-decoration: none; position: relative; top: -1px; left: -2px;">&nbsp;&nbsp;&nbsp;</a>
+						</td>
+					</tr>
+					<tr>
+						<td>{trans str="Border Color:"}</td>
+						<td>
+							<input id="bordercolor_for_statuses_field" size="8" name"bordercolor_for_statuses_field" value="" onchange="SetColorToSelItem('statuses', 'bordercolor')">
+							<a href="javascript:pickColor('bordercolor_for_statuses_');" id="bordercolor_for_statuses_" 
+							style="border: 1px solid #000000; font-family: Verdana; font-size: 10px; text-decoration: none; position: relative; top: -1px; left: -2px;">&nbsp;&nbsp;&nbsp;</a>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<!-- /TICKET STATUSES -->
+	
+	<!-- TICKET PRIORITIES -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Ticket Priorities"}</th></tr>
+		<tr>
+			<td width="210px;">
+				<select id="sel_priorities" size="8" style="width: 210px;" onchange="SetColorSetEdit('priorities')">
+					{foreach key=key item=item from=$sys_options.ticket_priorities}
+					<option value="{$key}" textcolor="{$item.textcolor}" bordercolor="{$item.bordercolor}" bgcolor="{$item.bgcolor}">{$key}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td style="padding: 5px;">
+				<input id="inp_priorities" type="text" style="width: 110px;" /><br />
+				<input type="button" value="{trans str="Add New"}" style="width: 110px" onclick="AddItem('priorities')" /><br />
+				<br style="line-height: 4px; font-size: 1pt;" />
+				
+				<input type="button" value="{trans str="Delete Selected"}" style="width: 110px" onclick="DeleteItem('priorities')" /><br />
+				<br style="line-height: 4px; font-size: 1pt;" />
+				
+				<input type="button" value="{trans str="Move Up"}"   style="width: 110px" onclick="MoveUp('priorities')" /><br />
+				<input type="button" value="{trans str="Move Down"}" style="width: 110px" onclick="MoveDown('priorities')" /><br />
+				
+			</td>
+			<td valign="top">
+				<table>
+					<tr>
+						<td>{trans str="Default priority for new ticket:"}</td>
+						<td>
+							<select id="priority_for_new" name="ticket[status_for_new]">
+								{foreach key=key item=item from=$sys_options.ticket_priorities}
+								<option value="{$key}" {if $key == $sys_options.tickets.priority_for_new}selected="selected"{/if}>{$key}</option>
+								{/foreach}
+							</select>
+						</td>
+					</tr>
+				</table>
+				<br />
+				<table style="border-top: 1px solid silver;" border="0px">
+					<tr>
+						<td>{trans str="Item Preview:"}</td>
+						<td style="padding-right: 40px;"><div id="preview_priorities" style="padding: 1px 5px; border: 1px solid white;">{trans str="Priority"}</div></td>
+					</tr>
+					<tr>
+						<td>{trans str="Text Color:"}</td>
+						<td>
+							<input id="textcolor_for_priorities_field" size="8" name"textcolor_for_priorities_field" value="" onchange="SetColorToSelItem('priorities', 'textcolor')">
+							<a href="javascript:pickColor('textcolor_for_priorities_');" id="textcolor_for_priorities_" 
+							style="border: 1px solid #000000; font-family: Verdana; font-size: 10px; text-decoration: none; position: relative; top: -1px; left: -2px;">&nbsp;&nbsp;&nbsp;</a>
+							<!-- <script language="javascript">relateColor('textcolor_for_priorities_', getObj('textcolor_for_priorities_field').value);</script> -->
+						</td>
+						<td width="20px"></td>
+						<td>{trans str="Background Color:"}</td>
+						<td>
+							<input id="bgcolor_for_priorities_field" size="8" name"bgcolor_for_priorities_field" value="" onchange="SetColorToSelItem('priorities', 'bgcolor')">
+							<a href="javascript:pickColor('bgcolor_for_priorities_');" id="bgcolor_for_priorities_" 
+							style="border: 1px solid #000000; font-family: Verdana; font-size: 10px; text-decoration: none; position: relative; top: -1px; left: -2px;">&nbsp;&nbsp;&nbsp;</a>
+						</td>
+					</tr>
+					<tr>
+						<td>{trans str="Border Color:"}</td>
+						<td>
+							<input id="bordercolor_for_priorities_field" size="8" name"bordercolor_for_priorities_field" value="" onchange="SetColorToSelItem('priorities', 'bordercolor')">
+							<a href="javascript:pickColor('bordercolor_for_priorities_');" id="bordercolor_for_priorities_" 
+							style="border: 1px solid #000000; font-family: Verdana; font-size: 10px; text-decoration: none; position: relative; top: -1px; left: -2px;">&nbsp;&nbsp;&nbsp;</a>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<!-- /TICKET PRIORITIES -->
+	
+	<!-- TICKET ACTIONS -->
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="2">{trans str="Ticket Actions"}</th></tr>
+		<tr>
+			<td width="210px;">
+				<select id="sel_types" size="8" style="width: 210px;">
+					{foreach key=key item=item from=$sys_options.ticket_types}
+					<option value="{$key}">{$key}</option>
+					{/foreach}
+				</select>
+			</td>
+			<td style="padding: 5px;">
+				<input id="inp_types" type="text" style="width: 110px;" /><br />
+				<input type="button" value="{trans str="Add New"}" style="width: 110px" onclick="AddItem('types')" /><br />
+				<br style="line-height: 4px; font-size: 1pt;" />
+				
+				<input type="button" value="{trans str="Delete Selected"}" style="width: 110px" onclick="DeleteItem('types')" /><br />
+				<br style="line-height: 4px; font-size: 1pt;" />
+				
+				<input type="button" value="{trans str="Move Up"}"   style="width: 110px" onclick="MoveUp('types')" /><br />
+				<input type="button" value="{trans str="Move Down"}" style="width: 110px" onclick="MoveDown('types')" /><br />
+			</td>
+		</tr>
+	</table>
+	<!-- /TICKET ACTIONS -->
+	
+	<div style="text-align: center; padding-top: 10px;">
+		<input id="submit_btn" type="button" name="save_prefs" value="{trans str="Save preferences"}" onclick="SavePreferences()">
+	</div>
+
+</form>
+
+{literal}
+<script type="text/javascript">
+	var sels = ['sel_statuses', 'sel_priorities'];
+	for (var s in sels)
+	{
+		var sel = document.getElementById(sels[s]);
+		var attrs = ['textcolor', 'bordercolor', 'bgcolor']; 
+		for (var i = 0; i < sel.options.length; i++) {
+			for (var k in attrs) {
+				var v = sel.options[i].getAttribute(attrs[k]);
+				if (v) sel.options[i]['option_' + attrs[k]] = v;
+			}
+		}
+	}
+</script>
+{/literal}

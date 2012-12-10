@@ -1,0 +1,59 @@
+<link href="css/livechat.css" rel="stylesheet" type="text/css" />
+
+<div style="height:63px; background:url(images/top_lc.gif) #0A51CF 0 0 no-repeat;"></div>
+
+<table class="page" cellpadding="5px" cellspacing="0" border="0px" style="margin: 0px;">
+	<!-- tr><th><div id="requestStatus" style="float: right;"></div>asdfaaaaaa</th></tr -->
+	<tr>
+		<td>
+
+			<table cellpadding="2" cellspacing="2" style="width: 100%;">
+				<!-- tr style="text-align: left;">
+					<td style="background-color: #90AADD; width: 120px;">Department</td>
+					<td style="background-color: #DDD;">{$transcript.group_caption}</td>
+				</tr -->
+				<tr>
+					<td style="background-color: #90AADD;">Customer</td>
+					<td style="background-color: #DDD;">{$requester.nickname}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">E-Mail</td>
+					<td style="background-color: #DDD;">{$requester.data.email}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">Clicked From</td>
+					<td style="background-color: #DDD;">{$requester.data.clicked_from}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">Created</td>
+					<td style="background-color: #DDD;">{$transcript.created|date_format_usr:'short'}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">Duration</td>
+					<td style="background-color: #DDD;">{$transcript.duration} secs</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">User Ip</td>
+					<td style="background-color: #DDD;">{$requester.user_ip}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">Host Name</td>
+					<td style="background-color: #DDD;">{$requester.host_name}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">Browser Type</td>
+					<td style="background-color: #DDD;">{$requester.data.browser}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">Monitor Resolution</td>
+					<td style="background-color: #DDD;">{$requester.data.monitor_resolution}</td>
+				</tr>
+				<tr>
+					<td style="background-color: #90AADD;">Chat Requests</td>
+					<td style="background-color: #DDD;">{$requester.chat_requests}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+		
+</table>

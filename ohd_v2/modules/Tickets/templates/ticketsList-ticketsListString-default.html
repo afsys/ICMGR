@@ -1,0 +1,25 @@
+<tr style="background-color: {cycle values="#FFFFFF,#CCCCCC"}">
+	{assign var=htmljscaption value=$ticket.caption|escape:"html_js"}
+	<td><input type="checkbox" name="sel_ids[{$ticket.ticket_id}]" /></td>
+	<td>
+		{if $ticket.last_message_posted_by_admin}
+			{if $ticket.customer_last_open_days === null}
+			<img src="images/sign_exc_red.gif" height="16px" width="16px" alt="{trans str="Unread by user!"}" title="{trans str="Unread by user!"}" />
+			{elseif $ticket.customer_last_open_days > 1}
+			<img src="images/sign_exc_red.gif" height="16px" width="16px" alt="Unread by user for {$ticket.customer_last_open_days} days!" title="Unread by user for {$ticket.customer_last_open_days} days!" />
+			{/if}
+		{/if}
+	</td>
+	<td class="brd" style="text-align: center;"><a class="list" href="index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}">{if $ticket.ticket_num}{$ticket.ticket_num}{else}{$ticket.ticket_id}{/if}</a></td>
+	<td class="brd" style="text-align: center;">{$ticket.modified_at|date_format_usr:'short'}</td>
+	<td class="brd"><a class="list" href="index.php?module=Tickets&action=TicketsEdit&ticket_id={$ticket.ticket_id}">
+		{$ticket.customer_name|strip_tags|truncate:20}
+	</a></td>
+	{if $sys_options.tickets_list.show_product_name}
+	<td class="brd" >{$ticket.ticket_product_caption}</td>
+	{/if}
+	<td class="brd" >{$ticket.type}</td>
+	<td class="brd" style="text-align: center;"><div class="priority_{$ticket.priority}">{$ticket.priority}</div></td>
+	<td class="brd" style="text-align: center;"><div class="status_{$ticket.status}">{$ticket.status}</div></td>
+	<td class="brd" nowrap>{$ticket.ticket_assigned_to_name|htmlspecialchars|default:"(not assigned)"}</td>
+</tr>

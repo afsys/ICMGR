@@ -1,0 +1,60 @@
+<!--  
+	<div class="full_border" style="width: 100%">
+	{if $is_admin}
+	<div style="text-align: center; color: red;">Warning: It is not advisable that you remove any privileges for this group</div>
+	{/if}
+	
+	{if $error}
+	<div style="color: red;">{$error}</div>
+	{/if}
+--> 
+
+<div style="float: none;">
+	<div class="page_caption">{if $product.ticket_product_id}{trans str="Edit Product"}{else}{trans str="Add New Product"}{/if}</div>
+</div>
+
+<form action="index.php" method="POST">
+	<input type="hidden" name="action"   value="ProductsAdd">
+	<input type="hidden" name="module"   value="Manage">
+	<input type="hidden" name="ticket_product_id" value="{$product.ticket_product_id}">
+
+
+	<table class="page" cellpadding="5px" cellspacing="0">
+		<tr><th colspan="3">{trans str="Common Properties"}</th></tr>
+		<tr>
+			<td width="130px">{trans str="Product Name"}:</td>
+			<td><input type="text" name="ticket_product_caption" size="15" maxlength="40" value="{$product.ticket_product_caption}" style="width: 270px;"></td>
+			<td><font color="red">{$errors.ticket_product_caption}</font></td>
+		</tr>
+		<tr>
+			<td valign="top">{trans str="Description"}:</td>
+			<td><textarea name="ticket_product_desc" rows="5" cols="40">{$product.ticket_product_desc}</textarea></td>
+			<td><font color="red">{$errors.ticket_product_desc}</font></td>
+		</tr>
+	</table>
+	
+	<table class="page" cellpadding="5px" cellspacing="0" border="0px">
+		<tr><th colspan="3">{trans str="Product Version"}</th></tr>
+		<tr>
+			<td width="130px">{trans str="Enable Versions"}:</td>
+			<td width="160px">
+				<input type="hidden" name="ticket_product_ver_enabled" value="0" />
+				<input type="checkbox" name="ticket_product_ver_enabled" value="1" {if $product.ticket_product_ver_enabled}checked="checked"{/if} />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">{trans str="Versions List"}:</td>
+			<td>
+				<textarea name="ticket_product_ver_list" rows="5" cols="20">{$product.ticket_product_ver_list}</textarea>
+			</td>
+			<td valign="top">
+				{trans str="Note"}: {trans str="One version per string"}.
+			</td>
+			
+		</tr>
+	</table>
+	
+
+	<div style="text-align: center; padding-top: 12px;">
+		<input type="submit" name="product_edit" value="{if $product.ticket_product_id}{trans str="Update Product"}{else}{trans str="Add Product"}{/if}"></div>    
+</form>

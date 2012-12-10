@@ -1,0 +1,54 @@
+<div style="float: none;">
+	<div class="page_caption">{trans str="Add Linked Emails"}</div>
+</div>
+
+{if is_array($message)} 
+	{foreach item=msg from=$message}
+		<div style="padding-top: 2px;">{$msg.caption}<span style="color: red;">{$msg.message}</span></div>
+	{/foreach}
+{else}
+	<div style="padding-top: 2px;">{$message_caption}<span style="color: red;">{$message}</span></div>
+{/if}  
+
+<table class="vpage" border="0px" width="100%;" cellspacing="0px">
+<form action="index.php?module=Tickets&action=TicketsAddFromLink" method="post">
+	<thead>
+		<th colspan="2">{trans str="Ticket Links"}</th>
+	</thead>
+	
+	{if count($statuses)}
+	<tr>
+		<td style="padding: 5px 10px 9px;">
+			{trans str="Adding status"}: <br />
+			{foreach key=key item=msg from=$statuses}
+				<div style="padding-left: 12px;"> - {$key}: {$msg}</div>
+			{/foreach}
+		</td>
+	</tr>
+	{/if}
+	
+	{if !empty($res_message)}
+	<tr>
+		<td style="padding: 5px 10px 9px; text-align: center;">{$res_message}</td>
+	</tr>
+	{else}
+	<tr>
+		<td style="padding: 5px 10px 9px;">
+			{trans str="Please enter your ticket links (one per line) to add tickets to your user account."} <br />
+			{trans str="Example"}: http://ohd_host/forms/showTickets.php?ticket_id=328708&email=admin@host.com&button=View+ticket
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<textarea name="links" rows="10" cols="110"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center" style="padding: 5px;">
+			<input type="submit" value="{trans str="Submit"}" />
+		</td>
+	</tr>
+	{/if}
+	
+</form>
+</table>

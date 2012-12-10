@@ -1,0 +1,73 @@
+Note: Should you have any problems installing OHD please contact us at info@omnihelpdesk.com.
+
+1. Main OHD installation
+
+1.1. Unzip the ohd[version].zip onto your local hard drive.
+
+1.2. Rename the directory to whatever you want. (e.g. support)
+
+1.3. Login to your website control panel and create a database (e.g. ohd) You also need to 
+     create a username and password for this database. Give full access rights to the username
+     of the database you just created. 
+     Note: DB user should have right to create and drop temporary tables.
+     
+1.4. If you have unzipped ohd to your local hard drive simply upload it to the web server.
+     This is done usually via FTP. I recommend CuteFTP http://www.cuteftp.com
+     
+1.5. Chmod ohd/install folder to 777.     
+     Chmod ohd/_tmp/attachments folder to 777.
+     Chmod ohd/_tmp/sess folder to 777.
+     Chmod ohd/_tmp/template_c folder to 777.
+     Chmod ohd/_tmp/uploads folder to 777.
+     
+
+1.6. Main installation.
+
+NOTE: if you have '500 Internal Server Error' message try rename .htaccess to rem.htaccess file 
+      and retry installation
+
+      
+
+2. Auxilary items configuration
+
+2.1. Setup automatic e-mail piping
+                      
+To setup e-mail piping as a cron job you need to setup this command for execution:
+GET 'http://host_name/ohd/index.php?module=System&action=Cron&make=piping'
+
+where host_name - your host
+
+
+
+3. LiveChat installation
+
+3.1. Add departments
+
+3.2. Set departments to users
+
+3.3. Set LC priority value for users
+
+3.4. Add LC request image as described at Confirure->LiveChat->Forms
+
+3.5. Select 'Enable livechat' checkbox in your OHD preferences.
+
+
+
+4. Runing OHD
+
+Run http://www.yourdomain.com/ohd_directory/
+This will begin the installation process.
+Just follow the steps of the install wizard.
+That's it!. Installation will be completed after this.
+
+Enjoy.
+
+
+5. Additional Information
+
+5.1. Variables for Canned Emails
+
+'ticket_num'     - only when adding new ticket, editing ticket, posting new message/note into ticket
+'ticket_caption' - only when adding new ticket, editing ticket, posting new message/note into ticket
+'ticket_url'     - only when adding new ticket, editing ticket, posting new message/note into ticket
+'ticket_message' - posting new message/note into ticket

@@ -1,0 +1,104 @@
+<!-- FILTER FORM -->
+<table id="filter_table" class="page" cellspacing="0" cellpadding="2px" border="0px" 
+	style="width: 500px; display: none; font-size: 10px;">
+<form name="filter_options" method="post">
+	<tr>
+		<th colspan="3">{trans str="Tickets Filter"}</th>
+	</tr>
+	<tr>
+		<td colspan="3">{trans str="Fill in one or more fields below and click the 'Set Filter' button"}</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			{trans str="Select search method"}: 
+			<input type="radio" name="rel_type" value="AND" style="position: relative; top: 3px;" checked="checked" /> <strong>{trans str="AND"}</strong> /
+			<input type="radio" name="rel_type" value="OR" style="position: relative; top: 3px;" /><strong>{trans str="OR"}</strong>
+		</td>
+	</tr>
+	<tr>
+		<td align="right">{trans str="Product"}</td>
+		<td align="center">{trans str="Is"}</td>
+		<td>
+			<select name="filter[common][tickets.ticket_product_id]" style="width: 120px;">
+				<option value="">{trans str="(all)"}</option>
+				{foreach item=item key=key from=$products_list}
+				<option value="{$item.ticket_product_id}">{$item.ticket_product_caption}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>	
+	<tr>
+		<td align="right">{trans str="Priority"}</td>
+		<td align="center">{trans str="Is"}</td>
+		<td>
+			<select name="filter[common][tickets.priority]" style="width: 90px;">
+				<option value=""></option>
+				{foreach item=item key=key from=$ticket_priorities}
+				<option {if $ticket.priority == $key}selected="selected"{/if}>{$key}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td align="right">{trans str="Status"}</td>
+		<td align="center">{trans str="Is"}</td>
+		<td>
+			<select name="filter[common][tickets.status]" style="width: 90px;">
+				<option value=""></option>
+				{foreach item=item key=key from=$ticket_statuses}
+				<option {if $ticket.status == $key}selected="selected"{/if}>{$key}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td align="right" colspan="2">{trans str="Ticket Owner"}&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			<select name="filter[common][tickets.assigned_to]" style="width: 140px;">
+				<option value=""></option>
+				{foreach item=item key=key from=$users}
+				<option value="{$item.user_id}" {if $item.user_id == $ticket.ticket_assigned_to_id}selected="selected"{/if}>{$item.user_name}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+<!--	
+	<tr>
+		<td align="right">Open Date Is</td>
+		<td></td>
+		<td>
+		</td>
+	</tr>
+	<tr>
+		<td align="right">Close Date Is</td>
+		<td></td>
+		<td>
+	
+		</td>
+	</tr>
+	<tr>
+		<td align="right">Ticket Notes</td>
+		<td></td>
+		<td>
+	
+		</td>
+	</tr>	
+	<tr>
+		<td align="right">Name </td>
+		<td></td>
+		<td>
+	
+		</td>
+	</tr>	
+-->
+	<tr>
+		<td colspan="3" align="center"><br/>
+			<input type="reset" value="Reset form" style="width: 90px;" />
+			<input name="set_filter" type="submit" value="{trans str="Set Filter"}" style="width: 90px;" />
+			<input type="button" value="Cancel" style="width: 90px;" onclick="document.getElementById('filter_table').style.display = 'none';" />
+			<br /><br />
+		</td>
+	</tr>
+</form>
+</table>
+<!-- /FILTER FORM -->
